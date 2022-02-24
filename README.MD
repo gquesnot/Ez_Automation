@@ -1,0 +1,51 @@
+# Ez Automation
+
+Template to make a bot. 
+
+
+
+
+## Description
+
+When you launch the bot you will have a graphical interface to configure the information you want to retrieve from the window.
+You can also manage the states of the bot.
+
+So you can configure:
+- the name of the window to retrieve (the basic screenshot)
+- creation of region (a part of screen)
+- detection of pixels OR/ AND 
+- detection of text/int 
+- image detection OR/AND
+- mask detection
+- action and combo actions
+
+## Getting Started
+
+### Dependencies
+
+
+
+### Installing
+
+require python 3.10
+````shell
+ pip install -r requirements.txt
+````
+
+### Executing program
+
+### Usage
+
+````shell
+ python main.py
+````
+
+Use what you have set up like this:
+````python
+print('scan wave: ', self.dpc.checkTcrScan('wave'))
+print('check pixel evt1On: ', self.dpc.checkPixel("evt1On"))
+print('check if image evt1 is present and get coor: ', self.dpc.checkImageMatch('evt1'))
+print('check mask greenBar and get list[Rectangle]: ', self.dpc.checkMaskDetection('greenBar'))
+print('do action closeUp')
+self.doAction('closeUpgrade')
+````
