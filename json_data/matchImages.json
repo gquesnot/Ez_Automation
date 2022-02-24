@@ -1,0 +1,22 @@
+{
+  "dict": {
+    "goldPiece": {
+      "name": "goldPiece",
+      "images": [
+        {
+          "region": "money",
+          "path": "img/goldPiece/0.png"
+        }
+      ]
+    },
+    "evt1": {
+      "name": "evt1",
+      "images": [
+        {
+          "region": "root",
+          "path": "img/evt1/0.png"
+        }
+      ]
+    }
+  }
+}

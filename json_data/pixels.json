@@ -1,0 +1,23 @@
+{
+  "dict": {
+    "evt1On": {
+      "name" :"evt1On",
+      "type": "OR",
+      "pixels": [
+        {
+          "coor": {
+            "x": 595,
+            "y": 86
+          },
+          "color": {
+            "r": 16,
+            "g": 154,
+            "b": 210
+          },
+          "tolerence": 10,
+          "region": "root"
+        }
+      ]
+    }
+  }
+}

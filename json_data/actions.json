@@ -1,0 +1,22 @@
+{
+  "dict": {
+    "closeUpgrade": {
+      "name": "closeUpgrade",
+      "type": "MouseClick",
+      "coor": {
+        "x": 172,
+        "y": 21
+      },
+      "region": "info",
+      "delay": 0.1,
+      "sleepAfter": 0.1
+    },
+    "test": {
+      "name": "test",
+      "type": "Keyboard",
+      "key": "a",
+      "delay": 0.1,
+      "sleepAfter": 0.1
+    }
+  }
+}

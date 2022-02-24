@@ -1,0 +1,16 @@
+{
+  "windowList": {
+    "root":{
+      "coor": [0,0],
+      "ratio": 1
+    },
+    "mask": {
+      "coor": [0,400],
+      "ratio": 0.5
+    },
+    "draw":{
+      "coor": [1080,0],
+      "ratio": 0.5
+    }
+  }
+}

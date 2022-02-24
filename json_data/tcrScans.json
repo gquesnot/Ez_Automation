@@ -1,0 +1,48 @@
+{
+  "dict": {
+    "wave2": {
+      "name": "wave2",
+      "region": "info",
+      "rectangle": {
+        "x": 170,
+        "y": 15,
+        "w": 86,
+        "h": 43
+      },
+      "type": "INT"
+    },
+    "gold": {
+      "name": "gold",
+      "region": "money",
+      "rectangle": {
+        "x": 54,
+        "y": 1,
+        "w": 0,
+        "h": 0
+      },
+      "type": "INT"
+    },
+    "wave": {
+      "name": "wave",
+      "region": "info",
+      "rectangle": {
+        "x": 170,
+        "y": 15,
+        "w": 86,
+        "h": 43
+      },
+      "type": "INT"
+    },
+    "test": {
+      "name": "test",
+      "region": "root",
+      "rectangle": {
+        "x": 152,
+        "y": 232,
+        "w": 138,
+        "h": 133
+      },
+      "type": "STRING"
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "dict": {
+    "greenBar": {
+      "name": "greenBar",
+      "draw": true,
+      "region": "base",
+      "drawSize": 4,
+      "track": false,
+      "lower": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "upper": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "maxFound": 2,
+      "kernelSize": 3,
+      "minArea": 100,
+      "drawColor": {
+        "r": 0,
+        "g": 255,
+        "b": 0
+      }
+    },
+    "redBard": {
+      "draw": true,
+      "name": "redBard",
+      "region": "base",
+      "lower": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "upper": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "maxFound": 2,
+      "kernelSize": 3,
+      "minArea": 100,
+      "drawColor": {
+        "r": 255,
+        "g": 0,
+        "b": 0
+      },
+      "drawSize": 4,
+      "track": false
+    }
+  }
+}
