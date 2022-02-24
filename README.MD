@@ -10,7 +10,7 @@ Template to make a bot.
 When you launch the bot you will have a graphical interface to configure the information you want to retrieve from the window.
 You can also manage the states of the bot.
 
-So you can configure:
+You can configure:
 - the name of the window to retrieve (the basic screenshot)
 - creation of region (a part of screen)
 - detection of pixels OR/ AND 
