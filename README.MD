@@ -16,8 +16,8 @@ You can configure:
 - detection of pixels OR/ AND 
 - detection of text/int 
 - image detection OR/AND
-- mask detection
-- action and combo actions
+- mask detection (dirty)
+- action and combo actions (soon)
 
 ## Getting Started
 

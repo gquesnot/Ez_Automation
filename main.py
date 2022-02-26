@@ -18,7 +18,7 @@ def main():
     parser.add_argument("--show_region", help="show_region", action='store_true')
     parser.add_argument("--auto_screenshot", help="take screen shot automaticly with param as duration", type=int)
     # parser.add_argument("--AABuff", help="activate autobuff", action='store_true')
-
+    # TODO: switch args to gui
     args = parser.parse_args()
     game = Game(args)
     game.start()
