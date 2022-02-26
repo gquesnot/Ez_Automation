@@ -36,18 +36,16 @@ class Vision:
     G = {}
     B = {}
 
-
-
     # constructor
-    def __init__(self, hsv=True,method=cv2.TM_CCOEFF_NORMED):
+    def __init__(self, hsv=True, method=cv2.TM_CCOEFF_NORMED):
         self.hsv_filter = HsvFilter()
         self.trackListElem = applyJsonConfig(self, "vision")
         # load the image we're trying to match
         # https://docs.opencv2.org/4.2.0/d4/da8/group__imgcodecs.html
 
         # Save the dimensions of the needle image
-        #self.needle_w = self.needle_img.shape[1]
-        #self.needle_h = self.needle_img.shape[0]
+        # self.needle_w = self.needle_img.shape[1]
+        # self.needle_h = self.needle_img.shape[0]
         self.hsv = hsv
         # There are 6 methods to choose from:
         # TM_CCOEFF, TM_CCOEFF_NORMED, TM_CCORR, TM_CCORR_NORMED, TM_SQDIFF, TM_SQDIFF_NORMED
@@ -60,7 +58,7 @@ class Vision:
         # Get the all the positions from the match result that exceed our threshold
         locations = np.where(result >= threshold)
         locations = list(zip(*locations[::-1]))
-        #print(locations)
+        # print(locations)
 
         # if we found no results, return now. this reshape of the empty array allows us to
         # concatenate together results without causing an error
@@ -82,7 +80,7 @@ class Vision:
         # in the result. I've set eps to 0.5, which is:
         # "Relative difference between sides of the rectangles to merge them into a group."
         rectangles, weights = cv2.groupRectangles(rectangles, groupThreshold=1, eps=0.5)
-        #print(rectangles)
+        # print(rectangles)
 
         # for performance reasons, return a limited number of results.
         # these aren't necessarily the best results.
@@ -100,8 +98,8 @@ class Vision:
         # Loop over all the rectangles
         for (x, y, w, h) in rectangles:
             # Determine the center position
-            center_x = x + int(w/2)
-            center_y = y + int(h/2)
+            center_x = x + int(w / 2)
+            center_y = y + int(h / 2)
             # Save the points
             points.append((center_x, center_y))
 
@@ -140,18 +138,20 @@ class Vision:
     def init_control_gui(self):
         cv2.namedWindow(self.HSV_TRACKBAR, cv2.WINDOW_NORMAL)
         cv2.resizeWindow(self.HSV_TRACKBAR, 450, 300)
-        cv2.moveWindow(self.HSV_TRACKBAR, 0,0)
+        cv2.moveWindow(self.HSV_TRACKBAR, 0, 0)
         cv2.namedWindow(self.CANNY_BLUR_TRACKBAR, cv2.WINDOW_NORMAL)
         cv2.resizeWindow(self.CANNY_BLUR_TRACKBAR, 450, 250)
         cv2.moveWindow(self.CANNY_BLUR_TRACKBAR, 0, 500)
         cv2.namedWindow(self.MASK_TRACKBAR, cv2.WINDOW_NORMAL)
         cv2.resizeWindow(self.MASK_TRACKBAR, 450, 200)
         cv2.moveWindow(self.MASK_TRACKBAR, 0, 950)
+
         # required callback. we'll be using getTrackbarPos() to do lookups
         # instead of using the callback.
 
-        def nothing(position):
+        def nothing():
             pass
+
         # create trackbars for bracketing.
         # OpenCV2 scale for HSV is H: 0-179, S: 0-255, V: 0-255
         for elemName in self.trackListElem:
@@ -159,18 +159,14 @@ class Vision:
             cv2.createTrackbar(elemName, elem['trackbarName'], elem['min'], elem['max'], nothing)
             cv2.setTrackbarPos(elemName, elem['trackbarName'], elem['value'])
 
-
-
     # returns an HSV filter object based on the control GUI values
     def updateFilter(self):
 
         # Get current positions of all trackbars
-        #print(self.hsv_filter.__dict__)
+        # print(self.hsv_filter.__dict__)
         for elemName in self.trackListElem:
             elem = getattr(self, elemName)
             elem['value'] = cv2.getTrackbarPos(elemName, elem['trackbarName'])
-
-
 
     def getHsvFilter(self):
         result = {}
@@ -179,20 +175,20 @@ class Vision:
             result[elemName] = elem['value']
         self.hsv_filter = HsvFilter(datas=result)
         return self.hsv_filter
+
     # given an image and an HSV filter, apply the filter and return the resulting image.
     # if a filter is not supplied, the control GUI trackbars will be used
     def apply_hsv_filter(self, original_image, hsv_filter=None):
         # convert image to HSV
         if self.hsv:
-            hsv = cv2.cvtColor(original_image, cv2.COLOR_BGR2HSV)#
+            hsv = cv2.cvtColor(original_image, cv2.COLOR_BGR2HSV)  #
         else:
-            hsv= original_image
+            hsv = original_image
 
         # if we haven't been given a defined filter, use the filter values from the GUI
         if not hsv_filter:
             self.updateFilter()
             hsv_filter = self.getHsvFilter()
-
 
         # add/subtract saturation and value
         h, s, v = cv2.split(hsv)
@@ -217,7 +213,7 @@ class Vision:
         if hsv_filter.BlurOn == 1:
             img = cv2.bilateralFilter(img, hsv_filter.BlurRatio, hsv_filter.BlurKernel, hsv_filter.BlurKernel)
         if hsv_filter.CannyOn == 1:
-            img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             img = cv2.Canny(img, hsv_filter.LowThreshold, hsv_filter.MaxThreshold, hsv_filter.CannyKernel)
         return img
 
@@ -241,4 +237,3 @@ class Vision:
         sum_x = np.sum(point_list[:, 0])
         sum_y = np.sum(point_list[:, 1])
         return [np.floor_divide(sum_x, length), np.floor_divide(sum_y, length)]
-

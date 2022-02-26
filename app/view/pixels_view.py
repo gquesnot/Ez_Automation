@@ -1,6 +1,8 @@
 from app.components.my_input import MyInput
 from app.components.my_select import MyStringEnumSelect
-from app.my_dataclasses import PixelConfig, Pixel, PixelConfigs, PixelConfigType
+from baseclass.my_dataclass.pixel_config import PixelConfig, PixelConfigs
+from baseclass.my_dataclass.pixel import Pixel
+from baseclass.my_enum.condition_type import PixelConfigType
 from app.view.base_view import BaseViewSelectWithChild
 
 

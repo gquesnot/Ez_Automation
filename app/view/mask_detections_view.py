@@ -1,6 +1,5 @@
-from app.components.my_input import MyInput
-from app.my_dataclasses import MaskDetectionConfig, MaskDetectionConfigs
-from app.view.base_view import BaseViewWithSelect, EzView
+from baseclass.my_dataclass.mask_detection_config import MaskDetectionConfig, MaskDetectionConfigs
+from app.view.base_view import EzView
 
 
 class MaskDetectionsView(EzView):

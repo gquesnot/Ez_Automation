@@ -34,3 +34,5 @@ six>=1.16.0
 tifffile>=2022.2.9
 tomli>=2.0.1
 urllib3>=1.26.8
+
+dacite~=1.6.0

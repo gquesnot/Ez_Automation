@@ -4,7 +4,8 @@ from typing import Union
 
 import cv2
 
-from app.my_dataclasses import TcrScanConfig, Rectangle, VarType
+from baseclass.my_dataclass.tcr_scan_config import TcrScanConfig
+from baseclass.my_enum.var_type import VarType
 from util.pixel import getImgRectangle
 from util.threadclass import ThreadClass
 

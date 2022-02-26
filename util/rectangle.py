@@ -1,14 +1,13 @@
-class RectangleCoor():
-    def __init__(self, x=0,y=0,w=0,h =0):
-        self.x= x
+class RectangleCoor:
+    def __init__(self, x=0, y=0, w=0, h=0):
+        self.x = x
         self.y = y
-        self.h= h
+        self.h = h
         self.w = w
         self.x1 = self.x + self.w
         self.y1 = self.y + self.h
-        self.centerX= self.x + int(self.w /2)
-        self.centerY = self.y + int(self.h/2)
-
+        self.centerX = self.x + int(self.w / 2)
+        self.centerY = self.y + int(self.h / 2)
 
     def getDiff(self, other):
         return abs(self.centerX - other.centerX) + abs(self.centerY - other.centerY)
@@ -38,4 +37,3 @@ class RectangleCoor():
         self.y1 = self.y + self.h
         self.centerX = self.x + int(self.w / 2)
         self.centerY = self.y + int(self.h / 2)
-

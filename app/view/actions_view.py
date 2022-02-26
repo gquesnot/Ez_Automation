@@ -1,5 +1,5 @@
 from app.components.my_input import MyInput
-from app.my_dataclasses import MouseActionConfigs, MouseActionConfig, KeyboardActionConfig
+from baseclass.my_dataclass.action_config import KeyboardActionConfig, MouseActionConfig, MouseActionConfigs
 from app.view.base_view import BaseViewWithSelect
 
 
@@ -7,6 +7,7 @@ class MouseActionsView(BaseViewWithSelect):
     datas: MouseActionConfigs = None
     baseClass: MouseActionConfig = MouseActionConfig
     withTest: bool = False
+
     def __init__(self, app: 'App'):
         super().__init__(app, "mouseActions", app.game.config.mouseActions)
         data = self.parentSelect.getObj()
@@ -24,6 +25,7 @@ class KeyboardActionsView(BaseViewWithSelect):
     datas: MouseActionConfig = None
     baseClass: KeyboardActionConfig = KeyboardActionConfig
     withTest: bool = False
+
     def __init__(self, app: 'App'):
         super().__init__(app, "keyboardActions", app.game.config.keyboardActions)
         data = self.parentSelect.getObj()

@@ -1,7 +1,5 @@
-import json
-
-from app.my_dataclasses import WindowConfig, RegionConfigs, ImageMatchConfigs, PixelConfigs, PixelConfigType, \
-    TcrScanConfigs, MaskDetectionConfig, ActionConfigs, MaskDetectionConfigs
+from baseclass.my_dataclass.pixel_config import PixelConfigs
+from baseclass.my_dataclass.region_config import RegionConfigs
 from util.json_function import getJson
 
 regions = RegionConfigs.from_dict(getJson("regions"))

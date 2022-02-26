@@ -8,15 +8,15 @@ def mapDataClassFields(dc, data, toMap):
             if isinstance(myData, dict):
                 myData = [val | {"id": key} for key, val in myData.items()]
 
-            myData = [mapField(dc, v['type'], val) for val in myData]
+            myData = [mapField(dc, v['type']) for val in myData]
         else:
-            myData = mapField(dc, v['type'], myData)
+            myData = mapField(dc, v['type'])
         data[k] = myData
 
     return data
 
 
-def mapField(dc, Class, data):
+def mapField(dc, Class):
     return Class.from_dict(dc, ).to_dict()
 
 

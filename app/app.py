@@ -2,6 +2,7 @@ import tkinter
 from tkinter import W
 from tkinter import ttk
 
+from app.components.my_input import MyButton
 from app.components.my_menu import MyMenu
 from app.view.actions_view import MouseActionsView, KeyboardActionsView
 from app.view.mask_detections_view import MaskDetectionsView
@@ -10,7 +11,8 @@ from app.view.pixels_view import PixelsView
 from app.view.regions_view import RegionsView
 from app.view.tcr_scans_view import TcrScansView
 from app.view.window_view import WindowView
-from my_enum.game_state import GameState
+from baseclass.my_enum.game_state import GameState
+from baseclass.my_enum.game_type_state import GameTypeState
 
 
 class MainFrame(tkinter.Frame):
@@ -19,11 +21,40 @@ class MainFrame(tkinter.Frame):
     menu: MyMenu = None
     app: 'App' = None
     content = None
+    fpsCounter : tkinter.StringVar = None
+    baseRow = 0
+    home : bool = True
+
 
     def __init__(self, app: 'App'):
         super().__init__(app)
         self.app = app
+        self.fpsCounter = tkinter.StringVar()
+        self.fpsCounter.set('FPS: 0')
         print('init view')
+
+
+
+
+    def loadHome(self):
+        self.clear()
+        self.baseRow = 0
+        self.home = True
+        if self.app.game.config.showFps :
+
+            tkinter.Label(self, textvariable=self.fpsCounter, font=('Helvetica', '10')).grid(row=self.baseRow, column=1, sticky=W)
+            self.baseRow += 1
+        if self.app.game.typeState == GameTypeState.REPLAY:
+            ttk.Button(self, command=lambda:self.app.game.RC.prev(), text='Previous Frame').grid(row=self.baseRow, column= 1, sticky=W)
+            ttk.Button(self, command=lambda:self.app.game.RC.next(), text='Next Frame').grid(row=self.baseRow, column=0, sticky=W)
+            ttk.Button(self, command=lambda:self.app.game.RC.nextDir(), text='Next Dir').grid(row=self.baseRow, column= 2, sticky=W)
+            self.baseRow += 3
+        else:
+            ttk.Button(self, command=self.app.game.imSave.saveScreenShot, text='Take Screenshot').grid(row=self.baseRow, column=0, sticky=W)
+            self.baseRow += 1
+        ttk.Button(self, command=self.app.game.imSave.saveRectangle, text='Show Rectangle\nfrom 2 last click').grid(row=self.baseRow, column=0, sticky=W)
+
+
 
     def clear(self):
         for widget in self.winfo_children():
@@ -31,11 +62,13 @@ class MainFrame(tkinter.Frame):
                 widget.destroy()
 
     def addView(self, view):
+        self.home = False
         self.content = view
+
         # self.content.load()
 
 
-class Controller():
+class Controller:
     app: 'App' = None
 
     def __init__(self, app: 'App'):
@@ -63,12 +96,21 @@ class Controller():
             self.app.view.addView(KeyboardActionsView(self.app))
 
     def doAction(self, toDo, state):
-        print('doAction', toDo, state)
-        if state == "freeze":
-            self.app.game.toggleFreeze()
-        else:
-            self.app.game.setState(GameState[state])
-        self.app.menu.rebuildStateMenu()
+        print('do action', toDo, state)
+        if toDo == 'toggle':
+            self.app.game.config.toggle(state)
+            self.app.menu.rebuildOptionMenu()
+        if "state" in  toDo:
+            if 'global' in toDo:
+                self.app.game.setGlobalState(state)
+                self.app.menu.rebuildGlobalStateMenu()
+            elif 'game' in toDo:
+                self.app.game.setState(state)
+                self.app.menu.rebuildGameStateMenu()
+
+        if self.app.view.home:
+            self.app.view.loadHome()
+
 
     def test(self, config, hint):
         if config == "pixels":
@@ -88,13 +130,15 @@ class Controller():
 
 class App(tkinter.Tk):
     view: MainFrame = None
-    game = None
     controller: Controller = None
+    game = None
 
     def __init__(self, game):
         print('init app')
         super().__init__()
         self.game = game
+        self.controller = Controller(self)
+        self.view = MainFrame(self)
         self.menu = MyMenu(self)
 
         self.config(menu=self.menu.menu)
@@ -103,6 +147,6 @@ class App(tkinter.Tk):
         self.resizable(width=False, height=False)
         self.style = ttk.Style(self)
         self.style.theme_use("vista")
-        self.controller = Controller(self)
-        self.view = MainFrame(self)
+
         self.view.grid(sticky=W)
+        self.view.loadHome()

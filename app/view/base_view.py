@@ -32,16 +32,11 @@ class EzView(ttk.Frame, ABC):
         ttk.Label(self, text=self.name).grid(row=0, column=0, sticky=W)
 
         self.parentSelect = ParentSelect(self, datas=self.datas, row=self.rowStart)
-        self.text = MyTextArea(self, row=self.rowStart + 1, colspan=4)
+        self.text = MyTextArea(self, row=self.rowStart + 1)
 
         self.rowStart += 2
         self.addBtnByHint()
         self.text.set(json.dumps(self.parentSelect.getObj().to_dict(), indent=4))
-
-
-
-
-
 
     def clear(self):
         if self.text is not None:
@@ -49,7 +44,7 @@ class EzView(ttk.Frame, ABC):
 
     def save(self):
         textData = self.text.get()
-        data = self.baseClass.from_dict( json.loads(textData))
+        data = self.baseClass.from_dict(json.loads(textData))
         self.datas.set(data)
 
         self.app.game.config.saveOnly(self.name, reload=True)
@@ -57,7 +52,6 @@ class EzView(ttk.Frame, ABC):
     def updateView(self):
         data = self.parentSelect.getObj()
         self.text.set(json.dumps(data.to_dict(), indent=4))
-
 
     def addBtnByHint(self):
         for col, hint in enumerate(self.hints):
@@ -69,28 +63,25 @@ class EzView(ttk.Frame, ABC):
                                           col=col)
 
             elif hint == 'coor':
-                self.btnCoorRectangle = MyButton(self, "Scan Coor", lambda: self.scan("coor", first=True),
+                self.btnCoorRectangle = MyButton(self, "Scan Coor", lambda: self.scan("coor"),
                                                  row=self.rowStart, col=col)
             elif hint == 'rectangle':
-                self.btnCoorRectangle = MyButton(self, "Scan Rectangle", lambda: self.scan("rectangle", first=True),
+                self.btnCoorRectangle = MyButton(self, "Scan Rectangle", lambda: self.scan("rectangle"),
                                                  row=self.rowStart, col=col)
 
             elif hint == 'pixel':
-                self.btnCoorRectangle = MyButton(self, "Scan Pixel", lambda: self.scan("pixel", first=True),
+                self.btnCoorRectangle = MyButton(self, "Scan Pixel", lambda: self.scan("pixel"),
                                                  row=self.rowStart, col=col)
             elif hint == 'image':
-                self.btnCoorRectangle = MyButton(self, "Scan Image", lambda: self.scan("image", first=True),
+                self.btnCoorRectangle = MyButton(self, "Scan Image", lambda: self.scan("image"),
                                                  row=self.rowStart, col=col)
             elif hint == 'mask':
-                self.btnCoorRectangle = MyButton(self, "Scan Mask", lambda: self.scan("mask", first=True),
+                self.btnCoorRectangle = MyButton(self, "Scan Mask", lambda: self.scan("mask"),
                                                  row=self.rowStart, col=col)
 
             elif hint == "test":
                 self.btnTest = MyButton(self, "Test", self.test, row=self.rowStart, col=col)
             self.testResult = MySimpleInput(self, col=2, row=self.rowStart - 1, colspan=2)
-
-
-
 
     def test(self):
         self.save()
@@ -98,7 +89,7 @@ class EzView(ttk.Frame, ABC):
         if res is not None:
             self.testResult.set(str(res))
 
-    def scan(self, config, first):
+    def scan(self, config):
         print('scan ' + config)
 
 
@@ -134,7 +125,6 @@ class BaseView(ttk.Frame, ABC):
     def saveInputsInDatas(self):
         for input_ in self.inputs:
             if input_.canSave():
-                value = input_.get()
                 exec(f"self.datas.{input_.path} = value")
 
     def clear(self):
@@ -169,7 +159,6 @@ class BaseViewWithSelect(BaseView, ABC):
         self.rowStart += 1
 
     def updateView(self, event=None):
-        data = self.parentSelect.getObj()
         if self.withTest:
             self.testResult.set('')
         for input_ in self.inputs:
@@ -232,7 +221,6 @@ class BaseViewWithSelect(BaseView, ABC):
 
     def saveDictInDatas(self, hint, myDict: dict):
         self.save()
-        data = self.parentSelect.getObj()
         for input_ in self.inputs:
             if input_.canSave():
                 pathSplit = input_.path.split('.')
@@ -259,7 +247,6 @@ class BaseViewSelectWithChild(BaseViewWithSelect, ABC):
     def updateView(self, event=None):
         if self.withTest:
             self.testResult.set('')
-        idx = self.childSelect.get()
         data = self.parentSelect.getObj()
 
         self.childSelect.datas = getattr(data, self.childClassListName)
@@ -320,14 +307,13 @@ class BaseViewSelectWithChild(BaseViewWithSelect, ABC):
             else:
 
                 scanned = self.app.game.imSave.getCoor()
-            if scanned is not None and hint not in ('image'):
+            if scanned is not None and hint not in 'image':
                 self.saveDictInDatas(hint, scanned)
                 self.updateView()
             elif scanned is not None and hint == 'image':
                 directory = self.parentSelect.get()
                 name = f"{self.childSelect.get()}.png"
                 path = f"img/{directory}/{name}"
-                img = self.app.game.imSave.saveImage(scanned, path=f"img/{directory}", name=name)
                 self.saveDictInDatas(hint, {
                     'path': path,
                     'region': scanned['region'],
@@ -337,31 +323,29 @@ class BaseViewSelectWithChild(BaseViewWithSelect, ABC):
 
     def saveDictInDatas(self, hint, newObj: dict):
         self.save()
-        data = self.parentSelect.getObj()
-        idx = self.childSelect.get()
         if hint == 'coor':
-            self.tryMatch(data, newObj, 'coor.x', 'x')
-            self.tryMatch(data, newObj, 'coor.y', 'y')
+            self.tryMatch('coor.x', 'x')
+            self.tryMatch('coor.y', 'y')
         elif hint == 'rectangle':
-            self.tryMatch(data, newObj, 'rectangle.x', 'x')
-            self.tryMatch(data, newObj, 'rectangle.y', 'y')
-            self.tryMatch(data, newObj, 'rectangle.w', 'w')
-            self.tryMatch(data, newObj, 'rectangle.h', 'h')
+            self.tryMatch('rectangle.x', 'x')
+            self.tryMatch('rectangle.y', 'y')
+            self.tryMatch('rectangle.w', 'w')
+            self.tryMatch('rectangle.h', 'h')
         elif hint == 'pixel':
-            self.tryMatch(data, newObj, 'color.r', "['color']['r']")
-            self.tryMatch(data, newObj, 'color.g', "['color']['g']")
-            self.tryMatch(data, newObj, 'color.b', "['color']['b']")
-            self.tryMatch(data, newObj, 'coor.x', "['x']")
-            self.tryMatch(data, newObj, 'coor.y', "['y']")
-            self.tryMatch(data, newObj, 'region', "['region']")
+            self.tryMatch('color.r', "['color']['r']")
+            self.tryMatch('color.g', "['color']['g']")
+            self.tryMatch('color.b', "['color']['b']")
+            self.tryMatch('coor.x', "['x']")
+            self.tryMatch('coor.y', "['y']")
+            self.tryMatch('region', "['region']")
         elif hint == 'image':
-            self.tryMatch(data, newObj, 'path', "['path']")
-            self.tryMatch(data, newObj, 'region', "['region']")
+            self.tryMatch('path', "['path']")
+            self.tryMatch('region', "['region']")
 
     def replaceImage(self, data, newObj):
         pass
 
-    def tryMatch(self, data, myDict, match, dictPath):
+    def tryMatch(self, match, dictPath):
         newPath = self.getPathByMatch(match)
         if newPath is not None:
             exec(f"{newPath} = myDict{dictPath}")

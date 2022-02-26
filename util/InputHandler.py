@@ -1,7 +1,7 @@
 from os import system
 
 
-def getMenus(title, menus, clear_=True):
+def getMenus(title, menus):
     res = -1
     while res == -1:
         # if clear_:
@@ -21,7 +21,6 @@ def getMenus(title, menus, clear_=True):
                 return menus[value - 1]['name']
         except:
             print("\nPlease enter a valid option")
-
 
 
 def applyTypeOfVar(string, value, typeOfVar=None):

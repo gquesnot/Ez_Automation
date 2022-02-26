@@ -7,12 +7,12 @@ class Replay:
     di = 0
     h = 0
     w = 0
-    directoryList = ["tmp/record/"] #['tmp/cliped/',
+    directoryList = ["tmp/auto_screenshot/", "tmp/clipped/", "tmp/screenshot/"]  # ['tmp/cliped/',
     currentDir = []
 
     def __init__(self):
         self.directory = self.directoryList[self.di]
-        self.fileNames = os.listdir(self.directory)
+        self.fileNames = [dir_ for dir_ in os.listdir(self.directory) if dir_[0] != '.']
 
     def prev(self):
         self.i -= 1
@@ -33,10 +33,13 @@ class Replay:
         self.di += 1
         if self.di >= len(self.directoryList):
             self.di = 0
+        self.i = 0
         self.directory = self.directoryList[self.di]
-        self.fileNames = os.listdir(self.directory)
+        self.fileNames = [dir_ for dir_ in os.listdir(self.directory) if dir_[0] != '.']
 
     def getScreenshot(self):
-        screenShot = cv2.imread(self.directory + self.fileNames[self.i])
-        self.saveCoor(screenShot)
-        return screenShot
+        if len(self.fileNames) > 0:
+            screenShot = cv2.imread(self.directory + self.fileNames[self.i])
+            self.saveCoor(screenShot)
+            return screenShot
+        return None

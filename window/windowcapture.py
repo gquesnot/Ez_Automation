@@ -1,17 +1,14 @@
 import copy
 import ctypes
-from threading import Thread, Lock
-from time import time, sleep
+from threading import Lock
 
 import numpy as np
-import win32api
 import win32con
 import win32gui
 import win32ui
 from mss import mss
 
-from app.my_dataclasses import WindowConfig
-from util.json_function import applyJsonConfig
+from baseclass.my_dataclass.window_config import WindowConfig
 
 user32 = ctypes.WinDLL('user32', use_last_error=True)
 
@@ -23,7 +20,7 @@ def find_window(hwnd, strings):
     window_title = win32gui.GetWindowText(hwnd)
     # print(window_title)
     if gameName in window_title:
-        strings.append({"hwnd":hwnd, "name": window_title})
+        strings.append({"hwnd": hwnd, "name": window_title})
 
 
 class WindowCapture:
@@ -44,7 +41,8 @@ class WindowCapture:
     modifiedScreenshot = None
 
     firstTime = True
-    config : WindowConfig = None
+    config: WindowConfig = None
+
     def __init__(self, game, fps=False, imgGrab=False):
 
         self.game = game
@@ -68,7 +66,6 @@ class WindowCapture:
         else:
             self.hwnd = win32gui.FindWindow(None, gameName)
             print("test get name other", win32gui.GetWindowText(self.hwnd))
-        
 
     def loadConfig(self):
 

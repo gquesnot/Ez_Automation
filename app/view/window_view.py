@@ -1,6 +1,5 @@
-
 from app.components.my_input import MyInput
-from app.my_dataclasses import WindowConfig
+from baseclass.my_dataclass.window_config import WindowConfig
 from app.view.base_view import BaseView
 
 

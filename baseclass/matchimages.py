@@ -1,11 +1,9 @@
-import os
 import time
 from time import sleep
-from typing import Union, List
 
 import cv2
 
-from app.my_dataclasses import ImageMatchConfig, ImageMatchItemConfig
+from baseclass.my_dataclass.image_match_config import ImageMatchConfig
 from util.threadclass import ThreadClass
 
 
@@ -29,13 +27,10 @@ class MatchImages(ThreadClass, ImageMatchConfig):
         while not self.stopped:
             t = time.time()
             self.scanDatas()
-            # if self.result not in ("", 0):
-            #     print(self.name, self.result)
-            # if time.time() - t > 0:
-            #     print("fps: {}".format(time.time() - t))
+
             sleep(0.01)
 
-    def imageMatchScreenShot(self, img, screenshot=None, ):
+    def imageMatchScreenShot(self, img, screenshot=None):
         result = cv2.matchTemplate(img, screenshot, cv2.TM_SQDIFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
         if min_val < self.tolerance:

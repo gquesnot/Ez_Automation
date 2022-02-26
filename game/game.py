@@ -1,19 +1,15 @@
-import copy
 from time import sleep, time
 
 import cv2
-from pynput.mouse import Button
 
 from baseclass.imagesave import ImageSave
 from baseclass.regions import Regions
 from baseclass.replayClass import Replay
-from controllers.MenuController import MenuController
 from controllers.configcontroller import ConfigController
 from controllers.datapickercontroller import DataPickerController
-from my_enum.game_state import GameState
-from my_enum.game_type_state import GameTypeState
-from my_enum.location_state import LocationState
-from util.json_function import applyJsonConfig, getJson
+from baseclass.my_enum.game_state import GameState
+from baseclass.my_enum.game_type_state import GameTypeState
+from baseclass.my_enum.location_state import LocationState
 from util.keyboardcontroller import KeyboardController
 from util.tcr import Tcr
 from util.threadclass import ThreadClass
@@ -24,86 +20,67 @@ from window.windowcapture import WindowCapture
 
 class Game(ThreadClass):
     name = ""
-    state = GameState.WAITING
+    state: GameState = GameState.WAITING
     location = LocationState.START
     screenShot = None
     firstState = True
-    freeze = False
-    config : ConfigController=None
+    config: ConfigController = None
+    typeState: GameTypeState = GameTypeState.RECORD
+    app: 'App' = None
 
 
 
-    def __init__(self, args):
+    def __init__(self):
         super().__init__()
-        self.args = args
-        if self.args.type == "record":
-            self.typeState = GameTypeState.RECORD
-        elif self.args.type == "replay":
-            self.typeState = GameTypeState.REPLAY
-        elif self.args.type == "play":
-            self.typeState = GameTypeState.PLAY
-        self.state = GameState.WAITING
+
         self.config = ConfigController(self)
         self.name = self.config.window.name
-        if not self.isReplay():
-            self.wc = WindowCapture(self, imgGrab=True)
+
+        self.wc = WindowCapture(self, imgGrab=True)
             # self.ac = ActionController(self)
-        else:
-            self.timer = Timer()
-            self.RC = Replay()
+
+        self.timer = Timer()
+        self.RC = Replay()
         self.regions = Regions(self)
         self.imSave = ImageSave(self)
         # self.vision = Vision(hsv=True)
 
         if not self.isPlaying():
-            self.cv2Controller = Cv2WindowController(self, withRegion=self.args.show_region)
+            self.cv2Controller = Cv2WindowController(self)
             # self.vision.init_control_gui()
         self.tcr = Tcr(self)
         self.dpc = DataPickerController(self)
         # self.trackerController = TrackerController(self)
         self.kc = KeyboardController(self)
 
-
         self.startClass()
 
-
-    def initWaitingTime(self, duration=3):
+    def initWaitingTime(self):
         i = 3
         while i > 0:
             print(f"action in {i}s")
             sleep(1)
             i -= 1
 
-
-
-    def doClick(self, hint, activate=False, isTest=False):
-        self.initWaitingTime(duration=3)
+    def doClick(self, hint, activate=False):
+        self.initWaitingTime()
         if hint in self.config.mouseActions:
             if activate:
                 self.wc.activate()
-                self.kc.moveClick(self.wc.getCenter(), delay=.1, timeBeetwen=.1 )
+                self.kc.moveClick(self.wc.getCenter(), delay=.1, timeBeetwen=.1)
 
             self.kc.handleMouseAction(self.config.mouseActions.get(hint))
 
-    def doKey(self, hint, activate = False, isTest=False):
-        self.initWaitingTime(duration=3)
+    def doKey(self, hint, activate=False):
+        self.initWaitingTime()
         if hint in self.config.keyboardActions:
             if activate:
                 self.wc.activate()
-                self.kc.moveClick(self.wc.getCenter(), delay=.1, timeBeetwen=.1 )
+                self.kc.moveClick(self.wc.getCenter(), delay=.1, timeBeetwen=.1)
             self.kc.handleMouseAction(self.config.keyboardActions.get(hint))
-
-
-    def toggleFreeze(self, double=False):
-        self.freeze = not self.freeze
-        if double:
-            sleep(0.1)
-            self.freeze = not self.freeze
-        print(self.freeze)
 
     def startClass(self):
         pass
-
 
     # def createImage(self, comboHint):
     #     if self.screenShot is not None:
@@ -114,11 +91,16 @@ class Game(ThreadClass):
         super().stop()
         cv2.destroyAllWindows()
 
+        # self.dpc.stopAll()
 
-        #self.dpc.stopAll()
+    def setGlobalState(self, state):
+        self.lock.acquire()
+        self.typeState = state
+        self.lock.release()
 
     def setName(self, name):
         self.name = name
+
     def setState(self, state, firstState=False):
         print("NEW GAME STATE: " + state.name)
         if self.firstState or firstState:
@@ -132,8 +114,6 @@ class Game(ThreadClass):
 
     def isReplay(self):
         return self.typeState == GameTypeState.REPLAY
-
-
 
     def isRecord(self):
         return self.typeState == GameTypeState.RECORD
@@ -158,16 +138,22 @@ class Game(ThreadClass):
     #     print("mn", mn, mn1)
     #     return False
 
-    def run(self):
-        while not self.stopped:
+    def addApp(self, app):
+        self.app = app
 
-            if not self.freeze:
+    def run(self):
+        timeAfter = None
+        timeBefore = None
+        while not self.stopped:
+            if self.config.showFps:
+                timeBefore= time()
+            if not self.config.freeze:
                 if not self.isReplay():
                     self.screenShot = self.wc.getScreenshot()
                 else:
                     self.screenShot = self.RC.getScreenshot()
             if self.screenShot is not None:
-                #self.checkConfigState()
+                # self.checkConfigState()
                 if self.state == GameState.PLAYING:
                     print('scan wave: ', self.dpc.checkTcrScan('wave'))
                     print('check pixel evt1On: ', self.dpc.checkPixel("evt1On"))
@@ -176,4 +162,13 @@ class Game(ThreadClass):
                     print('do action closeUp')
                     self.doClick('closeUpgrade')
                     self.doKey('up')
+            if self.config.showFps:
+                if self.screenShot is not None:
+                    if timeAfter is not None and timeBefore is not None and abs(timeBefore- timeAfter) > 1:
+                        timeAfter = time()
+
+                        self.app.view.fpsCounter.set("FPS: {:.2f}".format(1 / (timeAfter - timeBefore)))
+                    elif timeAfter is None:
+                        timeAfter = time()
+
             sleep(0.01)

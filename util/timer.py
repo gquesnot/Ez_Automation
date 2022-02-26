@@ -30,10 +30,9 @@ class Timer:
                 return
 
     def printElem(self, toFind):
-        result = ""
         print(toFind, ":")
         for elem in self.results[toFind]:
-            print(" -",str(elem.end_ - elem.start_))
+            print(" -", str(elem.end_ - elem.start_))
 
     def reset(self):
         self.results = []

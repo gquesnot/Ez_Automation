@@ -3,7 +3,7 @@ from tkinter import ttk, W
 from typing import Union, Any
 
 from app.components.my_input import MyButton
-from app.my_dataclasses import GetSetDict
+from baseclass.my_dataclass.base_dataclass import GetSetDict
 
 
 class MyStringEnumSelect:
@@ -64,10 +64,10 @@ class MyChildSelect:
         self.wSelect = ttk.Combobox(self.parent, values=[str(i) for i in range(len(self.datas))],
                                     textvariable=self.wValue, state='readonly')
         self.wSelect.grid(column=0, row=row, padx=10, pady=10, sticky=W)
-        self.wSelect.bind("<<ComboboxSelected>>", lambda event: self.doSelect(self.get()))
-        btnNew = MyButton(self.parent, text="New", command=lambda: self.doNew(withViewUpdate=True), width=10, col=1,
-                          row=row)
-        btnNew = MyButton(self.parent, text="Delete", command=self.remove, width=10, col=2, row=row)
+        self.wSelect.bind("<<ComboboxSelected>>", lambda event: self.doSelect())
+        MyButton(self.parent, text="New", command=lambda: self.doNew(withViewUpdate=True), width=10, col=1,
+                 row=row)
+        MyButton(self.parent, text="Delete", command=self.remove, width=10, col=2, row=row)
         if len(self.datas) == 0:
             self.doNew(withViewUpdate=False)
 
@@ -79,7 +79,7 @@ class MyChildSelect:
         self.wValue.set(str(value))
         self.prevValue = value
 
-    def doSelect(self, event=None):
+    def doSelect(self):
         self.updateAllPath(new=self.get(), old=self.prevValue)
 
         self.prevValue = self.get()
@@ -93,7 +93,7 @@ class MyChildSelect:
             return None
         return int(tmp)
 
-    def remove(self, event=None):
+    def remove(self):
         self.datas.pop(self.get())
         self.update()
         if len(self.datas) == 0:

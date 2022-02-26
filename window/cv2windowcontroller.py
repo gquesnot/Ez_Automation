@@ -1,32 +1,34 @@
 import cv2
 
 from util.json_function import applyJsonConfig
-import pyautogui
+
 
 class Cv2WindowController:
     windowList = {}
     gameName = ""
     cv2RegionList = {}
     refreshRegion: bool = False
-    def __init__(self, game, withRegion= True):
+
+    def __init__(self, game):
 
         self.game = game
         self.regions = self.game.regions
-        self.withRegion = withRegion
         applyJsonConfig(self, "cv2")
-        self.list = [k for k , v in self.windowList.items()]
+        self.list = [k for k, v in self.windowList.items()]
         for k, v in self.windowList.items():
             v['name'] = k + " " + self.gameName
         self.createWindows(self.windowList)
-        self.loadRegions()
         self.setMouseCallBack("root", self.game.imSave.pick_color)
 
 
-    def loadRegions(self):
+    def clearRegions(self):
         if len(self.cv2RegionList) != 0:
             for k, v in self.cv2RegionList.items():
                 cv2.destroyWindow(v['name'])
         self.cv2RegionList = {}
+
+    def loadRegions(self):
+        self.clearRegions()
 
         for regionName, region in self.regions.all().items():
             self.cv2RegionList[regionName] = {
@@ -34,9 +36,10 @@ class Cv2WindowController:
                 "coor": [-1080, 400],
                 "resize": (int(region.rectangle.w * region.ratio), int(region.rectangle.h * region.ratio)),
             }
-        if self.withRegion:
+        if self.game.config.showRegions:
             self.createWindows(self.cv2RegionList, regions=True)
         self.refreshRegion = False
+
     def getWindowByHint(self, hint):
         if hint in self.list:
             return self.windowList[hint]
@@ -50,7 +53,7 @@ class Cv2WindowController:
         if window:
             if "resize" not in window:
                 if not self.game.isReplay():
-                    window['resize'] = (int(self.game.wc.w*window['ratio']), int(self.game.wc.h * window['ratio']))
+                    window['resize'] = (int(self.game.wc.w * window['ratio']), int(self.game.wc.h * window['ratio']))
                 else:
                     window['resize'] = (int(self.game.RC.w * window['ratio']), int(self.game.RC.h * window['ratio']))
             cv2.imshow(window['name'], cv2.resize(screenShot, window['resize']))
@@ -60,20 +63,21 @@ class Cv2WindowController:
             cv2.namedWindow(v['name'])
             if regions:
                 self.setMouseCallBack(k, self.game.imSave.pick_color)
-            #cv2.moveWindow(v['name'], *v['coor'])
+            # cv2.moveWindow(v['name'], *v['coor'])
 
-    def setMouseCallBack(self, hint,fn):
+    def setMouseCallBack(self, hint, fn):
         window = self.getWindowByHint(hint)
         if window:
-            cv2.setMouseCallback(window['name'], fn, {"window":hint})
+            cv2.setMouseCallback(window['name'],fn,param={"window": hint})
 
     def feedRegion(self, processed_image):
-        if self.withRegion:
-            for regionName , cv2Region in self.cv2RegionList.items():
+        if self.game.config.showRegions:
+            if len(self.cv2RegionList) == 0:
+                self.loadRegions()
+            for regionName, cv2Region in self.cv2RegionList.items():
                 if self.refreshRegion:
                     self.loadRegions()
 
-                cv2.imshow(cv2Region['name'], cv2.resize(self.regions.applyRegion(regionName,screenshot=processed_image), cv2Region["resize"]))
-
-
-
+                cv2.imshow(cv2Region['name'],
+                           cv2.resize(self.regions.applyRegion(regionName, screenshot=processed_image),
+                                      cv2Region["resize"]))

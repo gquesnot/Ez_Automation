@@ -23,18 +23,18 @@ class AutoBuff(ThreadClass):
 
     def hasActionToDo(self, prio=1):
         t = time()
-        res= 0
+        res = 0
         tmpDic = self.prio1 if prio == 1 else self.prio2
-        for k,v in tmpDic.items():
+        for k, v in tmpDic.items():
             if (v['lastSeen'] == 0 or t - v['lastSeen'] >= v['duration']) and v['active']:
-                res +=1
+                res += 1
         return res
 
     def clickPrio(self, prio):
         t = time()
         tmpDic = self.prio1 if prio == 1 else self.prio2
         for k, v in tmpDic.items():
-            if self.hasActionToDo(prio=1)> 0 and prio != 1:
+            if self.hasActionToDo(prio=1) > 0 and prio != 1:
                 return
             if (v['lastSeen'] == 0 or t - v['lastSeen'] >= v['duration']) and v['active']:
                 self.kc.basePress(k)
@@ -42,10 +42,9 @@ class AutoBuff(ThreadClass):
                 v['lastSeen'] = t
                 sleep(v['sleep'])
 
-
     def run(self):
         while not self.stopped:
-            if self.hasActionToDo(prio=1)> 0:
+            if self.hasActionToDo(prio=1) > 0:
                 self.clickPrio(prio=1)
             if self.hasActionToDo(prio=2) > 0:
                 self.clickPrio(prio=2)

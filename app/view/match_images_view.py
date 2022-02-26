@@ -1,5 +1,5 @@
 from app.components.my_input import MyInput, MyImg
-from app.my_dataclasses import ImageMatchItemConfig, ImageMatchConfig, ImageMatchConfigs
+from baseclass.my_dataclass.image_match_config import ImageMatchItemConfig, ImageMatchConfig, ImageMatchConfigs
 from app.view.base_view import BaseViewSelectWithChild
 
 

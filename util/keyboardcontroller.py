@@ -1,10 +1,11 @@
 from time import sleep
 
 import pyautogui
+from pynput.keyboard import Controller
 from pynput.keyboard import Listener
-from pynput.keyboard import Key, Controller
-from util.threadclass import ThreadClass
 from pynput.mouse import Button, Controller as MC
+
+from util.threadclass import ThreadClass
 
 
 # The event listener will be running in this block
@@ -19,7 +20,9 @@ class KeyboardController(ThreadClass):
         self.keyboard = Controller()
         self.mouse = MC()
 
-    def press(self, combo=[]):
+    def press(self, combo=None):
+        if combo is None:
+            combo = []
         for c in self.pressed:
             self.keyboard.release(c)
         for c in combo:
@@ -39,13 +42,12 @@ class KeyboardController(ThreadClass):
         self.basePress(keyAction['key'], keyAction['duration'])
         sleep(keyAction['sleepAfter'])
 
-
-    def moveClick(self, coor,delay=.5, byScreen=True, timeBeetwen=.25):
+    def moveClick(self, coor, delay=.5, byScreen=True, timeBeetwen=.25):
         self.mouseMove(coor, byScreen)
         sleep(timeBeetwen)
         self.click(delay)
 
-    def click(self,delay=.5):
+    def click(self, delay=.5):
         self.mouse.press(Button.left)
         sleep(delay)
         self.mouse.release(Button.left)

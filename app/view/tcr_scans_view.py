@@ -1,7 +1,7 @@
-
 from app.components.my_input import MyInput
 from app.components.my_select import MyStringEnumSelect
-from app.my_dataclasses import TcrScanConfigs, TcrScanConfig, VarType
+from baseclass.my_dataclass.tcr_scan_config import TcrScanConfig, TcrScanConfigs
+from baseclass.my_enum.var_type import VarType
 from app.view.base_view import BaseViewWithSelect
 
 

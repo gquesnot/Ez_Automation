@@ -1,13 +1,12 @@
-
 from app.components.my_input import MyInput
-from app.my_dataclasses import RegionConfigs, RegionConfig
+from baseclass.my_dataclass.region_config import RegionConfig, RegionConfigs
 from app.view.base_view import BaseViewWithSelect
 
 
 class RegionsView(BaseViewWithSelect):
     datas: RegionConfigs = None
     baseClass: RegionConfig = RegionConfig
-    withTest :bool=True
+    withTest: bool = True
 
     def __init__(self, app: 'App'):
         super().__init__(app, "regions", app.game.config.regions)

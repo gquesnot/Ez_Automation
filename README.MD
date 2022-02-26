@@ -27,7 +27,7 @@ You can configure:
 
 ### Installing
 
-require python 3.10
+Require python 3.10
 ````shell
  pip install -r requirements.txt
 ````

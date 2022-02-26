@@ -4,8 +4,7 @@ from time import time, sleep
 import cv2
 import numpy as np
 
-from app.my_dataclasses import MaskDetectionConfig
-from util.pixel import centerCoor
+from baseclass.my_dataclass.mask_detection_config import MaskDetectionConfig
 from util.rectangle import RectangleCoor
 from util.threadclass import ThreadClass
 
@@ -134,7 +133,7 @@ class DataPicker(ThreadClass, MaskDetectionConfig):
                         #     tmpRectangle.x += regionCoor['x']
                         #     tmpRectangle.y += regionCoor['y']
                         #     tmpRectangle.update()
-                        #if self.applyConditions(tmpRectangle, self.conditions):
+                        # if self.applyConditions(tmpRectangle, self.conditions):
                         result['coors'].append(tmpRectangle)
                         result['contours'].append(contour)
                         nb += 1

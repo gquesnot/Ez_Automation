@@ -1,13 +1,17 @@
+import json
 import os
+from time import time
 
 import cv2
 import numpy as np
 
-from app.my_dataclasses import Pixel, ImageMatchItemConfig, Rectangle, Coor
+from baseclass.my_dataclass.coor import Coor
+from baseclass.my_dataclass.pixel import Pixel
+from baseclass.my_dataclass.rectangle import Rectangle
 from util.pixel import getImgRectangle
 
 
-class ImageSave():
+class ImageSave:
     def __init__(self, game):
         self.game = game
         self.img = None
@@ -29,7 +33,7 @@ class ImageSave():
                 img = self.game.regions.applyRegion(rectangle['region'])
             else:
                 img = self.game.screenShot
-            img = getImgRectangle(img,rectangle)
+            img = getImgRectangle(img, rectangle)
             if img is not None:
                 cv2.imwrite(f"{path}/{name}", img)
             return img
@@ -95,6 +99,18 @@ class ImageSave():
         else:
             return None
 
+    def saveRectangle(self):
+        rectangle = self.getRectangle()
+        if rectangle is not None:
+            if 'region' in rectangle and rectangle['region'] != "root":
+                img = self.game.regions.applyRegion(rectangle['region'])
+            else:
+                img = self.game.screenShot
+            img = getImgRectangle(img, rectangle)
+            print("rectangle: \n", json.dumps(rectangle, indent=4))
+            cv2.imwrite("tmp/clipped/{}_region_{}_x_{}_y_{}_w_{}_h_{}.png".format(int(time()), rectangle['region'],rectangle['x'], rectangle['y'],
+                                                                       rectangle["w"], rectangle['h']), img)
+
     def getRectangle(self):
 
         if len(self.clickList) == 2:
@@ -111,11 +127,16 @@ class ImageSave():
         else:
             return None
 
-    def pick_color(self, event, x, y, flags, params):
+    def saveScreenShot(self):
+        if self.game.screenShot is not None:
+            cv2.imwrite(f"tmp/screenshot/{int(time())}.png", self.game.screenShot)
+
+    def pick_color(self, event, x, y, other, params=None):
         if event == cv2.EVENT_LBUTTONDOWN:
             img_ = getattr(self, self.imgToPick)
-            if params['window'] != "root":
-                img_ = self.game.regions.applyRegion(params['window'])
+            if type(params) is dict:
+                if params['window'] != "root":
+                    img_ = self.game.regions.applyRegion(params['window'])
             img_ = img_[..., :3]
 
             r = 15

@@ -7,14 +7,15 @@ from PIL import Image, ImageTk
 
 
 class MyTextArea:
-    wText : ScrolledText = None
-    def __init__(self, parent, row=0, col=0, colspan=1):
+    wText: ScrolledText = None
+
+    def __init__(self, parent, row=0, col=0):
         self.parent = parent
         self.row = row
         self.col = col
 
-        self.wText =  ScrolledText(self.parent, width=40, height=10)
-        self.wText.grid(row = self.row, column = self.col, columnspan = 4)
+        self.wText = ScrolledText(self.parent, width=40, height=10)
+        self.wText.grid(row=self.row, column=self.col, columnspan=4)
         self.set('')
 
     def set(self, value):
@@ -23,8 +24,6 @@ class MyTextArea:
 
     def get(self):
         return self.wText.get(1.0, "end-1c")
-
-
 
 
 class MySimpleInput:
@@ -83,7 +82,7 @@ class MyInput:
         return self.path is not None
 
 
-class MyImg():
+class MyImg:
     img: Image = None
     imgTk: ImageTk = None
     root: tkinter.Label = None

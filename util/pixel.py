@@ -2,8 +2,6 @@ from time import time
 
 import cv2
 import numpy as np
-import pathlib
-import shutil
 
 import skimage.color
 import skimage.segmentation
@@ -14,7 +12,8 @@ import skimage.transform
 import skimage.measure
 import skimage.io
 
-from app.my_dataclasses import Rectangle, Pixel
+from baseclass.my_dataclass.pixel import Pixel
+from baseclass.my_dataclass.rectangle import Rectangle
 
 
 def centerCoor(data, diff=None):
@@ -38,12 +37,11 @@ def applySave(img, save):
         cv2.imwrite("testimg\\{0}\\{1}_{2}.jpg".format(tmp, save, str(time())), img)
 
 
-def comparePixel(screenShot, pixel:Pixel):
+def comparePixel(screenShot, pixel: Pixel):
     if screenShot is not None:
         myPixel = screenShot[pixel.coor.y, pixel.coor.x]
         # get screensize of screenshot
-        screenSize = (screenShot.shape[0] , screenShot.shape[1])
-        #print("{} vs {} on {}".format(pixel.coor, pixel.color.asList(), screenSize))
+        # print("{} vs {} on {}".format(pixel.coor, pixel.color.asList(), screenSize))
         if abs(myPixel[0] - pixel.color.r) <= pixel.tolerance:
             if abs(myPixel[1] - pixel.color.g) <= pixel.tolerance:
                 if abs(myPixel[2] - pixel.color.b) <= pixel.tolerance:
@@ -91,5 +89,5 @@ def getImgRectangle(img, rectangle):
     if type(rectangle) is Rectangle:
         cropped = img[rectangle.y:rectangle.y + rectangle.h, rectangle.x:rectangle.x + rectangle.w]
     else:
-        cropped = img[rectangle['y'] : rectangle['y'] + rectangle['h'], rectangle['x'] : rectangle['x'] + rectangle['w']]
+        cropped = img[rectangle['y']: rectangle['y'] + rectangle['h'], rectangle['x']: rectangle['x'] + rectangle['w']]
     return cropped

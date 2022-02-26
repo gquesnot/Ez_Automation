@@ -6,7 +6,7 @@ class Box:
         self.game = game
         self.type = type_
         self.coor = coor
-        self.name = "{}_{}".format(type_ ,str(id_))
+        self.name = "{}_{}".format(type_, str(id_))
         self.champ = champ
         self.id = id_
 

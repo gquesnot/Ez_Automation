@@ -1,11 +1,11 @@
-from typing import Dict, Any
+from typing import Dict
 
-from app.my_dataclasses import PixelConfig, PixelConfigType
+from baseclass.my_dataclass.pixel_config import PixelConfig
+from baseclass.my_enum.condition_type import PixelConfigType
 from baseclass.datapicker import DataPicker
 from baseclass.datascanner import DataScanner
 from baseclass.matchimages import MatchImages
 
-from util.json_function import getJson
 from util.pixel import comparePixel
 
 
@@ -14,7 +14,6 @@ class DataPickerController:
     scanDict: Dict[str, DataScanner] = {}
     pixelDict: Dict[str, PixelConfig] = {}
     imgsScanDict: Dict[str, MatchImages] = {}
-
 
     game = None
 
@@ -82,22 +81,6 @@ class DataPickerController:
         if hint in self.imgsScanDict:
             return self.imgsScanDict[hint].scanDatas()
         return None
-
-    def checkAllPixel(self, hint, checkType="OR"):
-        screenshot = self.game.screenShot
-        resBool = False
-        if screenshot is not None:
-
-            for k in self.pixelDict.keys():
-                if hint in k:
-                    if comparePixel(screenshot, self.pixelDict[k], self.pixelDict[k]['color']):
-                        resBool = True
-                        if checkType == "OR":
-                            return True
-                    else:
-                        if checkType == "AND":
-                            return False
-        return resBool
 
     # def createImage(self, screenshot, comboHint):
     #     height, width = screenshot.shape[:2]

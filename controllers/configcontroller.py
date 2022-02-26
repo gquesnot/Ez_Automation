@@ -1,17 +1,17 @@
-import os
 from dataclasses import fields
 from time import sleep
 
-import cv2
-
-from app.my_dataclasses import WindowConfig, RegionConfigs, ImageMatchConfigs, PixelConfigs, TcrScanConfigs, \
-    MaskDetectionConfigs, MouseActionConfigs, KeyboardActionConfigs
-from util.InputHandler import getMenus, getMenusElements, updateValueOfKey, askQuestion
+from baseclass.my_dataclass.mask_detection_config import MaskDetectionConfigs
+from baseclass.my_dataclass.action_config import KeyboardActionConfigs, MouseActionConfigs
+from baseclass.my_dataclass.window_config import WindowConfig
+from baseclass.my_dataclass.tcr_scan_config import TcrScanConfigs
+from baseclass.my_dataclass.pixel_config import PixelConfigs
+from baseclass.my_dataclass.image_match_config import ImageMatchConfigs
+from baseclass.my_dataclass.region_config import RegionConfigs
 from util.json_function import getJson, toJson
-from util.pixel import getImgRectangle
 
 
-class ConfigController():
+class ConfigController:
     clicks = []
 
     game = None
@@ -23,6 +23,12 @@ class ConfigController():
     maskDetections: MaskDetectionConfigs = None
     mouseActions: MouseActionConfigs = None
     keyboardActions: KeyboardActionConfigs = None
+
+    freeze: bool = False
+    autoScreenshot: bool = False
+    showRegions: bool = False
+    autoScreenshotInterval: int = 3
+    showFps: bool = False
 
     def __init__(self, game):
         self.window = WindowConfig.from_dict(getJson("window"), )
@@ -55,6 +61,12 @@ class ConfigController():
             return self.save(model)
         return myDc
 
+    def toggle(self, key, double=False):
+        setattr(self, key, not getattr(self, key))
+        if double:
+            sleep(0.1)
+            setattr(self, key, not getattr(self, key))
+
     def setKey(self, model, key, value, save=False, load=False):
         myDc = getattr(self, model)
         setattr(myDc, key, value)
@@ -83,7 +95,7 @@ class ConfigController():
         if model == "window":
             self.game.wc.loadConfig()
         elif model == "regions":
-            #self.game.regions = getattr(self, model)
+            # self.game.regions = getattr(self, model)
             self.game.cv2Controller.refreshRegion = True
         elif model == "matchImages":
             self.game.dpc.loadMatchImages()
