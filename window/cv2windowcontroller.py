@@ -20,7 +20,6 @@ class Cv2WindowController:
         self.createWindows(self.windowList)
         self.setMouseCallBack("root", self.game.imSave.pick_color)
 
-
     def clearRegions(self):
         if len(self.cv2RegionList) != 0:
             for k, v in self.cv2RegionList.items():
@@ -49,14 +48,27 @@ class Cv2WindowController:
             return False
 
     def applyScreenShotToWindow(self, screenShot, hint):
-        window = self.getWindowByHint(hint)
-        if window:
-            if "resize" not in window:
-                if not self.game.isReplay():
-                    window['resize'] = (int(self.game.wc.w * window['ratio']), int(self.game.wc.h * window['ratio']))
-                else:
-                    window['resize'] = (int(self.game.RC.w * window['ratio']), int(self.game.RC.h * window['ratio']))
-            cv2.imshow(window['name'], cv2.resize(screenShot, window['resize']))
+        if self.game.wc.isLoaded:
+            window = self.getWindowByHint(hint)
+            if window and screenShot is not None and self.game.wc.w != 0:
+                try:
+                    x, y, z = screenShot.shape
+                except:
+                    try:
+                        x, y = screenShot.shape
+                        z = 3
+                    except:
+                        return
+                if not x or not y:
+                    return
+                if "resize" not in window:
+                    if not self.game.isReplay():
+                        window['resize'] = (
+                            int(self.game.wc.w * window['ratio']), int(self.game.wc.h * window['ratio']))
+                    else:
+                        window['resize'] = (
+                            int(self.game.RC.w * window['ratio']), int(self.game.RC.h * window['ratio']))
+                cv2.imshow(window['name'], cv2.resize(screenShot, window['resize']))
 
     def createWindows(self, windowDic, regions=False):
         for k, v in windowDic.items():
@@ -68,7 +80,7 @@ class Cv2WindowController:
     def setMouseCallBack(self, hint, fn):
         window = self.getWindowByHint(hint)
         if window:
-            cv2.setMouseCallback(window['name'],fn,param={"window": hint})
+            cv2.setMouseCallback(window['name'], fn, param={"window": hint})
 
     def feedRegion(self, processed_image):
         if self.game.config.showRegions:
@@ -78,6 +90,6 @@ class Cv2WindowController:
                 if self.refreshRegion:
                     self.loadRegions()
 
-                cv2.imshow(cv2Region['name'],
-                           cv2.resize(self.regions.applyRegion(regionName, screenshot=processed_image),
-                                      cv2Region["resize"]))
+                newImg = self.regions.applyRegion(regionName, screenshot=processed_image)
+                if newImg is not None:
+                    cv2.imshow(cv2Region['name'], cv2.resize(newImg, cv2Region["resize"]))

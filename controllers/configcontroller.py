@@ -80,8 +80,6 @@ class ConfigController:
         myDc = getattr(self, model)
         if reload:
             self.load(model)
-        print(myDc)
-        print(myDc.to_dict())
         toJson(model, myDc.to_dict())
         return myDc
 

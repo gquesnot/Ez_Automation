@@ -23,4 +23,4 @@ class RegionsView(BaseViewWithSelect):
         self.inputs.append(
             MyInput(self, label="H", value=data.rectangle.h, row=self.rowStart + 5, path="data.rectangle.h"))
         self.rowStart += 6
-        self.addBtnByHint(["save", "delete", "rectangle", "test"])
+        self.addBtnByHint(["save", "delete", "rectangle"])

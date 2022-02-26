@@ -1,42 +1,12 @@
 {
   "dict": {
-    "left": {
-      "name": "left",
+    "abvc": {
+      "name": "abvc",
       "rectangle": {
-        "x": 4,
-        "y": 77,
-        "w": 110,
-        "h": 274
-      },
-      "ratio": 2.0
-    },
-    "right": {
-      "name": "right",
-      "rectangle": {
-        "x": 586,
-        "y": 72,
-        "w": 110,
-        "h": 255
-      },
-      "ratio": 1.0
-    },
-    "info": {
-      "name": "info",
-      "rectangle": {
-        "x": 88,
-        "y": 9,
-        "w": 110,
-        "h": 23
-      },
-      "ratio": 4.0
-    },
-    "ttt": {
-      "name": "ttt",
-      "rectangle": {
-        "x": 275,
-        "y": 143,
-        "w": 110,
-        "h": 115
+        "x": 5,
+        "y": 1,
+        "w": 150,
+        "h": 279
       },
       "ratio": 2.0
     }

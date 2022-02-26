@@ -125,6 +125,7 @@ class BaseView(ttk.Frame, ABC):
     def saveInputsInDatas(self):
         for input_ in self.inputs:
             if input_.canSave():
+                value = input_.get()
                 exec(f"self.datas.{input_.path} = value")
 
     def clear(self):
@@ -159,6 +160,7 @@ class BaseViewWithSelect(BaseView, ABC):
         self.rowStart += 1
 
     def updateView(self, event=None):
+        data = self.parentSelect.getObj()
         if self.withTest:
             self.testResult.set('')
         for input_ in self.inputs:
@@ -221,6 +223,7 @@ class BaseViewWithSelect(BaseView, ABC):
 
     def saveDictInDatas(self, hint, myDict: dict):
         self.save()
+        data = self.parentSelect.getObj()
         for input_ in self.inputs:
             if input_.canSave():
                 pathSplit = input_.path.split('.')
@@ -248,7 +251,7 @@ class BaseViewSelectWithChild(BaseViewWithSelect, ABC):
         if self.withTest:
             self.testResult.set('')
         data = self.parentSelect.getObj()
-
+        idx = self.childSelect.get()
         self.childSelect.datas = getattr(data, self.childClassListName)
         if len(self.childSelect.datas) > 0:
             self.childSelect.update()
@@ -314,6 +317,7 @@ class BaseViewSelectWithChild(BaseViewWithSelect, ABC):
                 directory = self.parentSelect.get()
                 name = f"{self.childSelect.get()}.png"
                 path = f"img/{directory}/{name}"
+                self.app.game.imSave.saveImage(scanned, path=f"img/{directory}", name=name)
                 self.saveDictInDatas(hint, {
                     'path': path,
                     'region': scanned['region'],
@@ -323,29 +327,31 @@ class BaseViewSelectWithChild(BaseViewWithSelect, ABC):
 
     def saveDictInDatas(self, hint, newObj: dict):
         self.save()
+        data = self.parentSelect.getObj()
+        idx = self.childSelect.get()
         if hint == 'coor':
-            self.tryMatch('coor.x', 'x')
-            self.tryMatch('coor.y', 'y')
+            self.tryMatch(data, newObj,'coor.x', 'x')
+            self.tryMatch(data, newObj,'coor.y', 'y')
         elif hint == 'rectangle':
-            self.tryMatch('rectangle.x', 'x')
-            self.tryMatch('rectangle.y', 'y')
-            self.tryMatch('rectangle.w', 'w')
-            self.tryMatch('rectangle.h', 'h')
+            self.tryMatch(data, newObj,'rectangle.x', 'x')
+            self.tryMatch(data, newObj,'rectangle.y', 'y')
+            self.tryMatch(data, newObj,'rectangle.w', 'w')
+            self.tryMatch(data, newObj,'rectangle.h', 'h')
         elif hint == 'pixel':
-            self.tryMatch('color.r', "['color']['r']")
-            self.tryMatch('color.g', "['color']['g']")
-            self.tryMatch('color.b', "['color']['b']")
-            self.tryMatch('coor.x', "['x']")
-            self.tryMatch('coor.y', "['y']")
-            self.tryMatch('region', "['region']")
+            self.tryMatch(data, newObj,'color.r', "['color']['r']")
+            self.tryMatch(data, newObj,'color.g', "['color']['g']")
+            self.tryMatch(data, newObj,'color.b', "['color']['b']")
+            self.tryMatch(data, newObj,'coor.x', "['x']")
+            self.tryMatch(data, newObj,'coor.y', "['y']")
+            self.tryMatch(data, newObj,'region', "['region']")
         elif hint == 'image':
-            self.tryMatch('path', "['path']")
-            self.tryMatch('region', "['region']")
+            self.tryMatch(data, newObj,'path', "['path']")
+            self.tryMatch(data, newObj,'region', "['region']")
 
     def replaceImage(self, data, newObj):
         pass
 
-    def tryMatch(self, match, dictPath):
+    def tryMatch(self,data, myDict, match, dictPath):
         newPath = self.getPathByMatch(match)
         if newPath is not None:
             exec(f"{newPath} = myDict{dictPath}")

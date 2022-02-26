@@ -15,6 +15,7 @@ class MatchImagesView(BaseViewSelectWithChild):
         self.inputs.append(MyInput(self, label="Name", value=data.name, row=self.rowStart, path="data.name"))
         self.initChildSelect(datas=data.images, row=self.rowStart + 1)
         idx = self.childSelect.get()
+        print(idx)
         self.inputs.append(MyInput(self, label="Region", value=data.images[idx].region, row=self.rowStart + 2,
                                    path=f"data.images[{idx}].region"))
         self.inputs.append(MyInput(self, label="Path", value=data.images[idx].path, row=self.rowStart + 3,

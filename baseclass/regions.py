@@ -26,9 +26,10 @@ class Regions:
         if screenshot is None:
             screenshot = self.game.screenShot
         region = self.getRegion(hint)
-        if region is not None:
+        if region is not None and region.rectangle.x != 0 and region.rectangle.y != 0:
             screenshot = getImgRectangle(screenshot, region.rectangle)
             if withRatio != 1:
                 screenshot = cv2.resize(screenshot, (
                     int(region.rectangle.w * region.ratio), int(region.rectangle.h * region.ratio)))
-        return screenshot
+            return screenshot
+        return None

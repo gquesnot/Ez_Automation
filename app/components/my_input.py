@@ -93,11 +93,13 @@ class MyImg:
         self.path = path
         self.root = tkinter.Label(self.parent)
         self.root.grid(row=row, column=col)
-        self.img = Image.open(imgPath)
-        self.img.thumbnail((30, 30), Image.ANTIALIAS)
+        if imgPath != "":
 
-        self.imgTk = ImageTk.PhotoImage(self.img)
-        self.root.config(image=self.imgTk)
+            self.img = Image.open(imgPath)
+            self.img.thumbnail((30, 30), Image.ANTIALIAS)
+
+            self.imgTk = ImageTk.PhotoImage(self.img)
+            self.root.config(image=self.imgTk)
 
     def update(self, imgPath):
         if imgPath != "":

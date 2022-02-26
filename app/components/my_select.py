@@ -60,7 +60,6 @@ class MyChildSelect:
         self.wValue = tkinter.StringVar()
         if len(self.datas) > 0:
             self.set(0)
-        print(self.datas, len(self.datas))
         self.wSelect = ttk.Combobox(self.parent, values=[str(i) for i in range(len(self.datas))],
                                     textvariable=self.wValue, state='readonly')
         self.wSelect.grid(column=0, row=row, padx=10, pady=10, sticky=W)
@@ -146,7 +145,6 @@ class ParentSelect:
         self.row = row
         self.col = col
         self.wValue = tkinter.StringVar()
-        print(self.datas)
         if not self.datas.isEmpty():
             self.wValue.set(self.datas.fromIdx(0).name)
 

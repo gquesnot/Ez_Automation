@@ -74,7 +74,6 @@ class MyMenu:
         self.gameStatesMenu = tkinter.Menu(self.menu, tearoff=0, relief=FLAT, font=("Verdana", 12), activebackground='red')
 
         for idx, state in enumerate(self.gameStates):
-            print(idx, state)
             self.gameStatesMenu.add_command(label="[*] " + state if self.app.game.state == GameState[state] else state,
                                             command=lambda el = state: self.app.controller.doAction("set_game_state", GameState[el]),
                                             state=tkinter.NORMAL if self.app.game.state != GameState[state] else tkinter.DISABLED)

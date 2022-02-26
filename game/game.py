@@ -62,18 +62,20 @@ class Game(ThreadClass):
             sleep(1)
             i -= 1
 
-    def doClick(self, hint, activate=False):
-        self.initWaitingTime()
-        if hint in self.config.mouseActions:
+    def doClick(self, hint, activate=False, isTest=False):
+        if isTest:
+            self.initWaitingTime()
+        if hint in self.config.mouseActions.dict:
             if activate:
                 self.wc.activate()
                 self.kc.moveClick(self.wc.getCenter(), delay=.1, timeBeetwen=.1)
 
             self.kc.handleMouseAction(self.config.mouseActions.get(hint))
 
-    def doKey(self, hint, activate=False):
-        self.initWaitingTime()
-        if hint in self.config.keyboardActions:
+    def doKey(self, hint, activate=False, isTest=False):
+        if isTest:
+            self.initWaitingTime()
+        if hint in self.config.keyboardActions.dict:
             if activate:
                 self.wc.activate()
                 self.kc.moveClick(self.wc.getCenter(), delay=.1, timeBeetwen=.1)

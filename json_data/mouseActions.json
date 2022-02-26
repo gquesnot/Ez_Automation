@@ -1,14 +1,14 @@
 {
   "dict": {
-    "abc": {
-      "name": "abc",
+    "test": {
+      "name": "test",
       "delay": 0.1,
       "sleepAfter": 0.1,
       "coor": {
-        "x": 153,
-        "y": 124
+        "x": 287,
+        "y": 234
       },
-      "region": "caribou"
+      "region": "root"
     }
   }
 }

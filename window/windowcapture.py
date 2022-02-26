@@ -27,6 +27,7 @@ class WindowCapture:
     w = 0
     h = 0
     hwnd = None
+    isLoaded : bool = False
     offset_x = 0
     offset_y = 0
     x = 0
@@ -52,7 +53,8 @@ class WindowCapture:
         self.fps = fps
         self.lock = Lock()
         self.config = self.game.config.window
-        self.loadConfig()
+        if self.config.name != "":
+            self.loadConfig()
         self.firstTime = False
 
     def updateWindowInfo(self):
@@ -72,7 +74,8 @@ class WindowCapture:
         global gameName
         gameName = self.config.name
         self.updateWindowInfo()
-        self.activate()
+        isLoaded= self.activate()
+        if not isLoaded: return
         self.x, self.y, self.x1, self.y1 = win32gui.GetWindowRect(self.hwnd)
 
         self.h = self.y1 - self.y + self.config.h_diff
@@ -81,6 +84,7 @@ class WindowCapture:
         self.offset_y = self.y + self.config.cropped_y
         self.center = {"x": int(self.w / 2), "y": int(self.h / 2)}
         self.halfSize = (int(self.w / 2), int(self.h / 2))
+        self.isLoaded = isLoaded
 
     def getCenter(self):
         return self.center['x'], self.center['y']
@@ -89,7 +93,18 @@ class WindowCapture:
         return copy.deepcopy(self.screenshot)
 
     def activate(self):
-        win32gui.SetForegroundWindow(self.hwnd)
+        try:
+            win32gui.SetForegroundWindow(self.hwnd)
+            return True
+        except:
+            try:
+                win32gui.ShowWindow(self.hwnd, win32con.SW_SHOW)
+                win32gui.SetForegroundWindow(self.hwnd)
+                return True
+            except:
+                print("no window found")
+
+        return False
 
     def coorAsList(self):
         return {"top": self.offset_y, "left": self.offset_x, "width": self.w, "height": self.h}

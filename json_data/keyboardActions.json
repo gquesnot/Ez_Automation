@@ -1,16 +1,4 @@
 {
   "dict": {
-    "up": {
-      "name": "up",
-      "delay": 0.1,
-      "sleepAfter": 0.1,
-      "key": "a"
-    },
-    "down": {
-      "name": "down",
-      "delay": 0.1,
-      "sleepAfter": 0.1,
-      "key": "s"
-    }
   }
 }

@@ -30,17 +30,18 @@ class KeyboardController(ThreadClass):
         self.pressed.add(set(combo))
 
     def handleMouseAction(self, mouseAction):
-        if mouseAction['region'] != "root":
-            coor = self.game.regions.getCoorByRegion(mouseAction['region'], (mouseAction['x'], mouseAction['y']))
+        if mouseAction.region != "root":
+            coor = self.game.regions.getCoorByRegion(mouseAction.region)
+            coor = (mouseAction.coor.x + coor.x, mouseAction.coor.y+  coor.y)
         else:
-            coor = (mouseAction['x'], mouseAction['y'])
+            coor = (mouseAction.coor.x, mouseAction.coor.y)
         self.mouseMove(coor)
-        self.click(mouseAction['delay'])
-        sleep(mouseAction['sleepAfter'])
+        self.click(mouseAction.delay)
+        sleep(mouseAction.sleepAfter)
 
     def handleKeyAction(self, keyAction):
-        self.basePress(keyAction['key'], keyAction['duration'])
-        sleep(keyAction['sleepAfter'])
+        self.basePress(keyAction.key, keyAction.delay)
+        sleep(keyAction.sleepAfter)
 
     def moveClick(self, coor, delay=.5, byScreen=True, timeBeetwen=.25):
         self.mouseMove(coor, byScreen)

@@ -28,7 +28,6 @@ class ImageSave:
         if rectangle is not None:
             if not os.path.exists(path):
                 os.makedirs(path)
-            print(rectangle)
             if rectangle['region'] != "root":
                 img = self.game.regions.applyRegion(rectangle['region'])
             else:
@@ -121,8 +120,8 @@ class ImageSave:
                 "h": abs(self.clickList[1]['y'] - self.clickList[0]['y']),
                 "region": self.clickList[0]['region']
             }
-            if res['w'] < 110:
-                res['w'] = 110
+            if res['w'] == 0:
+                res['w'] = 5
             return res
         else:
             return None
