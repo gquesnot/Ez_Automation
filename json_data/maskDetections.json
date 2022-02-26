@@ -49,6 +49,81 @@
       "drawSize": 4,
       "track": false,
       "region": "base"
+    },
+    "": {
+      "name": "",
+      "draw": false,
+      "lower": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "upper": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "maxFound": 1,
+      "kernelSize": 3,
+      "minArea": 0,
+      "drawColor": {
+        "r": 255,
+        "g": 0,
+        "b": 0
+      },
+      "drawSize": 1,
+      "track": false,
+      "region": "root"
+    },
+    "car": {
+      "name": "car",
+      "draw": false,
+      "lower": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "upper": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "maxFound": 1,
+      "kernelSize": 3,
+      "minArea": 0,
+      "drawColor": {
+        "r": 255,
+        "g": 0,
+        "b": 0
+      },
+      "drawSize": 1,
+      "track": false,
+      "region": "root"
+    },
+    "test2": {
+      "name": "test2",
+      "draw": false,
+      "lower": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "upper": {
+        "r": 0,
+        "g": 0,
+        "b": 0
+      },
+      "maxFound": 1,
+      "kernelSize": 3,
+      "minArea": 0,
+      "drawColor": {
+        "r": 255,
+        "g": 0,
+        "b": 0
+      },
+      "drawSize": 1,
+      "track": false,
+      "region": "root"
     }
   }
 }

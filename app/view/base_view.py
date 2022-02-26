@@ -42,14 +42,14 @@ class EzView(ttk.Frame, ABC):
         if self.text is not None:
             self.text.set("")
 
-    def save(self):
+    def save(self, saveOnly=False):
         textData = self.text.get()
         data = self.baseClass.from_dict(json.loads(textData))
         self.datas.set(data)
 
-        self.app.game.config.saveOnly(self.name, reload=True)
+        self.app.game.config.saveOnly(self.name, reload=saveOnly)
 
-    def updateView(self):
+    def updateView(self, event=None):
         data = self.parentSelect.getObj()
         self.text.set(json.dumps(data.to_dict(), indent=4))
 
