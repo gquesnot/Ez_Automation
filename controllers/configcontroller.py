@@ -5,7 +5,7 @@ from time import sleep
 import cv2
 
 from app.my_dataclasses import WindowConfig, RegionConfigs, ImageMatchConfigs, PixelConfigs, TcrScanConfigs, \
-    MaskDetectionConfigs, ActionConfigs
+    MaskDetectionConfigs, MouseActionConfigs, KeyboardActionConfigs
 from util.InputHandler import getMenus, getMenusElements, updateValueOfKey, askQuestion
 from util.json_function import getJson, toJson
 from util.pixel import getImgRectangle
@@ -21,7 +21,8 @@ class ConfigController():
     pixels: PixelConfigs = None
     tcrScans: TcrScanConfigs = None
     maskDetections: MaskDetectionConfigs = None
-    actions: ActionConfigs = None
+    mouseActions: MouseActionConfigs = None
+    keyboardActions: KeyboardActionConfigs = None
 
     def __init__(self, game):
         self.window = WindowConfig.from_dict(getJson("window"), )
@@ -30,7 +31,8 @@ class ConfigController():
         self.pixels = PixelConfigs.from_dict(getJson("pixels"))
         self.tcrScans = TcrScanConfigs.from_dict(getJson("tcrScans"))
         self.maskDetections = MaskDetectionConfigs.from_dict(getJson("maskDetections"))
-        self.actions = ActionConfigs.from_dict(getJson("actions"))
+        self.mouseActions = MouseActionConfigs.from_dict(getJson("mouseActions"))
+        self.keyboardActions = KeyboardActionConfigs.from_dict(getJson("keyboardActions"))
         self.game = game
 
     def apply(self, obj, hint: str, withOutDict: bool = False):
@@ -66,6 +68,8 @@ class ConfigController():
         myDc = getattr(self, model)
         if reload:
             self.load(model)
+        print(myDc)
+        print(myDc.to_dict())
         toJson(model, myDc.to_dict())
         return myDc
 
@@ -79,7 +83,7 @@ class ConfigController():
         if model == "window":
             self.game.wc.loadConfig()
         elif model == "regions":
-            self.game.regions = getattr(self, model)
+            #self.game.regions = getattr(self, model)
             self.game.cv2Controller.refreshRegion = True
         elif model == "matchImages":
             self.game.dpc.loadMatchImages()
@@ -89,8 +93,6 @@ class ConfigController():
             self.game.dpc.loadTcrScans()
         elif model == "maskDetections":
             self.game.dpc.loadMaskDetections()
-        elif model == "actions":
-            self.game.actions = self.actions
 
     def update(self, model, name: str, value):
         if model == "window":
@@ -331,9 +333,6 @@ class ConfigController():
                 sleep(1)
             self.game.doAction(name)
 
-    def saveActions(self, actions):
-        toJson("action", actions)
-        self.game.actions = actions
 
     def configTcrScan(self):
         tcrScans = getJson("tcrScan")

@@ -1,2 +1,0 @@
-class ModelController():
-    pass

@@ -50,7 +50,7 @@ class DataScanner(ThreadClass, TcrScanConfig):
 
         if screenshot is not None:
             screenshot = getImgRectangle(screenshot, self.rectangle)
-            #cv2.imwrite("tmp/scans/{}.png".format(self.name), screenshot)
+            cv2.imwrite("tmp/scans/{}.png".format(self.name), screenshot)
             if self.type == VarType.STRING:
                 img, self.result = self.game.tcr.scanText(img=screenshot)
             elif self.type == VarType.INT:

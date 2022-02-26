@@ -22,17 +22,6 @@
       },
       "type": "INT"
     },
-    "wave": {
-      "name": "wave",
-      "region": "info",
-      "rectangle": {
-        "x": 170,
-        "y": 15,
-        "w": 86,
-        "h": 43
-      },
-      "type": "INT"
-    },
     "test": {
       "name": "test",
       "region": "root",
@@ -43,6 +32,17 @@
         "h": 133
       },
       "type": "STRING"
+    },
+    "wave": {
+      "name": "wave",
+      "region": "info",
+      "rectangle": {
+        "x": 9,
+        "y": 13,
+        "w": 150,
+        "h": 66
+      },
+      "type": "INT"
     }
   }
 }

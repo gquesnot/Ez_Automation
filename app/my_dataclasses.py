@@ -174,7 +174,7 @@ class RegionConfigs(BaseDataClass, GetSetDict):
     dict: Dict[str, RegionConfig] = field(default_factory=dict)
 
     def save(self):
-        toJson("region", self.to_dict())
+        toJson("regions", self.to_dict())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any], **kwargs) -> 'RegionConfigs':
@@ -189,7 +189,7 @@ class ImageMatchItemConfig(BaseDataClass):
 
     path: str = field(default="")
     region: str = field(default="root")
-    image: Any = field(default=None)
+
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any], **kwargs) -> 'ImageMatchItemConfig':
@@ -202,6 +202,7 @@ class ImageMatchConfig(BaseDataClass):
     A class to store an image match.
     """
     name: str = field(default="")
+    type : PixelConfigType = field(default=PixelConfigType.OR)
     images: List[ImageMatchItemConfig] = field(default_factory=list)
 
     @classmethod
@@ -212,12 +213,12 @@ class ImageMatchConfig(BaseDataClass):
 @dataclass
 class Pixel(BaseDataClass):
     """
-    A class to store a pixel.
+    A class to store a pixel
     """
 
     coor: Coor = field(default_factory=Coor)
     color: Color = field(default_factory=Color)
-    tolerance: int = field(default=0)
+    tolerance: int = field(default=20)
     region: str = field(default="root")
 
     @classmethod
@@ -280,7 +281,6 @@ class ActionBaseConfig(BaseDataClass, ABC):
     name: str = field(default="")
     delay: float = field(default=.1)
     sleepAfter: float = field(default=.1)
-    type: ActionType = field(default=ActionType.Keyboard)
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'ActionBaseConfig':
@@ -288,7 +288,7 @@ class ActionBaseConfig(BaseDataClass, ABC):
 
 
 @dataclass
-class KeyBoardActionConfig(ActionBaseConfig):
+class KeyboardActionConfig(ActionBaseConfig):
     """
     A class to store a keyboard action.
     """
@@ -296,8 +296,8 @@ class KeyBoardActionConfig(ActionBaseConfig):
     key: str = field(default='')
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'KeyBoardActionConfig':
-        return from_dict(data_class=cls, data=data, config=Config(cast=[ActionType]))
+    def from_dict(cls, data: Dict[str, Any]) -> 'KeyboardActionConfig':
+        return from_dict(data_class=cls, data=data)
 
 
 @dataclass
@@ -306,26 +306,11 @@ class MouseActionConfig(ActionBaseConfig):
     A class to store a mouse action.
     """
 
-    coor: Coor = field(default=Coor)
+    coor: Coor = field(default_factory=Coor)
     region: str = field(default="root")
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'MouseActionConfig':
-        return from_dict(data_class=cls, data=data, config=Config(cast=[ActionType]))
-
-
-@dataclass
-class ActionConfig(BaseDataClass):
-    """
-    A class to store an action.
-    """
-
-    type: ActionType = field(default=ActionType.Keyboard)
-    keyboard: KeyBoardActionConfig = field(default=KeyBoardActionConfig())
-    mouse: MouseActionConfig = field(default=MouseActionConfig())
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'ActionConfig':
         return from_dict(data_class=cls, data=data)
 
 
@@ -368,26 +353,39 @@ class MaskDetectionConfigs(BaseDataClass, GetSetDict):
         return from_dict(data_class=cls, data=data)
 
 
+
+
+
 @dataclass
-class ActionConfigs(BaseDataClass, GetSetDict):
+class KeyboardActionConfigs(BaseDataClass, GetSetDict):
     """
     A class to store a list of actions.
     """
 
-    dict: Dict[str, Union[MouseActionConfig, KeyBoardActionConfig]] = field(default_factory=dict)
+    dict: Dict[str, KeyboardActionConfig] = field(default_factory=dict)
 
     def save(self):
-        toJson("action", self.to_dict())
+        toJson("keyboardActions", self.to_dict())
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'ActionConfigs':
-        res = {}
-        for k, v in data['dict'].items():
-            if "Mouse" in v['type']:
-                res[k] = MouseActionConfig.from_dict(v)
-            else:
-                res[k] = KeyBoardActionConfig.from_dict(v)
-        return cls(dict=res)
+    def from_dict(cls, data: Dict[str, Any]) -> 'KeyboardActionConfigs':
+        return from_dict(data_class=cls, data=data)
+
+
+@dataclass
+class MouseActionConfigs(BaseDataClass, GetSetDict):
+    """
+    A class to store a list of actions.
+    """
+
+    dict: Dict[str, MouseActionConfig] = field(default_factory=dict)
+
+    def save(self):
+        toJson("mouseActions", self.to_dict())
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'MouseActionConfigs':
+        return from_dict(data_class=cls, data=data)
 
 
 @dataclass
@@ -435,4 +433,4 @@ class ImageMatchConfigs(BaseDataClass, GetSetDict):
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'ImageMatchConfigs':
-        return from_dict(data_class=cls, data=data)
+        return from_dict(data_class=cls, data=data, config=Config(cast=[PixelConfigType]))

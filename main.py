@@ -86,11 +86,9 @@ t = Thread(target=main)
 t.start()
 
 while game is None:
-    print('wait game to start')
+    print('wait game to load')
     sleep(0.2)
 app = App(game)
-
-app.afterInit()
 
 app.mainloop()
 

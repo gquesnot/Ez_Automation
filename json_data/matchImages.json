@@ -1,20 +1,50 @@
 {
   "dict": {
-    "goldPiece": {
-      "name": "goldPiece",
+    "evt1": {
+      "name": "evt1",
+      "type": "OR",
       "images": [
         {
-          "region": "money",
-          "path": "img/goldPiece/0.png"
+          "path": "img/evt1/0.png",
+          "region": "root"
         }
       ]
     },
-    "evt1": {
-      "name": "evt1",
+    "goldPiece": {
+      "name": "goldPiece",
+      "type": "OR",
       "images": [
         {
-          "region": "root",
-          "path": "img/evt1/0.png"
+          "path": "img/goldPiece/0.png",
+          "region": "money"
+        },
+        {
+          "path": "img/goldPiece/1.png",
+          "region": "caribou"
+        },
+        {
+          "path": "img/goldPiece/2.png",
+          "region": "root"
+        }
+      ]
+    },
+    "block": {
+      "name": "block",
+      "type": "OR",
+      "images": [
+        {
+          "path": "img/block/0.png",
+          "region": "right"
+        }
+      ]
+    },
+    "bbq": {
+      "name": "bbq",
+      "type": "OR",
+      "images": [
+        {
+          "path": "img/bbq/0.png",
+          "region": "ttt"
         }
       ]
     }

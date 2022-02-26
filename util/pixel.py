@@ -14,6 +14,8 @@ import skimage.transform
 import skimage.measure
 import skimage.io
 
+from app.my_dataclasses import Rectangle, Pixel
+
 
 def centerCoor(data, diff=None):
     if diff is None:
@@ -36,15 +38,15 @@ def applySave(img, save):
         cv2.imwrite("testimg\\{0}\\{1}_{2}.jpg".format(tmp, save, str(time())), img)
 
 
-def comparePixel(screenShot, coor, color, tolerance=20):
+def comparePixel(screenShot, pixel:Pixel):
     if screenShot is not None:
-        pixel = screenShot[coor['y'], coor['x']]
+        myPixel = screenShot[pixel.coor.y, pixel.coor.x]
         # get screensize of screenshot
         screenSize = (screenShot.shape[0] , screenShot.shape[1])
-        print("{} vs {} on {}".format(pixel, color, screenSize))
-        if abs(pixel[0] - color[0]) <= tolerance:
-            if abs(pixel[1] - color[1]) <= tolerance:
-                if abs(pixel[2] - color[2]) <= tolerance:
+        #print("{} vs {} on {}".format(pixel.coor, pixel.color.asList(), screenSize))
+        if abs(myPixel[0] - pixel.color.r) <= pixel.tolerance:
+            if abs(myPixel[1] - pixel.color.g) <= pixel.tolerance:
+                if abs(myPixel[2] - pixel.color.b) <= pixel.tolerance:
                     return True
     return False
 
@@ -86,5 +88,8 @@ def applyThresh(srcImg):
 
 
 def getImgRectangle(img, rectangle):
-    cropped = img[rectangle.y:rectangle.y + rectangle.h, rectangle.x:rectangle.x + rectangle.w]
+    if type(rectangle) is Rectangle:
+        cropped = img[rectangle.y:rectangle.y + rectangle.h, rectangle.x:rectangle.x + rectangle.w]
+    else:
+        cropped = img[rectangle['y'] : rectangle['y'] + rectangle['h'], rectangle['x'] : rectangle['x'] + rectangle['w']]
     return cropped

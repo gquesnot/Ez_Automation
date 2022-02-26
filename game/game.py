@@ -31,6 +31,8 @@ class Game(ThreadClass):
     freeze = False
     config : ConfigController=None
 
+
+
     def __init__(self, args):
         super().__init__()
         self.args = args
@@ -43,7 +45,6 @@ class Game(ThreadClass):
         self.state = GameState.WAITING
         self.config = ConfigController(self)
         self.name = self.config.window.name
-        self.actions = self.config.actions
         if not self.isReplay():
             self.wc = WindowCapture(self, imgGrab=True)
             # self.ac = ActionController(self)
@@ -65,17 +66,32 @@ class Game(ThreadClass):
 
         self.startClass()
 
-    def doAction(self, hint, activate = False):
-        if hint in self.actions:
+
+    def initWaitingTime(self, duration=3):
+        i = 3
+        while i > 0:
+            print(f"action in {i}s")
+            sleep(1)
+            i -= 1
+
+
+
+    def doClick(self, hint, activate=False, isTest=False):
+        self.initWaitingTime(duration=3)
+        if hint in self.config.mouseActions:
             if activate:
                 self.wc.activate()
                 self.kc.moveClick(self.wc.getCenter(), delay=.1, timeBeetwen=.1 )
-            action = self.actions[hint]
 
-            if action["type"] == "Keyboard":
-                self.kc.handleKeyAction(action)
-            elif action["type"] == "Mouse":
-                self.kc.handleMouseAction(action)
+            self.kc.handleMouseAction(self.config.mouseActions.get(hint))
+
+    def doKey(self, hint, activate = False, isTest=False):
+        self.initWaitingTime(duration=3)
+        if hint in self.config.keyboardActions:
+            if activate:
+                self.wc.activate()
+                self.kc.moveClick(self.wc.getCenter(), delay=.1, timeBeetwen=.1 )
+            self.kc.handleMouseAction(self.config.keyboardActions.get(hint))
 
 
     def toggleFreeze(self, double=False):
@@ -86,14 +102,8 @@ class Game(ThreadClass):
         print(self.freeze)
 
     def startClass(self):
-        #self.menu.start()
         pass
-        # self.combat.start()
-        # self.trackerController.start()
-        # if self.args.AABuff:
-        #     self.AABuff.start()
-        # if not self.isReplay():
-        #     self.ac.start()
+
 
     # def createImage(self, comboHint):
     #     if self.screenShot is not None:
@@ -102,8 +112,6 @@ class Game(ThreadClass):
 
     def stop(self):
         super().stop()
-        self.menu.stop()
-        self.menu.stopped = True
         cv2.destroyAllWindows()
 
 
@@ -166,5 +174,6 @@ class Game(ThreadClass):
                     print('check image evt1: ', self.dpc.checkImageMatch('evt1'))
                     print('check mask greenBar: ', self.dpc.checkMaskDetection('greenBar'))
                     print('do action closeUp')
-                    self.doAction('closeUpgrade')
+                    self.doClick('closeUpgrade')
+                    self.doKey('up')
             sleep(0.01)

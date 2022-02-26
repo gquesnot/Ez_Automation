@@ -1,5 +1,10 @@
+import os
+
 import cv2
 import numpy as np
+
+from app.my_dataclasses import Pixel, ImageMatchItemConfig, Rectangle, Coor
+from util.pixel import getImgRectangle
 
 
 class ImageSave():
@@ -15,14 +20,69 @@ class ImageSave():
 
         self.clickList = []
 
+    def saveImage(self, rectangle, path, name):
+        if rectangle is not None:
+            if not os.path.exists(path):
+                os.makedirs(path)
+            print(rectangle)
+            if rectangle['region'] != "root":
+                img = self.game.regions.applyRegion(rectangle['region'])
+            else:
+                img = self.game.screenShot
+            img = getImgRectangle(img,rectangle)
+            if img is not None:
+                cv2.imwrite(f"{path}/{name}", img)
+            return img
+        return None
+
     def update(self, hint, screenShot):
         setattr(self, hint, screenShot)
 
     def reset(self):
         self.clickList = []
 
+    def getByHint(self, hint):
+        region = None
+        if hint == "pixel" or hint == "mask" or hint == "coor":
+            click = self.getCoor()
+            if click is not None:
+                region = click['region']
+                if hint == "pixel":
+                    pixel = Pixel.from_dict({})
+                    pixel.coor.x = click['x']
+                    pixel.coor.y = click['y']
+                    pixel.region = click['region']
+                    pixel.color.r = click['color'][0]
+                    pixel.color.g = click['color'][1]
+                    pixel.color.b = click['color'][2]
+                    return pixel, region
+                elif hint == 'mask':
+                    pass
+                elif hint == 'coor':
+                    coor = Coor.from_dict({})
+                    coor.x = click['x']
+                    coor.y = click['y']
+                    return coor, region
+        else:
+            rectangle = self.getRectangle()
+            if rectangle is not None:
+                region = rectangle['region']
+                rectangle = Rectangle.from_dict({})
+                rectangle.x = rectangle['x']
+                rectangle.y = rectangle['y']
+                rectangle.w = rectangle['w']
+                rectangle.h = rectangle['h']
+                return rectangle, region
 
+        if hint == 'pixel':
+            res = Pixel.from_dict({})
 
+        elif hint == 'rectangle' or hint == 'image':
+            res = Rectangle.from_dict({})
+        elif hint == 'coor':
+            res = Coor.from_dict({})
+
+        return res, region
 
     def addClick(self, click):
         if len(self.clickList) == 2:
@@ -38,7 +98,7 @@ class ImageSave():
     def getRectangle(self):
 
         if len(self.clickList) == 2:
-            res=  {
+            res = {
                 "x": self.clickList[0]['x'],
                 "y": self.clickList[0]['y'],
                 "w": abs(self.clickList[1]['x'] - self.clickList[0]['x']),
@@ -72,14 +132,13 @@ class ImageSave():
                 elif x < 0:
                     x = 0
 
-
                 pixel = img_[y, x]
                 self.addClick(
                     {
                         "x": x,
                         "y": y,
                         'region': "root" if params['window'] == 'main' else params['window'],
-                        'color': tuple((int(pixel[0]), int(pixel[1]), int(pixel[2])))
+                        'color': {"r": int(pixel[0]), "g": int(pixel[1]), "b": int(pixel[2])}
                     }
                 )
                 # you might want to adjust the ranges(+-10, etc):

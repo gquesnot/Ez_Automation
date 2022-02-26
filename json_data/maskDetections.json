@@ -3,9 +3,6 @@
     "greenBar": {
       "name": "greenBar",
       "draw": true,
-      "region": "base",
-      "drawSize": 4,
-      "track": false,
       "lower": {
         "r": 0,
         "g": 0,
@@ -23,12 +20,14 @@
         "r": 0,
         "g": 255,
         "b": 0
-      }
+      },
+      "drawSize": 4,
+      "track": false,
+      "region": "base"
     },
     "redBard": {
-      "draw": true,
       "name": "redBard",
-      "region": "base",
+      "draw": true,
       "lower": {
         "r": 0,
         "g": 0,
@@ -48,7 +47,8 @@
         "b": 0
       },
       "drawSize": 4,
-      "track": false
+      "track": false,
+      "region": "base"
     }
   }
 }

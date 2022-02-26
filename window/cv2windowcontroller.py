@@ -28,7 +28,7 @@ class Cv2WindowController:
                 cv2.destroyWindow(v['name'])
         self.cv2RegionList = {}
 
-        for regionName, region in self.regions.dict.items():
+        for regionName, region in self.regions.all().items():
             self.cv2RegionList[regionName] = {
                 "name": "Regions " + regionName,
                 "coor": [-1080, 400],

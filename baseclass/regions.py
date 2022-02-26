@@ -7,20 +7,21 @@ from util.json_function import applyJsonConfig, getJson
 from util.pixel import getImgRectangle
 
 
-class Regions(RegionConfigs):
+class Regions():
 
     def __init__(self, game):
         self.game = game
-        self.game.config.apply(self, 'regions')
+
 
     def getRegion(self, hint):
-        if hint in self.dict:
-            return self.dict[hint]
+        if hint in self.all():
+            return self.game.config.regions.get(hint)
         return None
 
-
+    def all(self):
+        return self.game.config.regions.dict
     def getCoorByRegion(self, hint, coor):
-        region = self.get(hint)
+        region = self.getRegion(hint)
         if region is not None:
             return region.rectangle
         return None
@@ -28,7 +29,7 @@ class Regions(RegionConfigs):
     def applyRegion(self, hint, screenshot=None, withRatio=False):
         if screenshot is None:
             screenshot = self.game.screenShot
-        region = self.get(hint)
+        region = self.getRegion(hint)
         if region is not None:
             screenshot = getImgRectangle(screenshot, region.rectangle)
             if withRatio != 1:

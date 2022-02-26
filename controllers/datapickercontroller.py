@@ -58,7 +58,7 @@ class DataPickerController:
                     newScreenshot = screenShot
                     if pixel.region != "root":
                         newScreenshot = self.game.regions.applyRegion(pixel.region, screenShot)
-                    if comparePixel(newScreenshot, pixel, pixel.color.asList(), pixel.tolerance):
+                    if comparePixel(newScreenshot, pixel):
                         match = True
                         if self.pixelDict[hint].type == PixelConfigType.OR:
                             return True

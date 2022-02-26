@@ -1,21 +1,91 @@
 {
   "dict": {
-    "evt1On": {
-      "name" :"evt1On",
+    "full": {
+      "name": "full",
       "type": "OR",
       "pixels": [
         {
           "coor": {
-            "x": 595,
-            "y": 86
+            "x": 74,
+            "y": 71
           },
           "color": {
-            "r": 16,
-            "g": 154,
-            "b": 210
+            "r": 170,
+            "g": 74,
+            "b": 143
           },
-          "tolerence": 10,
+          "tolerance": 20,
+          "region": "left"
+        }
+      ]
+    },
+    "canPrestige": {
+      "name": "canPrestige",
+      "type": "OR",
+      "pixels": [
+        {
+          "coor": {
+            "x": 235,
+            "y": 715
+          },
+          "color": {
+            "r": 110,
+            "g": 148,
+            "b": 55
+          },
+          "tolerance": 20,
           "region": "root"
+        }
+      ]
+    },
+    "empty": {
+      "name": "empty",
+      "type": "OR",
+      "pixels": [
+        {
+          "coor": {
+            "x": 82,
+            "y": 354
+          },
+          "color": {
+            "r": 167,
+            "g": 116,
+            "b": 145
+          },
+          "tolerance": 20,
+          "region": "left"
+        }
+      ]
+    },
+    "abc": {
+      "name": "abc",
+      "type": "OR",
+      "pixels": [
+        {
+          "coor": {
+            "x": 68,
+            "y": 35
+          },
+          "color": {
+            "r": 183,
+            "g": 165,
+            "b": 163
+          },
+          "tolerance": 20,
+          "region": "right"
+        },
+        {
+          "coor": {
+            "x": 70,
+            "y": 140
+          },
+          "color": {
+            "r": 55,
+            "g": 51,
+            "b": 65
+          },
+          "tolerance": 20,
+          "region": "right"
         }
       ]
     }

@@ -1,0 +1,14 @@
+{
+  "dict": {
+    "abc": {
+      "name": "abc",
+      "delay": 0.1,
+      "sleepAfter": 0.1,
+      "coor": {
+        "x": 153,
+        "y": 124
+      },
+      "region": "caribou"
+    }
+  }
+}
