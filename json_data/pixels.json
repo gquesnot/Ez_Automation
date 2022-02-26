@@ -1,23 +1,4 @@
 {
   "dict": {
-    "test": {
-      "name": "test",
-      "type": "OR",
-      "pixels": [
-        {
-          "coor": {
-            "x": 66,
-            "y": 220
-          },
-          "color": {
-            "r": 170,
-            "g": 74,
-            "b": 143
-          },
-          "tolerance": 20,
-          "region": "abvc"
-        }
-      ]
-    }
   }
 }

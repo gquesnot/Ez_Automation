@@ -1,15 +1,5 @@
 {
   "dict": {
-    "test": {
-      "name": "test",
-      "type": "OR",
-      "images": [
-        {
-          "path": "img/test/0.png",
-          "region": "root",
-          "img": null
-        }
-      ]
-    }
+
   }
 }

@@ -1,14 +1,4 @@
 {
   "dict": {
-    "test": {
-      "name": "test",
-      "delay": 0.1,
-      "sleepAfter": 0.1,
-      "coor": {
-        "x": 287,
-        "y": 234
-      },
-      "region": "root"
-    }
   }
 }

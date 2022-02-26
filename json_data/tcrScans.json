@@ -1,15 +1,4 @@
 {
   "dict": {
-    "wave": {
-      "name": "wave",
-      "region": "abvc",
-      "rectangle": {
-        "x": 59,
-        "y": 76,
-        "w": 164,
-        "h": 39
-      },
-      "type": "STRING"
-    }
   }
 }
