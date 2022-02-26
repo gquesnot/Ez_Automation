@@ -16,8 +16,9 @@ You can configure:
 - detection of pixels OR/ AND 
 - detection of text/int 
 - image detection OR/AND
-- mask detection (dirty)
-- action and combo actions (soon)
+- mask detection (manualy)
+- action
+- combo actions (soon)
 
 ## Getting Started
 
@@ -42,10 +43,12 @@ Require python 3.10
 
 Use what you have set up like this:
 ````python
-print('scan wave: ', self.dpc.checkTcrScan('wave'))
-print('check pixel evt1On: ', self.dpc.checkPixel("evt1On"))
-print('check if image evt1 is present and get coor: ', self.dpc.checkImageMatch('evt1'))
-print('check mask greenBar and get list[Rectangle]: ', self.dpc.checkMaskDetection('greenBar'))
-print('do action closeUp')
-self.doAction('closeUpgrade')
+if self.state == GameState.PLAYING:
+    print('scan wave: ', self.dpc.checkTcrScan('wave'))
+    print('check pixel evt1On: ', self.dpc.checkPixel("evt1On"))
+    print('check image evt1: ', self.dpc.checkImageMatch('evt1'))
+    print('check mask greenBar: ', self.dpc.checkMaskDetection('greenBar'))
+    print('do action closeUp')
+    self.doClick('closeUpgrade')
+    self.doKey('up')
 ````
