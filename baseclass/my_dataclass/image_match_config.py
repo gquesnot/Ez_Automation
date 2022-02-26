@@ -4,7 +4,7 @@ from typing import Dict, Any, List
 from dacite import from_dict, Config
 
 from baseclass.my_dataclass.base_dataclass import BaseDataClass, GetSetDict
-from baseclass.my_enum.condition_type import PixelConfigType
+from baseclass.my_enum.condition_type import ConditionType
 from util.json_function import toJson
 
 
@@ -33,7 +33,7 @@ class ImageMatchConfig(BaseDataClass):
     A class to store an image match.
     """
     name: str = field(default="")
-    type: PixelConfigType = field(default=PixelConfigType.OR)
+    type: ConditionType = field(default=ConditionType.OR)
     images: List[ImageMatchItemConfig] = field(default_factory=list)
 
     @classmethod
@@ -54,4 +54,4 @@ class ImageMatchConfigs(BaseDataClass, GetSetDict):
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'ImageMatchConfigs':
-        return from_dict(data_class=cls, data=data, config=Config(cast=[PixelConfigType]))
+        return from_dict(data_class=cls, data=data, config=Config(cast=[ConditionType]))

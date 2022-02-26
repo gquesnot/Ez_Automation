@@ -2,7 +2,7 @@ from app.components.my_input import MyInput
 from app.components.my_select import MyStringEnumSelect
 from baseclass.my_dataclass.pixel_config import PixelConfig, PixelConfigs
 from baseclass.my_dataclass.pixel import Pixel
-from baseclass.my_enum.condition_type import PixelConfigType
+from baseclass.my_enum.condition_type import ConditionType
 from app.view.base_view import BaseViewSelectWithChild
 
 
@@ -17,7 +17,7 @@ class PixelsView(BaseViewSelectWithChild):
         data = self.parentSelect.getObj()
         self.inputs.append(MyInput(self, label="Name", value=data.name, row=self.rowStart, path="data.name"))
         self.inputs.append(
-            MyStringEnumSelect(self, "Type", enum=PixelConfigType, value=data.type, row=self.rowStart + 1,
+            MyStringEnumSelect(self, "Type", enum=ConditionType, value=data.type, row=self.rowStart + 1,
                                path="data.type"))
         self.initChildSelect(datas=data.pixels, row=self.rowStart + 2)
 

@@ -1,7 +1,7 @@
 from typing import Dict
 
 from baseclass.my_dataclass.pixel_config import PixelConfig
-from baseclass.my_enum.condition_type import PixelConfigType
+from baseclass.my_enum.condition_type import ConditionType
 from baseclass.datapicker import DataPicker
 from baseclass.datascanner import DataScanner
 from baseclass.matchimages import MatchImages
@@ -59,10 +59,10 @@ class DataPickerController:
                         newScreenshot = self.game.regions.applyRegion(pixel.region, screenShot)
                     if comparePixel(newScreenshot, pixel):
                         match = True
-                        if self.pixelDict[hint].type == PixelConfigType.OR:
+                        if self.pixelDict[hint].type == ConditionType.OR:
                             return True
 
-                    elif self.pixelDict[hint].type == PixelConfigType.AND:
+                    elif self.pixelDict[hint].type == ConditionType.AND:
                         return False
                 return match
         return False
