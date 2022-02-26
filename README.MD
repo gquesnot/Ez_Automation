@@ -9,13 +9,13 @@ Template to make a bot.
 
 When you launch the bot you will have a graphical interface to configure the information you want to retrieve from the window.  
 
-Manage the global states of the bot:
+You can manage the global states of the bot:
 - PLAY : in the future close all cv2 windows
 - RECORD: State you want to be to analyze the game
 - REPLAY: state to read img you saved (autoscreenshot, screenshot etc)
 
 
-You can manage the states of the bot:
+Manage the states of the bot:
 - WAITING: base state of the bot, doing nothing.
 - PLAYING: look in the game Class loop
 - add  more in the enum GameState class
