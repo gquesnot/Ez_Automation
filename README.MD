@@ -7,8 +7,25 @@ Template to make a bot.
 
 ## Description
 
-When you launch the bot you will have a graphical interface to configure the information you want to retrieve from the window.
-You can also manage the states of the bot.
+When you launch the bot you will have a graphical interface to configure the information you want to retrieve from the window.  
+
+Manage the global states of the bot:
+- PLAY : in the future close all cv2 windows
+- RECORD: State you want to be to analyze the game
+- REPLAY: state to read img you saved (autoscreenshot, screenshot etc)
+
+
+You can manage the states of the bot:
+- WAITING: base state of the bot, doing nothing.
+- PLAYING: look in the game Class loop
+- add  more in the enum GameState class
+
+
+Manage some options :
+- toggle freeze (stop image update)
+- toggle auto screenshot (3s)
+- toggle show cv2 windows for regions
+- toggle fps
 
 You can configure:
 - the name of the window to retrieve (the basic screenshot)
@@ -22,8 +39,11 @@ You can configure:
 
 ## Getting Started
 
-### Dependencies
-
+- Start the bot
+- Configure/window 
+- Configure/region
+- Configure what you want 
+- configure the algorithm for your bot in Game Class
 
 
 ### Installing
@@ -33,7 +53,6 @@ Require python 3.10
  pip install -r requirements.txt
 ````
 
-### Executing program
 
 ### Usage
 
