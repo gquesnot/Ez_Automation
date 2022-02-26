@@ -155,7 +155,7 @@ class Game(ThreadClass):
                 else:
                     self.screenShot = self.RC.getScreenshot()
             if self.screenShot is not None:
-                # self.checkConfigState()
+                # code Here
                 if self.state == GameState.PLAYING:
                     print('scan wave: ', self.dpc.checkTcrScan('wave'))
                     print('check pixel evt1On: ', self.dpc.checkPixel("evt1On"))

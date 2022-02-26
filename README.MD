@@ -41,7 +41,7 @@ Require python 3.10
  python main.py
 ````
 
-Use what you have set up like this:
+Use what you have set up like this in the main loop of game/game.py class :
 ````python
 if self.state == GameState.PLAYING:
     print('scan wave: ', self.dpc.checkTcrScan('wave'))
