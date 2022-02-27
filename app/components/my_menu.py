@@ -39,7 +39,7 @@ class MyMenu:
         self.addOptionMenu()
         self.addConfigMenu()
 
-        self.menu.add_command(label="Exit", command=self.app.quit)
+        self.menu.add_command(label="Exit", command=self.quit)
 
 
     def addConfigMenu(self):
@@ -58,6 +58,11 @@ class MyMenu:
                                     command=lambda: self.app.controller.doAction("toggle", "showRegions"))
         self.optionMenu.add_command(label="Show Fps", command=lambda: self.app.controller.doAction("toggle", "showFps"))
         self.menu.add_cascade(label="Options", menu=self.optionMenu)
+
+    def quit(self, event=None):
+        self.app.game.stopped = True
+        self.app.destroy()
+        self.app.quit()
 
     def addGlobalStateMenu(self):
         self.globalStatesMenu = tkinter.Menu(self.menu, tearoff=0, relief=FLAT, font=("Verdana", 12), activebackground='red')

@@ -38,8 +38,8 @@ class MySimpleInput:
         self.col = col
         self.wValue = tkinter.StringVar()
         self.wValue.set("")
-        self.wLabel = ttk.Label(self.parent, textvariable=self.wValue, anchor="w", width=10)
-        self.wLabel.grid(column=self.col, row=self.row, columnspan=colspan, padx=10, pady=10, sticky=W)
+        self.wLabel = ttk.Label(self.parent, textvariable=self.wValue, anchor="w", width=40)
+        self.wLabel.grid(column=self.col, row=self.row, columnspan=colspan, padx=0, pady=10, sticky=W)
 
     def set(self, value):
         self.wValue.set(value)
@@ -62,11 +62,11 @@ class MyInput:
         self.path = path
         self.type = type(value)
         self.wLabel = ttk.Label(self.parent, text=label, anchor="w", width=len(label) + 3)
-        self.wLabel.grid(column=self.col, row=self.row, padx=10, pady=10, sticky=W)
+        self.wLabel.grid(column=self.col, row=self.row, padx=10, pady=3, sticky=W)
         self.wValue = tkinter.StringVar()
         self.wValue.set(value)
         self.wEntry = ttk.Entry(self.parent, textvariable=self.wValue, width=20)
-        self.wEntry.grid(column=self.col + 1, row=self.row, padx=10, pady=10, sticky=W)
+        self.wEntry.grid(column=self.col + 1, row=self.row, padx=10, pady=3, sticky=W)
 
     def get(self):
         if self.canSave():

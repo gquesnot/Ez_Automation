@@ -31,6 +31,7 @@ def main():
 
             game.cv2Controller.applyScreenShotToWindow(game.imSave.img, "root")
             if game.imSave.mask_img is not None:
+
                 game.cv2Controller.applyScreenShotToWindow(game.imSave.mask_img, "mask")
             if game.imSave.draw_img is not None:
                 game.cv2Controller.applyScreenShotToWindow(game.imSave.draw_img, "draw")
@@ -41,6 +42,9 @@ def main():
                     tScreenShot = time()
         sleep(0.01)
         cv2.waitKey(1)
+        if game.stopped:
+            game.stop()
+            return
 
 t = Thread(target=main)
 t.start()

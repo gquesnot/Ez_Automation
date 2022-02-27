@@ -51,24 +51,29 @@ class Cv2WindowController:
         if self.game.wc.isLoaded:
             window = self.getWindowByHint(hint)
             if window and screenShot is not None and self.game.wc.w != 0:
-                try:
-                    x, y, z = screenShot.shape
-                except:
+
+                if "resize" not in window or window['ratio'] != 1:
                     try:
-                        x, y = screenShot.shape
-                        z = 3
+                        h, w, z = screenShot.shape
                     except:
+                        try:
+                            h, w = screenShot.shape
+                            z = 3
+                        except:
+                            return
+                    if not w or not h:
                         return
-                if not x or not y:
-                    return
-                if "resize" not in window:
                     if not self.game.isReplay():
                         window['resize'] = (
-                            int(self.game.wc.w * window['ratio']), int(self.game.wc.h * window['ratio']))
+                            int(w * window['ratio']), int(h * window['ratio']))
                     else:
+
                         window['resize'] = (
-                            int(self.game.RC.w * window['ratio']), int(self.game.RC.h * window['ratio']))
-                cv2.imshow(window['name'], cv2.resize(screenShot, window['resize']))
+                            int(w * window['ratio']), int(h * window['ratio']))
+                    cv2.imshow(window['name'], cv2.resize(screenShot, window['resize']))
+                else:
+                    cv2.imshow(window['name'], screenShot)
+
 
     def createWindows(self, windowDic, regions=False):
         for k, v in windowDic.items():

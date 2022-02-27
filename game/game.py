@@ -1,4 +1,5 @@
 from time import sleep, time
+from typing import Any
 
 import cv2
 
@@ -19,14 +20,24 @@ from window.windowcapture import WindowCapture
 
 
 class Game(ThreadClass):
-    name = ""
+    name:str = ""
     state: GameState = GameState.WAITING
-    location = LocationState.START
-    screenShot = None
-    firstState = True
+    location : LocationState= LocationState.START
+    screenShot:Any = None
+    firstState: bool = True
     config: ConfigController = None
     typeState: GameTypeState = GameTypeState.RECORD
     app: 'App' = None
+    wc: WindowCapture = None
+    replay: Replay = None
+    imSave: ImageSave = None
+    tcr: Tcr = None
+    kc: KeyboardController = None
+    dpc: DataPickerController = None
+    cv2Controller: Cv2WindowController = None
+    timer: Timer = None
+    regions: Regions = None
+
 
 
 
@@ -154,6 +165,7 @@ class Game(ThreadClass):
                     self.screenShot = self.wc.getScreenshot()
                 else:
                     self.screenShot = self.RC.getScreenshot()
+                self.dpc.checkConfigHasMaskTest()
             if self.screenShot is not None:
                 # code Here
                 if self.state == GameState.PLAYING:
@@ -166,7 +178,7 @@ class Game(ThreadClass):
                     self.doKey('up')
             if self.config.showFps:
                 if self.screenShot is not None:
-                    if timeAfter is not None and timeBefore is not None and abs(timeBefore- timeAfter) > 1:
+                    if timeAfter is not None and timeBefore is not None and abs(timeBefore- timeAfter) > 1 and timeAfter != timeBefore:
                         timeAfter = time()
 
                         self.app.view.fpsCounter.set("FPS: {:.2f}".format(1 / (timeAfter - timeBefore)))

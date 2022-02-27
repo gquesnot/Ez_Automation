@@ -22,7 +22,7 @@ class MaskDetectionConfig(BaseDataClass):
     kernelSize: int = field(default=3)
     minArea: int = field(default=0)
     drawColor: Color = field(default=Color(255, 0, 0))
-    drawSize: int = field(default=1)
+    drawSize: int = field(default=3)
     track: bool = field(default=False)
     region: str = field(default="root")
 

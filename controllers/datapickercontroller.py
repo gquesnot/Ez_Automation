@@ -72,10 +72,17 @@ class DataPickerController:
             return self.scanDict[hint].scanDatas()
         return None
 
-    def checkMaskDetection(self, hint):
-        if hint in self.pixelDict:
-            return self.pickDict[hint].scanDatas()
+    def checkMaskDetection(self, hint, get="results"):
+        if hint in self.pickDict:
+            return self.pickDict[hint].scanDatas(get=get)
         return None
+
+
+    def checkConfigHasMaskTest(self):
+        if self.game.config.maskTest is not None:
+            if self.game.config.maskTest in self.pickDict:
+                drawedSc = self.checkMaskDetection(self.game.config.maskTest, get="screenshot")
+                self.game.imSave.update("draw_img", drawedSc)
 
     def checkImageMatch(self, hint):
         if hint in self.imgsScanDict:

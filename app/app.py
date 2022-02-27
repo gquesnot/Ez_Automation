@@ -113,6 +113,7 @@ class Controller:
 
 
     def test(self, config, hint):
+        print('test', config, hint)
         if config == "pixels":
             return self.app.game.dpc.checkPixel(hint)
         elif config == "matchImages":

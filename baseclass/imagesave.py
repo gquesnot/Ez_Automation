@@ -98,6 +98,17 @@ class ImageSave:
         else:
             return None
 
+    def getMask(self):
+        click = self.getCoor()
+        res= {}
+        if click is not None:
+            res['region'] = click['region']
+            res['upper'] = {"r":click['color']["r"]+15, "g":click['color']["g"]+15, "b":click['color']["b"]+30}
+            res['lower'] = {"r":click['color']["r"]-15, "g":click['color']["g"]-15, "b":click['color']["b"]-30}
+            return res
+        return None
+
+
     def saveRectangle(self):
         rectangle = self.getRectangle()
         if rectangle is not None:

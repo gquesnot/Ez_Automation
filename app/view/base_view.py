@@ -81,7 +81,8 @@ class EzView(ttk.Frame, ABC):
 
             elif hint == "test":
                 self.btnTest = MyButton(self, "Test", self.test, row=self.rowStart, col=col)
-            self.testResult = MySimpleInput(self, col=2, row=self.rowStart - 1, colspan=2)
+
+            self.testResult = MySimpleInput(self, col=1, row=self.rowStart + 1, colspan=3)
 
     def test(self):
         self.save()
@@ -196,8 +197,24 @@ class BaseViewWithSelect(BaseView, ABC):
                                                  row=self.rowStart, col=col)
             elif hint == "test":
                 self.btnTest = MyButton(self, "Test", self.test, row=self.rowStart, col=col)
+            elif hint == "mask":
+                self.btnCoorRectangle = MyButton(self, "Scan Mask", lambda: self.scan("mask", first=True),
+                                                 row=self.rowStart, col=col)
+            elif hint == "test mask":
+                self.btnTest = MyButton(self, "Test Mask", lambda: self.testMask(isFirst=True), row=self.rowStart,
+                                        col=col)
         if self.withTest:
             self.testResult = MySimpleInput(self, col=1, row=self.rowStart + 1, colspan=2)
+
+    def testMask(self, isFirst=False):
+        if isFirst:
+            self.btnTest.set("Cancel Test")
+            self.btnTest.config(command=lambda: self.testMask(isFirst=False))
+            self.app.game.config.maskTest = self.parentSelect.get()
+        else:
+            self.btnTest.set("Test Mask")
+            self.btnTest.config(command=lambda: self.testMask(isFirst=True))
+            self.app.game.config.maskTest = None
 
     def test(self):
         self.save()
@@ -211,15 +228,36 @@ class BaseViewWithSelect(BaseView, ABC):
             self.btnCoorRectangle.set('Cancel')
             self.btnCoorRectangle.config(command=lambda: self.scan(hint=hint, first=False))
         else:
-            self.btnCoorRectangle.set('Scan Rectangle' if hint == 'rectangle' else 'Scan Coor')
+            self.btnCoorRectangle.set(f"Scan {hint}")
             self.btnCoorRectangle.config(command=lambda: self.scan(hint=hint, first=True))
+            scanned = None
             if hint == 'rectangle':
                 scanned = self.app.game.imSave.getRectangle()
-            else:
+            elif hint == 'coor':
                 scanned = self.app.game.imSave.getCoor()
+            elif hint == 'mask':
+                scanned = self.app.game.imSave.getMask()
+
             if scanned is not None:
-                self.saveDictInDatas(hint, scanned)
+                if hint != "mask":
+                    self.saveDictInDatas(hint, scanned)
+                else:
+                    self.saveMaskDatas(scanned)
                 self.updateView()
+
+    def saveMaskDatas(self, mask):
+        self.save()
+        data = self.parentSelect.getObj()
+        self.tryMatch(data, mask, 'lower.r', "['lower']['r']")
+        self.tryMatch(data, mask, 'lower.g', "['lower']['g']")
+        self.tryMatch(data, mask, 'lower.b', "['lower']['b']")
+        self.tryMatch(data, mask, 'upper.r', "['upper']['r']")
+        self.tryMatch(data, mask, 'upper.g', "['upper']['g']")
+        self.tryMatch(data, mask, 'upper.b', "['upper']['b']")
+        self.tryMatch(data, mask, 'region', "['region']")
+
+    def applyMask(self):
+        pass
 
     def saveDictInDatas(self, hint, myDict: dict):
         self.save()
@@ -236,6 +274,19 @@ class BaseViewWithSelect(BaseView, ABC):
     def save(self, saveOnly=False):
         super().save(saveOnly=saveOnly)
         self.parentSelect.update()
+
+    def tryMatch(self, data, myDict, match, dictPath):
+        newPath = self.getPathByMatch(match)
+        if newPath is not None:
+            exec(f"{newPath} = myDict{dictPath}")
+
+    def getPathByMatch(self, match):
+        for input_ in self.inputs:
+            if input_.canSave():
+
+                if match in input_.path:
+                    return input_.path
+        return None
 
 
 class BaseViewSelectWithChild(BaseViewWithSelect, ABC):
@@ -330,36 +381,23 @@ class BaseViewSelectWithChild(BaseViewWithSelect, ABC):
         data = self.parentSelect.getObj()
         idx = self.childSelect.get()
         if hint == 'coor':
-            self.tryMatch(data, newObj,'coor.x', 'x')
-            self.tryMatch(data, newObj,'coor.y', 'y')
+            self.tryMatch(data, newObj, 'coor.x', 'x')
+            self.tryMatch(data, newObj, 'coor.y', 'y')
         elif hint == 'rectangle':
-            self.tryMatch(data, newObj,'rectangle.x', 'x')
-            self.tryMatch(data, newObj,'rectangle.y', 'y')
-            self.tryMatch(data, newObj,'rectangle.w', 'w')
-            self.tryMatch(data, newObj,'rectangle.h', 'h')
+            self.tryMatch(data, newObj, 'rectangle.x', 'x')
+            self.tryMatch(data, newObj, 'rectangle.y', 'y')
+            self.tryMatch(data, newObj, 'rectangle.w', 'w')
+            self.tryMatch(data, newObj, 'rectangle.h', 'h')
         elif hint == 'pixel':
-            self.tryMatch(data, newObj,'color.r', "['color']['r']")
-            self.tryMatch(data, newObj,'color.g', "['color']['g']")
-            self.tryMatch(data, newObj,'color.b', "['color']['b']")
-            self.tryMatch(data, newObj,'coor.x', "['x']")
-            self.tryMatch(data, newObj,'coor.y', "['y']")
-            self.tryMatch(data, newObj,'region', "['region']")
+            self.tryMatch(data, newObj, 'color.r', "['color']['r']")
+            self.tryMatch(data, newObj, 'color.g', "['color']['g']")
+            self.tryMatch(data, newObj, 'color.b', "['color']['b']")
+            self.tryMatch(data, newObj, 'coor.x', "['x']")
+            self.tryMatch(data, newObj, 'coor.y', "['y']")
+            self.tryMatch(data, newObj, 'region', "['region']")
         elif hint == 'image':
-            self.tryMatch(data, newObj,'path', "['path']")
-            self.tryMatch(data, newObj,'region', "['region']")
+            self.tryMatch(data, newObj, 'path', "['path']")
+            self.tryMatch(data, newObj, 'region', "['region']")
 
     def replaceImage(self, data, newObj):
         pass
-
-    def tryMatch(self,data, myDict, match, dictPath):
-        newPath = self.getPathByMatch(match)
-        if newPath is not None:
-            exec(f"{newPath} = myDict{dictPath}")
-
-    def getPathByMatch(self, match):
-        for input_ in self.inputs:
-            if input_.canSave():
-
-                if match in input_.path:
-                    return input_.path
-        return None

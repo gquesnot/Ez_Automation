@@ -1,4 +1,5 @@
 import tkinter
+from time import time
 from tkinter import ttk, W
 from typing import Union, Any
 
@@ -177,10 +178,12 @@ class ParentSelect:
         self.wSelect.configure(values=self.datas.keyAsList())
 
     def doNew(self, withViewUpdate=True):
-        newData = self.parent.baseClass.from_dict({})
+        newName = str(int(time()))
+        newData = self.parent.baseClass.from_dict({"name": newName})
         self.datas.set(newData)
         self.wSelect.config(values=self.datas.keyAsList())
-        self.set("")
+        self.set(newName)
+
 
         if withViewUpdate:
             self.parent.updateView()

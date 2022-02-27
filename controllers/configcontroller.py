@@ -1,5 +1,6 @@
 from dataclasses import fields
 from time import sleep
+from typing import Union
 
 from baseclass.my_dataclass.mask_detection_config import MaskDetectionConfigs
 from baseclass.my_dataclass.action_config import KeyboardActionConfigs, MouseActionConfigs
@@ -29,6 +30,8 @@ class ConfigController:
     showRegions: bool = False
     autoScreenshotInterval: int = 3
     showFps: bool = False
+
+    maskTest: Union[str, None] = None
 
     def __init__(self, game):
         self.window = WindowConfig.from_dict(getJson("window"), )
