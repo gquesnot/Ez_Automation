@@ -4,7 +4,7 @@ from tkinter import ttk
 
 from app.components.my_input import MyButton
 from app.components.my_menu import MyMenu
-from app.view.actions_view import MouseActionsView, KeyboardActionsView
+from app.view.actions_view import MouseActionsView, KeyboardActionsView, RecordPlayActionView
 from app.view.mask_detections_view import MaskDetectionsView
 from app.view.match_images_view import MatchImagesView
 from app.view.pixels_view import PixelsView
@@ -24,13 +24,17 @@ class MainFrame(tkinter.Frame):
     fpsCounter : tkinter.StringVar = None
     baseRow = 0
     home : bool = True
-
+    dirVar: tkinter.StringVar = None
 
     def __init__(self, app: 'App'):
         super().__init__(app)
         self.app = app
         self.fpsCounter = tkinter.StringVar()
         self.fpsCounter.set('FPS: 0')
+        self.dirVar = tkinter.StringVar()
+        self.dirVar.set('DIR: ' + str(self.app.game.RC.getDirectoryAsStr()))
+
+
         print('init view')
 
 
@@ -45,15 +49,23 @@ class MainFrame(tkinter.Frame):
             tkinter.Label(self, textvariable=self.fpsCounter, font=('Helvetica', '10')).grid(row=self.baseRow, column=1, sticky=W)
             self.baseRow += 1
         if self.app.game.typeState == GameTypeState.REPLAY:
-            ttk.Button(self, command=lambda:self.app.game.RC.prev(), text='Previous Frame').grid(row=self.baseRow, column= 1, sticky=W)
-            ttk.Button(self, command=lambda:self.app.game.RC.next(), text='Next Frame').grid(row=self.baseRow, column=0, sticky=W)
-            ttk.Button(self, command=lambda:self.app.game.RC.nextDir(), text='Next Dir').grid(row=self.baseRow, column= 2, sticky=W)
-            self.baseRow += 3
+
+            tkinter.Label(self, textvariable=self.dirVar, font=('Helvetica', '10')).grid(row=self.baseRow, column=1, sticky=W)
+
+            ttk.Button(self, command=lambda:self.app.game.RC.prev(), text='Previous Frame').grid(row=self.baseRow + 1, column= 1, sticky=W)
+            ttk.Button(self, command=lambda:self.app.game.RC.next(), text='Next Frame').grid(row=self.baseRow + 1, column=0, sticky=W)
+            ttk.Button(self, command=lambda:self.nextDir(), text='Next Dir').grid(row=self.baseRow + 1, column= 2, sticky=W)
+            self.baseRow += 2
         else:
             ttk.Button(self, command=self.app.game.imSave.saveScreenShot, text='Take Screenshot').grid(row=self.baseRow, column=0, sticky=W)
             self.baseRow += 1
         ttk.Button(self, command=self.app.game.imSave.saveRectangle, text='Show Rectangle\nfrom 2 last click').grid(row=self.baseRow, column=0, sticky=W)
+        ttk.Button(self, command=lambda :self.app.game.config.load('window'), text='Fix Window').grid(row=self.baseRow +1, column=0, sticky=W)
+        self.baseRow +=2
 
+    def nextDir(self, event = None):
+        self.app.game.RC.nextDir()
+        self.dirVar.set('DIR: ' + str(self.app.game.RC.getDirectoryAsStr()))
 
 
     def clear(self):
@@ -94,6 +106,8 @@ class Controller:
             self.app.view.addView(MouseActionsView(self.app))
         elif config == "Keyboard Actions":
             self.app.view.addView(KeyboardActionsView(self.app))
+        elif config == "Record actions":
+            self.app.view.addView(RecordPlayActionView(self.app))
 
     def doAction(self, toDo, state):
         print('do action', toDo, state)

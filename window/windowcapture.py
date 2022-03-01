@@ -8,6 +8,7 @@ import win32gui
 import win32ui
 from mss import mss
 
+from baseclass.my_dataclass.coor import Coor
 from baseclass.my_dataclass.window_config import WindowConfig
 
 user32 = ctypes.WinDLL('user32', use_last_error=True)
@@ -111,6 +112,13 @@ class WindowCapture:
 
     def stop(self):
         self.stopped = True
+
+    def windowCoor(self, coor: Coor) -> Coor:
+        coor.x -= self.offset_x
+        coor.y -= self.offset_y
+        return coor
+
+
 
     def getScreenshot(self):
         try:

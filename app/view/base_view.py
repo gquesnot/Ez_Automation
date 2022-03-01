@@ -16,6 +16,8 @@ class EzView(ttk.Frame, ABC):
     parentSelect: ParentSelect = None
     btnSave: MyButton = None
     btnDelete: MyButton = None
+    btnRecord: MyButton = None
+    btnReplay: MyButton = None
     btnTest: MyButton = None
     btnCoorRectangle: MyButton = None
     testResult: MySimpleInput = None
@@ -82,7 +84,41 @@ class EzView(ttk.Frame, ABC):
             elif hint == "test":
                 self.btnTest = MyButton(self, "Test", self.test, row=self.rowStart, col=col)
 
+            elif hint == "record":
+                self.btnRecord = MyButton(self, "Record", lambda:self.record(isFirst=True), row=self.rowStart, col=col)
+            elif hint == "replay":
+                self.btnReplay = MyButton(self, "Replay", lambda:self.replay(isFirst=True), row=self.rowStart, col=col)
+
             self.testResult = MySimpleInput(self, col=1, row=self.rowStart + 1, colspan=3)
+
+
+
+
+    def record(self, isFirst):
+        if isFirst:
+            self.btnRecord.set('Stop Record')
+            self.app.game.actionListener.start()
+        else:
+            self.btnRecord.set('Record')
+            if not self.app.game.actionListener.stopped:
+                self.app.game.actionListener.stop()
+            obj = self.parentSelect.getObj()
+            obj.actions = self.app.game.actionListener.selected.actions
+            self.updateView()
+        self.btnRecord.config(command= lambda: self.record(isFirst=not isFirst))
+
+
+    def replay(self, isFirst):
+        if isFirst:
+            self.btnReplay.set('Stop Replay')
+            self.app.game.actionReplay.select(self.parentSelect.get())
+            self.app.game.actionReplay.start()
+        else:
+            self.btnReplay.set('Replay')
+            if not self.app.game.actionReplay.stopped:
+                self.app.game.actionReplay.stop()
+        self.btnReplay.config(command= lambda: self.replay(isFirst=not isFirst))
+        pass
 
     def test(self):
         self.save()

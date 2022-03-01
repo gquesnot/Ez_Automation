@@ -17,6 +17,9 @@ class Coor(BaseDataClass):
     def hasList(self) -> List[int]:
         return [self.x, self.y]
 
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any], **kwargs) -> 'Coor':
         return from_dict(data_class=cls, data=data)

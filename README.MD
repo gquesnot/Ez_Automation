@@ -33,9 +33,13 @@ You can configure:
 - detection of pixels OR/ AND 
 - detection of text/int 
 - image detection OR/AND
-- mask detection (manualy)
-- action
+- mask detection
+- actions, mouse / keyboard
 - combo actions (soon)
+- record edit and replay mouse/keyboard  actions (soon)
+- complex image filtering (future)
+- ia object detections creation/execution (future)
+- ia action->image creation/execution (future)
 
 ## Getting Started
 

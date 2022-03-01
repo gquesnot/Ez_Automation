@@ -2,6 +2,7 @@ from dataclasses import fields
 from time import sleep
 from typing import Union
 
+from baseclass.my_dataclass.action_record_config import ActionRecordConfigs
 from baseclass.my_dataclass.mask_detection_config import MaskDetectionConfigs
 from baseclass.my_dataclass.action_config import KeyboardActionConfigs, MouseActionConfigs
 from baseclass.my_dataclass.window_config import WindowConfig
@@ -24,12 +25,13 @@ class ConfigController:
     maskDetections: MaskDetectionConfigs = None
     mouseActions: MouseActionConfigs = None
     keyboardActions: KeyboardActionConfigs = None
-
+    replayActions: ActionRecordConfigs = None
     freeze: bool = False
     autoScreenshot: bool = False
     showRegions: bool = False
     autoScreenshotInterval: int = 3
     showFps: bool = False
+    recording: bool = False
 
     maskTest: Union[str, None] = None
 
@@ -42,6 +44,8 @@ class ConfigController:
         self.maskDetections = MaskDetectionConfigs.from_dict(getJson("maskDetections"))
         self.mouseActions = MouseActionConfigs.from_dict(getJson("mouseActions"))
         self.keyboardActions = KeyboardActionConfigs.from_dict(getJson("keyboardActions"))
+        self.replayActions = ActionRecordConfigs.from_dict(getJson("replayActions"))
+        print(self.replayActions)
         self.game = game
 
     def apply(self, obj, hint: str, withOutDict: bool = False):
@@ -54,6 +58,18 @@ class ConfigController:
                 value = getattr(myDc, field.name)
             setattr(obj, field.name, value)
 
+
+    def toggleRecording(self):
+        if self.recording is False:
+            self.game.actionListener.start()
+        else:
+            self.game.actionListener.stop()
+        #print('pass start recording', self.game.actionListener.actions)
+        for k in self.game.actionListener.actions:
+            print(k)
+        self.recording = not self.recording
+
+
     def set(self, model, obj, save=False, load=False):
         myDc = getattr(self, model)
         for field in fields(myDc):
@@ -65,7 +81,14 @@ class ConfigController:
         return myDc
 
     def toggle(self, key, double=False):
+        if key == "recording" and self.recording is False:
+            self.game.actionListener.start()
+        elif key == "recording" and self.recording is True:
+            self.game.actionListener.stop()
+            for k in self.game.actionListener.selected.actions:
+                print(k)
         setattr(self, key, not getattr(self, key))
+
         if double:
             sleep(0.1)
             setattr(self, key, not getattr(self, key))
@@ -106,3 +129,4 @@ class ConfigController:
             self.game.dpc.loadTcrScans()
         elif model == "maskDetections":
             self.game.dpc.loadMaskDetections()
+

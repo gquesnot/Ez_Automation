@@ -1,17 +1,21 @@
 from time import sleep
+from typing import Union
 
 import pyautogui
 from pynput.keyboard import Controller
 from pynput.keyboard import Listener
 from pynput.mouse import Button, Controller as MC
 
+from baseclass.my_dataclass.action_record import ActionMouseClickRecord, ActionMouseDragRecord, ActionKeyBoardRecord
 from util.threadclass import ThreadClass
 
 
-# The event listener will be running in this block
 
 
 class KeyboardController(ThreadClass):
+    mouse: MC = None
+    keyword: Controller = None
+
     def __init__(self, game):
         super().__init__()
         self.game = game
@@ -29,10 +33,27 @@ class KeyboardController(ThreadClass):
             self.keyboard.press(c)
         self.pressed.add(set(combo))
 
+    def handlemouseActionRecord(self, action: Union[ActionMouseClickRecord, ActionMouseDragRecord], release=False):
+        if release:
+            if type(action) == ActionMouseDragRecord:
+                coor = self.game.wc.windowCoor(action.coorEnd)
+                self.mouse.move(coor.x, coor.y)
+            self.mouse.release(Button.left)
+        else:
+            coor = self.game.wc.windowCoor(action.coorStart)
+            self.mouse.move(coor.x, coor.y)
+            self.mouse.press(Button.left)
+
+    def handleKeyboardActionRecord(self, action: ActionKeyBoardRecord, release=False):
+        if release:
+            self.keyword.press(action.key)
+        else:
+            self.keyword.release(action.key)
+
     def handleMouseAction(self, mouseAction):
         if mouseAction.region != "root":
             coor = self.game.regions.getCoorByRegion(mouseAction.region)
-            coor = (mouseAction.coor.x + coor.x, mouseAction.coor.y+  coor.y)
+            coor = (mouseAction.coor.x + coor.x, mouseAction.coor.y + coor.y)
         else:
             coor = (mouseAction.coor.x, mouseAction.coor.y)
         self.mouseMove(coor)
@@ -97,6 +118,7 @@ class KeyboardController(ThreadClass):
         pyautogui.keyUp(key)
 
     def on_press(self, key):
+
         self.pressed.add(key)
 
     def on_release(self, key):

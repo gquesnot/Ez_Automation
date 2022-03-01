@@ -14,6 +14,9 @@ class Replay:
         self.directory = self.directoryList[self.di]
         self.fileNames = [dir_ for dir_ in os.listdir(self.directory) if dir_[0] != '.']
 
+    def getDirectoryAsStr(self):
+        return self.directoryList[self.di].split('/')[-2]
+
     def prev(self):
         self.i -= 1
         if self.i < 0:

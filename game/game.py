@@ -1,8 +1,8 @@
 from time import sleep, time
 from typing import Any
-
 import cv2
-
+from baseclass.action_listener import ActionListener
+from baseclass.action_player import ActionReplay
 from baseclass.imagesave import ImageSave
 from baseclass.regions import Regions
 from baseclass.replayClass import Replay
@@ -37,6 +37,8 @@ class Game(ThreadClass):
     cv2Controller: Cv2WindowController = None
     timer: Timer = None
     regions: Regions = None
+    actionListener: ActionListener= None
+    actionReplay: ActionReplay = None
 
 
 
@@ -54,6 +56,8 @@ class Game(ThreadClass):
         self.RC = Replay()
         self.regions = Regions(self)
         self.imSave = ImageSave(self)
+        self.actionListener = ActionListener(self)
+        self.actionReplay = ActionReplay(self)
         # self.vision = Vision(hsv=True)
 
         if not self.isPlaying():

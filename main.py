@@ -5,9 +5,7 @@ from typing import Union
 import cv2
 
 from app.app import App
-from baseclass.my_enum.game_type_state import GameTypeState
 from game.game import Game
-from util.pixel import getImgRectangle
 
 game: Union[Game, None] = None
 

@@ -1,6 +1,8 @@
 from app.components.my_input import MyInput
-from baseclass.my_dataclass.action_config import KeyboardActionConfig, MouseActionConfig, MouseActionConfigs
-from app.view.base_view import BaseViewWithSelect
+from app.view.base_view import BaseViewWithSelect, EzView
+from baseclass.my_dataclass.action_config import KeyboardActionConfig, MouseActionConfig, MouseActionConfigs, \
+    KeyboardActionConfigs
+from baseclass.my_dataclass.action_record_config import ActionRecordConfigs, ActionRecordConfig
 
 
 class MouseActionsView(BaseViewWithSelect):
@@ -35,3 +37,13 @@ class KeyboardActionsView(BaseViewWithSelect):
         self.inputs.append(MyInput(self, "Key", data.key, row=self.rowStart + 3, path="data.key"))
         self.rowStart += 4
         self.addBtnByHint(['save', 'delete', 'test'])
+
+
+class RecordPlayActionView(EzView):
+    datas:ActionRecordConfigs  = None
+    baseClass: ActionRecordConfig = ActionRecordConfig
+
+    hints = ['save', 'new', 'delete', 'record', 'replay']
+
+    def __init__(self, app: 'App'):
+        super().__init__(app, app.game.config.replayActions, "replayActions")

@@ -17,6 +17,7 @@ class MyMenu:
         "Mask Detections",
         "Mouse Actions",
         "Keyboard Actions",
+        "Record actions"
     ]
     configMenu: tkinter.Menu = None
     gameStatesMenu: tkinter.Menu = None
@@ -52,11 +53,12 @@ class MyMenu:
         self.optionMenu = tkinter.Menu(self.menu, tearoff=0, relief=FLAT, font=("Verdana", 12), activebackground='red')
         self.optionMenu.add_command(label="Unfreeze" if self.app.game.config.freeze else "Freeze",
                                     command=lambda: self.app.controller.doAction("toggle", "freeze"))
-        self.optionMenu.add_command(label="Auto Screenshot",
+        self.optionMenu.add_command(label="[*] Auto Screenshot" if self.app.game.config.autoScreenshot else "Auto Screenshot",
                                     command=lambda: self.app.controller.doAction("toggle", "autoScreenshot"))
-        self.optionMenu.add_command(label="Show regions",
+        self.optionMenu.add_command(label="Hide regions" if self.app.game.config.showRegions else "Show regions",
                                     command=lambda: self.app.controller.doAction("toggle", "showRegions"))
-        self.optionMenu.add_command(label="Show Fps", command=lambda: self.app.controller.doAction("toggle", "showFps"))
+        self.optionMenu.add_command(label="Hide Fps" if self.app.game.config.showFps else "Show Fps", command=lambda: self.app.controller.doAction("toggle", "showFps"))
+        self.optionMenu.add_command(label="End Recording" if self.app.game.config.recording else "Start Recording", command=lambda: self.app.controller.doAction("toggle", "recording"))
         self.menu.add_cascade(label="Options", menu=self.optionMenu)
 
     def quit(self, event=None):
@@ -97,6 +99,8 @@ class MyMenu:
         self.optionMenu.entryconfig(1,
                                     label="[*] Auto Screenshot" if self.app.game.config.autoScreenshot else "Auto Screenshot")
         self.optionMenu.entryconfig(2, label="Hide regions" if self.app.game.config.showRegions else "Show regions")
+        self.optionMenu.entryconfig(3, label="Hide Fps" if self.app.game.config.showFps else "Show Fps")
+        self.optionMenu.entryconfig(4, label="End Recording" if self.app.game.config.recording else "Start Recording")
 
 
     def rebuildGlobalStateMenu(self):
