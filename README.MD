@@ -72,6 +72,7 @@ if self.state == GameState.PLAYING:
     print('check image evt1: ', self.dpc.checkImageMatch('evt1'))
     print('check mask greenBar: ', self.dpc.checkMaskDetection('greenBar'))
     print('do action closeUp')
-    self.doClick('closeUpgrade')
-    self.doKey('up')
+    self.doClick('closeUpgrade') # click to the position related to closeUpgrade
+    self.doKey('up') # press key related to up
+    self.play('allUpgrade')# play all the actions
 ````
