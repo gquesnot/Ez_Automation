@@ -14,8 +14,8 @@ class MyTextArea:
         self.row = row
         self.col = col
 
-        self.wText = ScrolledText(self.parent, width=40, height=10)
-        self.wText.grid(row=self.row, column=self.col, columnspan=4)
+        self.wText = ScrolledText(self.parent, width=50, height=25)
+        self.wText.grid(row=self.row, column=self.col, columnspan=6)
         self.set('')
 
     def set(self, value):

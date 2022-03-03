@@ -1,6 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass, field, asdict
-from typing import Dict, Any
+from typing import Dict, Any, Union
 
 from dacite import from_dict
 
@@ -29,7 +29,7 @@ class ActionKeyBoardRecord(BaseActionRecord):
     """
     A class to store an action record.
     """
-    key: str = ""
+    key: Union[str,int] = ""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any], **kwargs) -> 'ActionKeyBoardRecord':
@@ -50,12 +50,11 @@ class ActionMouseClickRecord(BaseActionRecord):
 
 
 @dataclass
-class ActionMouseDragRecord(BaseActionRecord):
+class ActionMouseDragRecord(ActionMouseClickRecord):
     """
     A class to store an action record.
     """
 
-    coorStart: Coor = field(default_factory=lambda: Coor())
     coorEnd: Coor = field(default_factory=lambda: Coor())
 
     @classmethod

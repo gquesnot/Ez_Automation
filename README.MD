@@ -36,7 +36,7 @@ You can configure:
 - mask detection
 - actions, mouse / keyboard
 - combo actions (soon)
-- record edit and replay mouse/keyboard  actions (soon)
+- record edit and replay mouse/keyboard  actions
 - complex image filtering (future)
 - ia object detections creation/execution (future)
 - ia action->image creation/execution (future)

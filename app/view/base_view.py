@@ -3,8 +3,9 @@ from abc import ABC
 from tkinter import ttk, W
 from typing import Any, Union
 
-from app.components.my_input import MyButton, MySimpleInput, MyImg, MyTextArea
+from app.components.my_input import MyButton, MySimpleInput, MyImg, MyTextArea, MyInput
 from app.components.my_select import ParentSelect, MyChildSelect
+from util.timer import waitFewSec
 
 
 class EzView(ttk.Frame, ABC):
@@ -21,6 +22,7 @@ class EzView(ttk.Frame, ABC):
     btnTest: MyButton = None
     btnCoorRectangle: MyButton = None
     testResult: MySimpleInput = None
+
     name: str = ""
     rowStart: int = 1
     hints = ["save", "delete", "test"]
@@ -34,9 +36,9 @@ class EzView(ttk.Frame, ABC):
         ttk.Label(self, text=self.name).grid(row=0, column=0, sticky=W)
 
         self.parentSelect = ParentSelect(self, datas=self.datas, row=self.rowStart)
-        self.text = MyTextArea(self, row=self.rowStart + 1)
+        self.text = MyTextArea(self, row=self.rowStart + 2)
 
-        self.rowStart += 2
+        self.rowStart += 3
         self.addBtnByHint()
         self.text.set(json.dumps(self.parentSelect.getObj().to_dict(), indent=4))
 
@@ -46,9 +48,12 @@ class EzView(ttk.Frame, ABC):
 
     def save(self, saveOnly=False):
         textData = self.text.get()
-        data = self.baseClass.from_dict(json.loads(textData))
-        self.datas.set(data)
+        oldObj= self.parentSelect.getObj()
+        newObj = self.baseClass.from_dict(json.loads(textData))
 
+        self.datas.set(newObj, oldObj.name)
+        self.parentSelect.update()
+        self.parentSelect.set(newObj.name)
         self.app.game.config.saveOnly(self.name, reload=saveOnly)
 
     def updateView(self, event=None):
@@ -88,9 +93,23 @@ class EzView(ttk.Frame, ABC):
                 self.btnRecord = MyButton(self, "Record", lambda:self.record(isFirst=True), row=self.rowStart, col=col)
             elif hint == "replay":
                 self.btnReplay = MyButton(self, "Replay", lambda:self.replay(isFirst=True), row=self.rowStart, col=col)
+            elif hint == 'minify':
+                MyButton(self, "Minify", lambda: self.minify(), row=self.rowStart, col=col)
 
-            self.testResult = MySimpleInput(self, col=1, row=self.rowStart + 1, colspan=3)
+            #self.testResult = MySimpleInput(self, col=1, row=self.rowStart + 1, colspan=3)
 
+
+
+    def minify(self, event=None):
+        data = self.parentSelect.getObj()
+        t= 0.1
+        for action in data.all():
+            action.startAt = t
+            action.endAt = t+ 0.05
+            t += 0.1
+
+        self.save()
+        self.text.set(json.dumps(data.to_dict(), indent=2))
 
 
 
@@ -101,9 +120,10 @@ class EzView(ttk.Frame, ABC):
         else:
             self.btnRecord.set('Record')
             if not self.app.game.actionListener.stopped:
-                self.app.game.actionListener.stop()
+                self.app.game.actionReplay.stop()
             obj = self.parentSelect.getObj()
-            obj.actions = self.app.game.actionListener.selected.actions
+            obj.keys = self.app.game.actionListener.selected.keys
+            obj.clicks = self.app.game.actionListener.selected.clicks
             self.updateView()
         self.btnRecord.config(command= lambda: self.record(isFirst=not isFirst))
 
@@ -112,6 +132,7 @@ class EzView(ttk.Frame, ABC):
         if isFirst:
             self.btnReplay.set('Stop Replay')
             self.app.game.actionReplay.select(self.parentSelect.get())
+            waitFewSec(3)
             self.app.game.actionReplay.start()
         else:
             self.btnReplay.set('Replay')

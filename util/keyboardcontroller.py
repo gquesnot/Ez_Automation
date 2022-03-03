@@ -2,7 +2,7 @@ from time import sleep
 from typing import Union
 
 import pyautogui
-from pynput.keyboard import Controller
+from pynput.keyboard import Controller, KeyCode
 from pynput.keyboard import Listener
 from pynput.mouse import Button, Controller as MC
 
@@ -14,7 +14,7 @@ from util.threadclass import ThreadClass
 
 class KeyboardController(ThreadClass):
     mouse: MC = None
-    keyword: Controller = None
+    keybord: Controller = None
 
     def __init__(self, game):
         super().__init__()
@@ -33,22 +33,29 @@ class KeyboardController(ThreadClass):
             self.keyboard.press(c)
         self.pressed.add(set(combo))
 
-    def handlemouseActionRecord(self, action: Union[ActionMouseClickRecord, ActionMouseDragRecord], release=False):
+    def handleMouseActionRecord(self, action: Union[ActionMouseClickRecord,ActionMouseDragRecord] , release=False):
         if release:
             if type(action) == ActionMouseDragRecord:
-                coor = self.game.wc.windowCoor(action.coorEnd)
-                self.mouse.move(coor.x, coor.y)
+
+                self.mouse.move(*self.game.wc.toWindow(action.coorEnd, *self.mouse.position))
             self.mouse.release(Button.left)
         else:
-            coor = self.game.wc.windowCoor(action.coorStart)
-            self.mouse.move(coor.x, coor.y)
+            self.mouse.move(*self.game.wc.toWindow(action.coorStart, *self.mouse.position))
+
             self.mouse.press(Button.left)
+
+    def clearInput(self):
+        for c in self.pressed:
+            self.keyboard.release(c)
 
     def handleKeyboardActionRecord(self, action: ActionKeyBoardRecord, release=False):
         if release:
-            self.keyword.press(action.key)
+            self.keyboard.press(KeyCode.from_vk(action.key))
+            self.pressed.remove(action.key)
         else:
-            self.keyword.release(action.key)
+            self.keyboard.release(KeyCode.from_vk(action.key))
+            self.pressed.add(action.key)
+
 
     def handleMouseAction(self, mouseAction):
         if mouseAction.region != "root":

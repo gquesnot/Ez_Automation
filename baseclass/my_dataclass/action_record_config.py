@@ -16,10 +16,19 @@ class ActionRecordConfig(BaseDataClass):
     """
 
     name: str = field(default="")
-    actions: List[Union[ActionKeyBoardRecord, ActionMouseClickRecord, ActionMouseDragRecord]] = field(default_factory=list)
+    keys: List[ActionKeyBoardRecord] = field(default_factory=list)
+    clicks: List[Union[ActionMouseClickRecord, ActionMouseDragRecord]] = field(default_factory=list)
 
     def totalDuration(self):
-        return max(self.actions, key=lambda x: x.endAt).endAt
+        maxKey = max(self.keys, key=lambda x: x.endAt).endAt if len(self.keys) > 0 else 0
+        maxClick = max(self.clicks, key=lambda x: x.endAt).endAt if len(self.clicks) > 0 else 0
+        print(maxClick, maxKey)
+        return max(maxKey, maxClick)
+
+    def all(self):
+        newList = [*self.keys, *self.clicks]
+        newList.sort(key=lambda x: x.startAt)
+        return newList
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'ActionRecordConfig':

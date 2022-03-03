@@ -180,6 +180,7 @@ class Game(ThreadClass):
                     print('do action closeUp')
                     self.doClick('closeUpgrade')
                     self.doKey('up')
+                    self.actionReplay.play('upgradeAll')
             if self.config.showFps:
                 if self.screenShot is not None:
                     if timeAfter is not None and timeBefore is not None and abs(timeBefore- timeAfter) > 1 and timeAfter != timeBefore:

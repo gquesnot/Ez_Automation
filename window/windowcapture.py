@@ -86,6 +86,7 @@ class WindowCapture:
         self.center = {"x": int(self.w / 2), "y": int(self.h / 2)}
         self.halfSize = (int(self.w / 2), int(self.h / 2))
         self.isLoaded = isLoaded
+        print("window loaded", self.offset_x, self.offset_y, self.w, self.h, self.center)
 
     def getCenter(self):
         return self.center['x'], self.center['y']
@@ -95,11 +96,14 @@ class WindowCapture:
 
     def activate(self):
         try:
+            print('activate window')
+            win32gui.ShowWindow(self.hwnd,5)
             win32gui.SetForegroundWindow(self.hwnd)
             return True
         except:
             try:
-                win32gui.ShowWindow(self.hwnd, win32con.SW_SHOW)
+                print('try hard to activate window')
+                win32gui.ShowWindow(self.hwnd, 5)
                 win32gui.SetForegroundWindow(self.hwnd)
                 return True
             except:
@@ -113,11 +117,14 @@ class WindowCapture:
     def stop(self):
         self.stopped = True
 
-    def windowCoor(self, coor: Coor) -> Coor:
+    def toWindow(self, coor: Coor, positionX, positionY):
+        print("toWindow", coor.x + self.offset_x, coor.y + self.offset_y, positionX, positionY)
+        return coor.x + self.offset_x - positionX, coor.y + self.offset_y - positionY
+
+    def fromWindow(self, coor: Coor) -> Coor:
         coor.x -= self.offset_x
         coor.y -= self.offset_y
         return coor
-
 
 
     def getScreenshot(self):

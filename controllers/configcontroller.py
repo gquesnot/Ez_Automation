@@ -85,8 +85,6 @@ class ConfigController:
             self.game.actionListener.start()
         elif key == "recording" and self.recording is True:
             self.game.actionListener.stop()
-            for k in self.game.actionListener.selected.actions:
-                print(k)
         setattr(self, key, not getattr(self, key))
 
         if double:

@@ -1,4 +1,15 @@
-from time import time
+from time import time, sleep
+
+
+def waitFewSec(sec):
+    """
+    Wait few seconds.
+    """
+    while sec > 0:
+        print(f'\rWaiting {sec}s', end='')
+        sec -= 1
+        sleep(1)
+    print('\r', end='')
 
 
 class Time:

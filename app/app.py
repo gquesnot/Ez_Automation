@@ -158,7 +158,7 @@ class App(tkinter.Tk):
 
         self.config(menu=self.menu.menu)
         self.title("Bot Control")
-        self.geometry("700x650")
+        self.geometry("800x650")
         self.resizable(width=False, height=False)
         self.style = ttk.Style(self)
         self.style.theme_use("vista")

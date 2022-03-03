@@ -43,7 +43,7 @@ class RecordPlayActionView(EzView):
     datas:ActionRecordConfigs  = None
     baseClass: ActionRecordConfig = ActionRecordConfig
 
-    hints = ['save', 'new', 'delete', 'record', 'replay']
+    hints = ['save', 'new', 'delete', 'minify','record', 'replay']
 
     def __init__(self, app: 'App'):
         super().__init__(app, app.game.config.replayActions, "replayActions")

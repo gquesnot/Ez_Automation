@@ -151,7 +151,7 @@ class ParentSelect:
 
         self.wSelect = ttk.Combobox(self.parent, values=self.datas.keyAsList(), state='readonly',
                                     textvariable=self.wValue, width=15)
-        self.wSelect.grid(column=col, row=row, columnspan=colspan, padx=10, pady=10, sticky=W)
+        self.wSelect.grid(column=0, row=row, columnspan=colspan, padx=10, pady=10, sticky=W)
         self.wSelect.bind("<<ComboboxSelected>>", self.parent.updateView)
         self.wBtnNew = MyButton(self.parent, text="New", command=self.doNew, width=10, col=1, row=row)
         if self.datas.isEmpty():

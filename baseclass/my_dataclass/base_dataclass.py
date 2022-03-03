@@ -20,7 +20,9 @@ class GetSetDict(ABC):
     def updateName(self, oldName, newName: str) -> None:
         self.dict[newName] = self.dict.pop(oldName)
 
-    def set(self, action: Any) -> None:
+    def set(self, action: Any, oldName=None) -> None:
+        if oldName is not None:
+            del self.dict[oldName]
         self.dict[action.name] = action
 
     def remove(self, name: str) -> None:
