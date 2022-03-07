@@ -32,4 +32,4 @@ class Regions:
                 screenshot = cv2.resize(screenshot, (
                     int(region.rectangle.w * region.ratio), int(region.rectangle.h * region.ratio)))
             return screenshot
-        return None
+        return screenshot

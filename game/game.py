@@ -1,3 +1,4 @@
+import copy
 from time import sleep, time
 from typing import Any
 import cv2
@@ -11,6 +12,7 @@ from controllers.datapickercontroller import DataPickerController
 from baseclass.my_enum.game_state import GameState
 from baseclass.my_enum.game_type_state import GameTypeState
 from baseclass.my_enum.location_state import LocationState
+from ia.ia import IA
 from util.keyboardcontroller import KeyboardController
 from util.tcr import Tcr
 from util.threadclass import ThreadClass
@@ -39,6 +41,7 @@ class Game(ThreadClass):
     regions: Regions = None
     actionListener: ActionListener= None
     actionReplay: ActionReplay = None
+    ia : IA = None
 
 
 
@@ -67,6 +70,7 @@ class Game(ThreadClass):
         self.dpc = DataPickerController(self)
         # self.trackerController = TrackerController(self)
         self.kc = KeyboardController(self)
+        self.ia = IA(self)
 
         self.startClass()
 
@@ -96,8 +100,14 @@ class Game(ThreadClass):
                 self.kc.moveClick(self.wc.getCenter(), delay=.1, timeBeetwen=.1)
             self.kc.handleMouseAction(self.config.keyboardActions.get(hint))
 
+
+    def getScreenshotCopy(self):
+        if self.screenShot is not None:
+            return copy.deepcopy(self.screenShot)
+        else:
+            return None
     def startClass(self):
-        pass
+        self.ia.start()
 
     # def createImage(self, comboHint):
     #     if self.screenShot is not None:
