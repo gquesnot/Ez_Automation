@@ -1,7 +1,7 @@
 from time import time, sleep
 
 
-def waitFewSec(sec):
+def wait_few_sec(sec):
     """
     Wait few seconds.
     """
@@ -40,9 +40,9 @@ class Timer:
                 elem.end()
                 return
 
-    def printElem(self, toFind):
-        print(toFind, ":")
-        for elem in self.results[toFind]:
+    def print_elem(self, to_find):
+        print(to_find, ":")
+        for elem in self.results[to_find]:
             print(" -", str(elem.end_ - elem.start_))
 
     def reset(self):

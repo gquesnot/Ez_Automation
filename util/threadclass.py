@@ -18,7 +18,7 @@ class ThreadClass:
         self.stopped = True
         self.started = False
 
-    def isStarted(self):
+    def is_started(self):
         return self.started
 
     @abstractmethod

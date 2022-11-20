@@ -17,27 +17,27 @@ class MatchImages(ThreadClass, ImageMatchConfig):
         self.game = game
         self.config = config
         self.config.apply(self)
-        self.loadImages()
+        self.load_images()
 
-    def loadImages(self):
+    def load_images(self):
         for img in self.images:
             img.image = cv2.imread(img.path)
 
     def run(self):
         while not self.stopped:
             t = time.time()
-            self.scanDatas()
+            self.scan_datas()
 
             sleep(0.01)
 
-    def imageMatchScreenShot(self, img, screenshot=None):
+    def image_match_screen_shot(self, img, screenshot=None):
         result = cv2.matchTemplate(img, screenshot, cv2.TM_SQDIFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
         if min_val < self.tolerance:
             return min_loc
         return False
 
-    def scanDatas(self, screenshot=None):
+    def scan_datas(self, screenshot=None):
         if screenshot is None:
             if self.game.screenShot is not None:
                 screenshot = self.game.screenShot
@@ -45,10 +45,10 @@ class MatchImages(ThreadClass, ImageMatchConfig):
         if screenshot is not None:
             for img in self.images:
                 if img.region not in ("", "root"):
-                    tmpImage = self.game.regions.applyRegion(img.region, screenshot)
+                    tmp_image = self.game.regions.applyRegion(img.region, screenshot)
                 else:
-                    tmpImage = screenshot
-                result = self.imageMatchScreenShot(img.image, tmpImage)
+                    tmp_image = screenshot
+                result = self.image_match_screen_shot(img.image, tmp_image)
                 if result is not False:
                     return result
 

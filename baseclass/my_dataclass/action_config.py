@@ -6,7 +6,7 @@ from dacite import from_dict
 
 from baseclass.my_dataclass.base_dataclass import BaseDataClass, GetSetDict
 from baseclass.my_dataclass.coor import Coor
-from util.json_function import toJson
+from util.json_function import to_json
 
 
 @dataclass
@@ -16,7 +16,7 @@ class ActionBaseConfig(BaseDataClass, ABC):
     """
     name: str = field(default="")
     delay: float = field(default=.1)
-    sleepAfter: float = field(default=.1)
+    sleep_after: float = field(default=.1)
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'ActionBaseConfig':
@@ -59,7 +59,7 @@ class KeyboardActionConfigs(BaseDataClass, GetSetDict):
     dict: Dict[str, KeyboardActionConfig] = field(default_factory=dict)
 
     def save(self):
-        toJson("keyboardActions", self.to_dict())
+        to_json("keyboardActions", self.to_dict())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'KeyboardActionConfigs':
@@ -75,7 +75,7 @@ class MouseActionConfigs(BaseDataClass, GetSetDict):
     dict: Dict[str, MouseActionConfig] = field(default_factory=dict)
 
     def save(self):
-        toJson("mouseActions", self.to_dict())
+        to_json("mouseActions", self.to_dict())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'MouseActionConfigs':

@@ -13,42 +13,42 @@ class Box:
     def reset(self):
         self.champ = None
 
-    def hasChamp(self):
+    def has_champ(self):
         if self.champ is None:
             return False
         else:
             return True
 
-    def getChamp(self):
+    def get_champ(self):
         return self.champ
 
-    def getId(self):
+    def get_id(self):
         return self.id
 
-    def getCoor(self):
+    def get_coor(self):
         return self.coor
 
-    def getChampValue(self):
-        return self.champ.getValue() if self.hasChamp() else 0
+    def get_champ_value(self):
+        return self.champ.getValue() if self.has_champ() else 0
 
-    def getPosAsCoor(self):
+    def get_pos_as_coor(self):
         if self.type == "game":
             return math.floor(self.id / 7), self.id % 7
         else:
             return self.id
 
-    def getCoorHasTuple(self):
+    def get_coor_has_tuple(self):
         return self.coor['x'], self.coor['y']
 
-    def getType(self):
+    def get_type(self):
         return self.type
 
-    def getName(self):
+    def get_name(self):
         return self.name
 
     def __str__(self):
-        res = "{} Name: {}, ".format(self.type, self.getName())
-        if self.hasChamp():
+        res = "{} Name: {}, ".format(self.type, self.get_name())
+        if self.has_champ():
             res += str(self.champ)
         else:
             res += "hasChamp: False"

@@ -5,7 +5,7 @@ from dacite import from_dict
 
 from baseclass.my_dataclass.base_dataclass import BaseDataClass, GetSetDict
 from baseclass.my_dataclass.color import Color
-from util.json_function import toJson
+from util.json_function import to_json
 
 
 @dataclass
@@ -16,13 +16,13 @@ class MaskDetectionConfig(BaseDataClass):
 
     name: str = field(default="")
     draw: bool = field(default=False)
-    lower: Color = field(default=Color(0, 0, 0))
-    upper: Color = field(default=Color(0, 0, 0))
-    maxFound: int = field(default=1)
-    kernelSize: int = field(default=3)
-    minArea: int = field(default=0)
-    drawColor: Color = field(default=Color(255, 0, 0))
-    drawSize: int = field(default=3)
+    lower: Color = field(default_factory=lambda: Color(0, 0, 0))
+    upper: Color = field(default_factory=lambda: Color(0, 0, 0))
+    max_found: int = field(default=1)
+    kernel_size: int = field(default=3)
+    min_area: int = field(default=0)
+    draw_color: Color = field(default_factory=lambda: Color(255, 0, 0))
+    draw_size: int = field(default=3)
     track: bool = field(default=False)
     region: str = field(default="root")
 
@@ -38,7 +38,7 @@ class MaskDetectionConfigs(BaseDataClass, GetSetDict):
     """
 
     def save(self):
-        toJson("maskDetection", self.to_dict())
+        to_json("maskDetection", self.to_dict())
 
     dict: Dict[str, MaskDetectionConfig] = field(default_factory=dict)
 

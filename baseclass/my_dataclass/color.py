@@ -16,7 +16,7 @@ class Color(BaseDataClass):
     g: int = 0
     b: int = 0
 
-    def asList(self) -> List[int]:
+    def as_list(self) -> List[int]:
         return [self.r, self.g, self.b]
 
     @classmethod

@@ -1,6 +1,7 @@
 import json
 import os
 from time import time
+from typing import Tuple
 
 import cv2
 import numpy as np
@@ -8,7 +9,7 @@ import numpy as np
 from baseclass.my_dataclass.coor import Coor
 from baseclass.my_dataclass.pixel import Pixel
 from baseclass.my_dataclass.rectangle import Rectangle
-from util.pixel import getImgRectangle
+from util.pixel import get_img_rectangle
 
 
 class ImageSave:
@@ -17,37 +18,38 @@ class ImageSave:
         self.img = None
         self.draw_img = None
         self.mask_img = None
-        self.screenShot = None
+        self.screen_shot = None
         self.processed_img = None
-        self.imgToPick = "img"
-        self.clickInfo = False
+        self.img_to_pick = "img"
+        self.click_info = False
 
-        self.clickList = []
+        self.click_list = []
 
-    def saveImage(self, rectangle, path, name):
+    def save_image(self, rectangle, path, name):
         if rectangle is not None:
             if not os.path.exists(path):
                 os.makedirs(path)
             if rectangle['region'] != "root":
                 img = self.game.regions.applyRegion(rectangle['region'])
             else:
-                img = self.game.screenShot
-            img = getImgRectangle(img, rectangle)
+                img = self.game.screen_shot
+            img = get_img_rectangle(img, rectangle)
             if img is not None:
                 cv2.imwrite(f"{path}/{name}", img)
             return img
         return None
 
-    def update(self, hint, screenShot):
-        setattr(self, hint, screenShot)
+    def update(self, hint, screen_shot):
+        setattr(self, hint, screen_shot)
 
     def reset(self):
-        self.clickList = []
+        self.click_list = []
 
-    def getByHint(self, hint):
+    def get_by_hint(self, hint) -> Tuple[Rectangle | Pixel | Coor | None, None | str]:
         region = None
+        res = None
         if hint == "pixel" or hint == "mask" or hint == "coor":
-            click = self.getCoor()
+            click = self.get_coor()
             if click is not None:
                 region = click['region']
                 if hint == "pixel":
@@ -67,14 +69,14 @@ class ImageSave:
                     coor.y = click['y']
                     return coor, region
         else:
-            rectangle = self.getRectangle()
-            if rectangle is not None:
-                region = rectangle['region']
+            base_rectangle = self.get_rectangle()
+            if base_rectangle is not None:
+                region = base_rectangle['region']
                 rectangle = Rectangle.from_dict({})
-                rectangle.x = rectangle['x']
-                rectangle.y = rectangle['y']
-                rectangle.w = rectangle['w']
-                rectangle.h = rectangle['h']
+                rectangle.x = base_rectangle['x']
+                rectangle.y = base_rectangle['y']
+                rectangle.w = base_rectangle['w']
+                rectangle.h = base_rectangle['h']
                 return rectangle, region
 
         if hint == 'pixel':
@@ -87,49 +89,49 @@ class ImageSave:
 
         return res, region
 
-    def addClick(self, click):
-        if len(self.clickList) == 2:
-            self.clickList.pop()
-        self.clickList.append(click)
+    def add_click(self, click):
+        if len(self.click_list) == 2:
+            self.click_list.pop()
+        self.click_list.append(click)
 
-    def getCoor(self):
-        if len(self.clickList) != 0:
-            return self.clickList[0]
+    def get_coor(self):
+        if len(self.click_list) != 0:
+            return self.click_list[0]
         else:
             return None
 
-    def getMask(self):
-        click = self.getCoor()
-        res= {}
+    def get_mask(self):
+        click = self.get_coor()
+        res = {}
         if click is not None:
             res['region'] = click['region']
-            res['upper'] = {"r":click['color']["r"]+15, "g":click['color']["g"]+15, "b":click['color']["b"]+30}
-            res['lower'] = {"r":click['color']["r"]-15, "g":click['color']["g"]-15, "b":click['color']["b"]-30}
+            res['upper'] = {"r": click['color']["r"] + 15, "g": click['color']["g"] + 15, "b": click['color']["b"] + 30}
+            res['lower'] = {"r": click['color']["r"] - 15, "g": click['color']["g"] - 15, "b": click['color']["b"] - 30}
             return res
         return None
 
-
-    def saveRectangle(self):
-        rectangle = self.getRectangle()
+    def save_rectangle(self):
+        rectangle = self.get_rectangle()
         if rectangle is not None:
             if 'region' in rectangle and rectangle['region'] != "root":
                 img = self.game.regions.applyRegion(rectangle['region'])
             else:
-                img = self.game.screenShot
-            img = getImgRectangle(img, rectangle)
+                img = self.game.screen_shot
+            img = get_img_rectangle(img, rectangle)
             print("rectangle: \n", json.dumps(rectangle, indent=4))
-            cv2.imwrite("tmp/clipped/{}_region_{}_x_{}_y_{}_w_{}_h_{}.png".format(int(time()), rectangle['region'],rectangle['x'], rectangle['y'],
-                                                                       rectangle["w"], rectangle['h']), img)
+            cv2.imwrite("tmp/clipped/{}_region_{}_x_{}_y_{}_w_{}_h_{}.png".format(int(time()), rectangle['region'],
+                                                                                  rectangle['x'], rectangle['y'],
+                                                                                  rectangle["w"], rectangle['h']), img)
 
-    def getRectangle(self):
+    def get_rectangle(self) -> dict | None:
 
-        if len(self.clickList) == 2:
+        if len(self.click_list) == 2:
             res = {
-                "x": self.clickList[0]['x'],
-                "y": self.clickList[0]['y'],
-                "w": abs(self.clickList[1]['x'] - self.clickList[0]['x']),
-                "h": abs(self.clickList[1]['y'] - self.clickList[0]['y']),
-                "region": self.clickList[0]['region']
+                "x": self.click_list[0]['x'],
+                "y": self.click_list[0]['y'],
+                "w": abs(self.click_list[1]['x'] - self.click_list[0]['x']),
+                "h": abs(self.click_list[1]['y'] - self.click_list[0]['y']),
+                "region": self.click_list[0]['region']
             }
             if res['w'] == 0:
                 res['w'] = 5
@@ -137,13 +139,13 @@ class ImageSave:
         else:
             return None
 
-    def saveScreenShot(self):
-        if self.game.screenShot is not None:
-            cv2.imwrite(f"tmp/screenshot/{int(time())}.png", self.game.screenShot)
+    def save_screen_shot(self):
+        if self.game.screen_shot is not None:
+            cv2.imwrite(f"tmp/screenshot/{int(time())}.png", self.game.screen_shot)
 
     def pick_color(self, event, x, y, other, params=None):
         if event == cv2.EVENT_LBUTTONDOWN:
-            img_ = getattr(self, self.imgToPick)
+            img_ = getattr(self, self.img_to_pick)
             if type(params) is dict:
                 if params['window'] != "root":
                     img_ = self.game.regions.applyRegion(params['window'])
@@ -164,7 +166,7 @@ class ImageSave:
                     x = 0
 
                 pixel = img_[y, x]
-                self.addClick(
+                self.add_click(
                     {
                         "x": x,
                         "y": y,
@@ -175,7 +177,7 @@ class ImageSave:
                 # you might want to adjust the ranges(+-10, etc):
                 upper = np.array([pixel[0] + r, pixel[1] + g, pixel[2] + b])
                 lower = np.array([pixel[0] - r, pixel[1] - g, pixel[2] - b])
-                if self.clickInfo:
+                if self.click_info:
                     print("----\nx: {}\ny: {}\npixel: {}\nlower: {}\nupper: {}".format(x, y,
                                                                                        "[" + ", ".join(
                                                                                            str(v) for v in pixel) + "]",

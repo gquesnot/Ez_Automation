@@ -2,15 +2,15 @@ from dataclasses import fields
 from time import sleep
 from typing import Union
 
-from baseclass.my_dataclass.action_record_config import ActionRecordConfigs
-from baseclass.my_dataclass.mask_detection_config import MaskDetectionConfigs
 from baseclass.my_dataclass.action_config import KeyboardActionConfigs, MouseActionConfigs
-from baseclass.my_dataclass.window_config import WindowConfig
-from baseclass.my_dataclass.tcr_scan_config import TcrScanConfigs
-from baseclass.my_dataclass.pixel_config import PixelConfigs
+from baseclass.my_dataclass.action_record_config import ActionRecordConfigs
 from baseclass.my_dataclass.image_match_config import ImageMatchConfigs
+from baseclass.my_dataclass.mask_detection_config import MaskDetectionConfigs
+from baseclass.my_dataclass.pixel_config import PixelConfigs
 from baseclass.my_dataclass.region_config import RegionConfigs
-from util.json_function import getJson, toJson
+from baseclass.my_dataclass.tcr_scan_config import TcrScanConfigs
+from baseclass.my_dataclass.window_config import WindowConfig
+from util.json_function import get_json, to_json
 
 
 class ConfigController:
@@ -19,112 +19,109 @@ class ConfigController:
     game = None
     window: WindowConfig = None
     regions: RegionConfigs = None
-    matchImages: ImageMatchConfigs = None
+    match_images: ImageMatchConfigs = None
     pixels: PixelConfigs = None
-    tcrScans: TcrScanConfigs = None
-    maskDetections: MaskDetectionConfigs = None
-    mouseActions: MouseActionConfigs = None
-    keyboardActions: KeyboardActionConfigs = None
-    replayActions: ActionRecordConfigs = None
+    tcr_scans: TcrScanConfigs = None
+    mask_detections: MaskDetectionConfigs = None
+    mouse_actions: MouseActionConfigs = None
+    keyboard_actions: KeyboardActionConfigs = None
+    replay_actions: ActionRecordConfigs = None
     freeze: bool = False
-    autoScreenshot: bool = False
-    showRegions: bool = False
-    autoScreenshotInterval: int = 3
+    auto_screenshot: bool = False
+    show_regions: bool = False
+    auto_screenshot_interval: int = 3
     showFps: bool = False
     recording: bool = False
 
     maskTest: Union[str, None] = None
 
     def __init__(self, game):
-        self.window = WindowConfig.from_dict(getJson("window"), )
-        self.regions = RegionConfigs.from_dict(getJson("regions"))
-        self.matchImages = ImageMatchConfigs.from_dict(getJson("matchImages"))
-        self.pixels = PixelConfigs.from_dict(getJson("pixels"))
-        self.tcrScans = TcrScanConfigs.from_dict(getJson("tcrScans"))
-        self.maskDetections = MaskDetectionConfigs.from_dict(getJson("maskDetections"))
-        self.mouseActions = MouseActionConfigs.from_dict(getJson("mouseActions"))
-        self.keyboardActions = KeyboardActionConfigs.from_dict(getJson("keyboardActions"))
-        self.replayActions = ActionRecordConfigs.from_dict(getJson("replayActions"))
-        print(self.replayActions)
+        self.window = WindowConfig.from_dict(get_json("window"), )
+        self.regions = RegionConfigs.from_dict(get_json("regions"))
+        self.match_images = ImageMatchConfigs.from_dict(get_json("matchImages"))
+        self.pixels = PixelConfigs.from_dict(get_json("pixels"))
+        self.tcr_scans = TcrScanConfigs.from_dict(get_json("tcrScans"))
+        self.mask_detections = MaskDetectionConfigs.from_dict(get_json("maskDetections"))
+        self.mouse_actions = MouseActionConfigs.from_dict(get_json("mouseActions"))
+        self.keyboard_actions = KeyboardActionConfigs.from_dict(get_json("keyboardActions"))
+        self.replay_actions = ActionRecordConfigs.from_dict(get_json("replayActions"))
+        print(self.replay_actions)
         self.game = game
 
     def apply(self, obj, hint: str, withOutDict: bool = False):
-        myDc = getattr(self, hint)
+        my_dc = getattr(self, hint)
 
-        for field in fields(myDc):
+        for field in fields(my_dc):
             if withOutDict:
-                value = getattr(myDc.dict, field.name)
+                value = getattr(my_dc.dict, field.name)
             else:
-                value = getattr(myDc, field.name)
+                value = getattr(my_dc, field.name)
             setattr(obj, field.name, value)
 
-
-    def toggleRecording(self):
+    def toggle_recording(self):
         if self.recording is False:
-            self.game.actionListener.start()
+            self.game.action_listener.start()
         else:
-            self.game.actionListener.stop()
-        #print('pass start recording', self.game.actionListener.actions)
-        for k in self.game.actionListener.actions:
+            self.game.action_listener.stop()
+        # print('pass start recording', self.game.actionListener.actions)
+        for k in self.game.action_listener.actions:
             print(k)
         self.recording = not self.recording
 
-
     def set(self, model, obj, save=False, load=False):
-        myDc = getattr(self, model)
-        for field in fields(myDc):
-            setattr(myDc, field.name, getattr(obj, field.name))
+        my_dc = getattr(self, model)
+        for field in fields(my_dc):
+            setattr(my_dc, field.name, getattr(obj, field.name))
         if load:
             self.load(model)
         if save:
             return self.save(model)
-        return myDc
+        return my_dc
 
     def toggle(self, key, double=False):
         if key == "recording" and self.recording is False:
-            self.game.actionListener.start()
+            self.game.action_listener.start()
         elif key == "recording" and self.recording is True:
-            self.game.actionListener.stop()
+            self.game.action_listener.stop()
         setattr(self, key, not getattr(self, key))
 
         if double:
             sleep(0.1)
             setattr(self, key, not getattr(self, key))
 
-    def setKey(self, model, key, value, save=False, load=False):
-        myDc = getattr(self, model)
-        setattr(myDc, key, value)
+    def set_key(self, model, key, value, save=False, load=False):
+        my_dc = getattr(self, model)
+        setattr(my_dc, key, value)
         if load:
             self.load(model)
         if save:
             return self.save(model)
-        return myDc
+        return my_dc
 
-    def saveOnly(self, model, reload=False):
-        myDc = getattr(self, model)
+    def save_only(self, model, reload=False):
+        my_dc = getattr(self, model)
         if reload:
             self.load(model)
-        toJson(model, myDc.to_dict())
-        return myDc
+        to_json(model, my_dc.to_dict())
+        return my_dc
 
     def save(self, model):
-        myDc = getattr(self, model)
-        toJson(model, myDc.to_dict(), "json_data/")
-        return myDc
+        my_dc = getattr(self, model)
+        to_json(model, my_dc.to_dict(), "json_data/")
+        return my_dc
 
     def load(self, model):
 
         if model == "window":
-            self.game.wc.loadConfig()
+            self.game.wc.load_config()
         elif model == "regions":
             # self.game.regions = getattr(self, model)
-            self.game.cv2Controller.refreshRegion = True
+            self.game.cv2_controller.refresh_region = True
         elif model == "matchImages":
-            self.game.dpc.loadMatchImages()
+            self.game.dpc.load_match_images()
         elif model == "pixels":
-            self.game.dpc.loadPixels()
+            self.game.dpc.load_pixels()
         elif model == "tcrScans":
-            self.game.dpc.loadTcrScans()
+            self.game.dpc.load_tcr_scans()
         elif model == "maskDetections":
-            self.game.dpc.loadMaskDetections()
-
+            self.game.dpc.load_mask_detections()

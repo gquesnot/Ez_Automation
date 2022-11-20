@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 
 from baseclass.my_dataclass.mask_detection_config import MaskDetectionConfig
-from util.pixel import centerCoor
 from util.rectangle import RectangleCoor
 from util.threadclass import ThreadClass
 
@@ -15,15 +14,13 @@ class HsvFilter:
 
 
 class DataPicker(ThreadClass, MaskDetectionConfig):
-    lowerMask = None
-    upperMask = None
+    lower_mask = None
+    upper_mask = None
     conditions = None
 
+    draw_offset = 2
 
-    drawOffset = 2
-
-
-    visionFilter = None
+    vision_filter = None
     results = {"countours": [], "coors": []}
     config: MaskDetectionConfig = None
     game: 'Game' = None
@@ -37,15 +34,15 @@ class DataPicker(ThreadClass, MaskDetectionConfig):
         # if self.visionFilter is not None:
         #     self.hsv_filter = HsvFilter(*self.visionFilter)
 
-        self.lowerMask = np.array(self.config.lower.asList(), np.uint8)
-        self.upperMask = np.array(self.upper.asList(), np.uint8)
-        self.kernel = np.ones((self.kernelSize, self.kernelSize), "uint8")
-        self.drawSize = 5
+        self.lower_mask = np.array(self.config.lower.as_list(), np.uint8)
+        self.upper_mask = np.array(self.upper.as_list(), np.uint8)
+        self.kernel = np.ones((self.kernel_size, self.kernel_size), "uint8")
+        self.draw_size = 5
 
-    def getCoors(self):
+    def get_coors(self):
         return self.results['coors']
 
-    def getContours(self):
+    def get_contours(self):
         return self.results['contours']
 
     # def checkCondition(self, tmpRectangle, condition):
@@ -89,18 +86,18 @@ class DataPicker(ThreadClass, MaskDetectionConfig):
     #
     #     return result
 
-    def drawScreenShot(self, screenShot):
+    def draw_screen_shot(self, screen_shot):
         if len(self.results['coors']) > 0:
             for coor in self.results['coors']:
-                cv2.rectangle(screenShot, (coor.x - self.drawOffset, coor.y - self.drawOffset),
-                              (coor.x + coor.w + self.drawOffset, coor.y + coor.h + self.drawOffset),
-                              self.drawColor.asList(), self.drawSize)
-                #if hasattr(self, "line"):
+                cv2.rectangle(screen_shot, (coor.x - self.draw_offset, coor.y - self.draw_offset),
+                              (coor.x + coor.w + self.draw_offset, coor.y + coor.h + self.draw_offset),
+                              self.draw_color.as_list(), self.draw_size)
+                # if hasattr(self, "line"):
                 #    center = centerCoor(coor)
                 #    cv2.line(screenShot, (self.line['x'], self.line['y']), (coor.centerX, coor.centerY), (0, 255, 0), 8)
-        return screenShot
+        return screen_shot
 
-    def scanDatas(self, screenshot=None, get="results"):
+    def scan_datas(self, screenshot=None, get="results"):
 
         if screenshot is None:
             if self.game.screenShot is not None:
@@ -113,13 +110,13 @@ class DataPicker(ThreadClass, MaskDetectionConfig):
                 screenshot = self.game.regions.applyRegion(self.region, screenshot=screenshot)
             # if self.visionFilter is not None:
             #     screenshot = self.game.vision.apply_hsv_filter(screenshot, self.hsv_filter)
-            mask = cv2.inRange(screenshot, self.lowerMask, self.upperMask)
+            mask = cv2.inRange(screenshot, self.lower_mask, self.upper_mask)
             cv2.imwrite("tmp/test/{}.png".format(self.name), mask)
             # cv2.imwrite("tmp/test/{}.png".format(self.name), mask)
 
             # mask = cv2.dilate(mask, self.kernel)
 
-            dontKnowWhyItsExist = cv2.bitwise_and(screenshot, screenshot, mask=mask)
+            dont_know_why_its_exist = cv2.bitwise_and(screenshot, screenshot, mask=mask)
 
             contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             self.results = {"contours": [], "coors": []}
@@ -127,31 +124,31 @@ class DataPicker(ThreadClass, MaskDetectionConfig):
             for pic, contour in enumerate(contours):
 
                 area = cv2.contourArea(contour)
-                if self.maxFound is not None:
-                    if nb >= self.maxFound:
+                if self.max_found is not None:
+                    if nb >= self.max_found:
                         break
-                    if area > self.minArea:
+                    if area > self.min_area:
                         x, y, w, h = cv2.boundingRect(contour)
-                        tmpRectangle = RectangleCoor(x=x, y=y, w=w, h=h)
+                        tmp_rectangle = RectangleCoor(x=x, y=y, w=w, h=h)
                         # if self.region is not None:
                         #     regionCoor = self.game.regions.getRegion(self.region)
                         #     tmpRectangle.x += regionCoor.rectangle.x
                         #     tmpRectangle.y += regionCoor.rectangle.y
                         #     tmpRectangle.update()
                         # if self.applyConditions(tmpRectangle, self.conditions):
-                        self.results['coors'].append(tmpRectangle)
+                        self.results['coors'].append(tmp_rectangle)
                         self.results['contours'].append(contour)
 
                         nb += 1
 
         if get == "screenshot":
-            return self.drawScreenShot(screenshot)
+            return self.draw_screen_shot(screenshot)
         elif get == "results":
             return self.results
 
     def run(self):
         self.loop_time = time()
         while not self.stopped:
-            self.scanDatas()
+            self.scan_datas()
 
             sleep(0.01)

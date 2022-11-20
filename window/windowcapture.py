@@ -13,14 +13,14 @@ from baseclass.my_dataclass.window_config import WindowConfig
 
 user32 = ctypes.WinDLL('user32', use_last_error=True)
 
-gameName = ""
+game_name = ""
 
 
 def find_window(hwnd, strings):
-    global gameName
+    global game_name
     window_title = win32gui.GetWindowText(hwnd)
     # print(window_title)
-    if gameName in window_title:
+    if game_name in window_title:
         strings.append({"hwnd": hwnd, "name": window_title})
 
 
@@ -28,7 +28,7 @@ class WindowCapture:
     w = 0
     h = 0
     hwnd = None
-    isLoaded : bool = False
+    is_loaded: bool = False
     offset_x = 0
     offset_y = 0
     x = 0
@@ -36,47 +36,47 @@ class WindowCapture:
     x1 = 0
     y1 = 0
     center = 0
-    halfSize = 0
+    half_size = 0
     stopped = True
     lock = None
     screenshot = None
-    modifiedScreenshot = None
+    modified_screenshot = None
 
-    firstTime = True
+    first_time = True
     config: WindowConfig = None
 
-    def __init__(self, game, fps=False, imgGrab=False):
+    def __init__(self, game, fps=False, img_grab=False):
 
         self.game = game
-        self.imgGrab = imgGrab
-        if self.imgGrab:
+        self.img_grab = img_grab
+        if self.img_grab:
             self.sct = mss()
         self.fps = fps
         self.lock = Lock()
         self.config = self.game.config.window
         if self.config.name != "":
-            self.loadConfig()
-        self.firstTime = False
+            self.load_config()
+        self.first_time = False
 
-    def updateWindowInfo(self):
-        global gameName
-        winList = []
-        win32gui.EnumWindows(find_window, winList)
-        if len(winList) > 0:
-            self.hwnd = winList[0]["hwnd"]
-            self.config.name = winList[0]["name"]
+    def update_window_info(self):
+        global game_name
+        win_list = []
+        win32gui.EnumWindows(find_window, win_list)
+        if len(win_list) > 0:
+            self.hwnd = win_list[0]["hwnd"]
+            self.config.name = win_list[0]["name"]
 
         else:
-            self.hwnd = win32gui.FindWindow(None, gameName)
+            self.hwnd = win32gui.FindWindow(None, game_name)
             print("test get name other", win32gui.GetWindowText(self.hwnd))
 
-    def loadConfig(self):
+    def load_config(self):
 
-        global gameName
-        gameName = self.config.name
-        self.updateWindowInfo()
-        isLoaded= self.activate()
-        if not isLoaded: return
+        global game_name
+        game_name = self.config.name
+        self.update_window_info()
+        is_loaded = self.activate()
+        if not is_loaded: return
         self.x, self.y, self.x1, self.y1 = win32gui.GetWindowRect(self.hwnd)
 
         self.h = self.y1 - self.y + self.config.h_diff
@@ -84,11 +84,11 @@ class WindowCapture:
         self.offset_x = self.x + self.config.cropped_x
         self.offset_y = self.y + self.config.cropped_y
         self.center = {"x": int(self.w / 2), "y": int(self.h / 2)}
-        self.halfSize = (int(self.w / 2), int(self.h / 2))
-        self.isLoaded = isLoaded
+        self.half_size = (int(self.w / 2), int(self.h / 2))
+        self.is_loaded = is_loaded
         print("window loaded", self.offset_x, self.offset_y, self.w, self.h, self.center)
 
-    def getCenter(self):
+    def get_center(self):
         return self.center['x'], self.center['y']
 
     def copy(self):
@@ -97,7 +97,7 @@ class WindowCapture:
     def activate(self):
         try:
             print('activate window')
-            win32gui.ShowWindow(self.hwnd,5)
+            win32gui.ShowWindow(self.hwnd, 5)
             win32gui.SetForegroundWindow(self.hwnd)
             return True
         except:
@@ -111,53 +111,52 @@ class WindowCapture:
 
         return False
 
-    def coorAsList(self):
+    def coor_as_list(self):
         return {"top": self.offset_y, "left": self.offset_x, "width": self.w, "height": self.h}
 
     def stop(self):
         self.stopped = True
 
-    def toWindow(self, coor: Coor, positionX, positionY):
-        print("toWindow", coor.x + self.offset_x, coor.y + self.offset_y, positionX, positionY)
-        return coor.x + self.offset_x - positionX, coor.y + self.offset_y - positionY
+    def to_window(self, coor: Coor, position_x, position_y):
+        print("toWindow", coor.x + self.offset_x, coor.y + self.offset_y, position_x, position_y)
+        return coor.x + self.offset_x - position_x, coor.y + self.offset_y - position_y
 
-    def fromWindow(self, coor: Coor) -> Coor:
+    def from_window(self, coor: Coor) -> Coor:
         coor.x -= self.offset_x
         coor.y -= self.offset_y
         return coor
 
-
-    def getScreenshot(self):
+    def get_screenshot(self):
         try:
 
-            if not self.imgGrab:
-                return self.getBaseScreenShot()
+            if not self.img_grab:
+                return self.get_base_screen_shot()
             else:
-                return self.getImgGrab()
+                return self.get_img_grab()
         except:
             return None
 
     def get_screen_position(self, pos):
         return pos[0] + self.offset_x, pos[1] + self.offset_y
 
-    def getImgGrab(self):
-        return np.array(self.sct.grab(self.coorAsList()))[..., :3]
+    def get_img_grab(self):
+        return np.array(self.sct.grab(self.coor_as_list()))[..., :3]
 
-    def getBaseScreenShot(self):
-        wDC = win32gui.GetWindowDC(self.hwnd)
-        dcObj = win32ui.CreateDCFromHandle(wDC)
-        cDc = dcObj.CreateCompatibleDC()
-        dataBitMap = win32ui.CreateBitmap()
-        dataBitMap.CreateCompatibleBitmap(dcObj, self.w, self.h)
-        cDc.SelectObject(dataBitMap)
-        cDc.BitBlt((0, 0), (self.w, self.h), dcObj, (self.config.cropped_x, self.config.cropped_y), win32con.SRCCOPY)
-        signedIntArray = dataBitMap.GetBitmapBits(True)
-        img = np.fromstring(signedIntArray, dtype='uint8')
+    def get_base_screen_shot(self):
+        w_dc = win32gui.GetWindowDC(self.hwnd)
+        dc_obj = win32ui.CreateDCFromHandle(w_dc)
+        c_dc = dc_obj.CreateCompatibleDC()
+        data_bit_map = win32ui.CreateBitmap()
+        data_bit_map.CreateCompatibleBitmap(dc_obj, self.w, self.h)
+        c_dc.SelectObject(data_bit_map)
+        c_dc.BitBlt((0, 0), (self.w, self.h), dc_obj, (self.config.cropped_x, self.config.cropped_y), win32con.SRCCOPY)
+        signed_int_array = data_bit_map.GetBitmapBits(True)
+        img = np.fromstring(signed_int_array, dtype='uint8')
         img.shape = (self.h, self.w, 4)
-        dcObj.DeleteDC()
-        cDc.DeleteDC()
-        win32gui.ReleaseDC(self.hwnd, wDC)
-        win32gui.DeleteObject(dataBitMap.GetHandle())
+        dc_obj.DeleteDC()
+        c_dc.DeleteDC()
+        win32gui.ReleaseDC(self.hwnd, w_dc)
+        win32gui.DeleteObject(data_bit_map.GetHandle())
 
         img = img[..., :3]
         img = np.ascontiguousarray(img)

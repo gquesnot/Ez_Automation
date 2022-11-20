@@ -5,7 +5,7 @@ from dacite import from_dict
 
 from baseclass.my_dataclass.base_dataclass import BaseDataClass, GetSetDict
 from baseclass.my_dataclass.rectangle import Rectangle
-from util.json_function import toJson
+from util.json_function import to_json
 
 
 @dataclass
@@ -31,7 +31,7 @@ class RegionConfigs(BaseDataClass, GetSetDict):
     dict: Dict[str, RegionConfig] = field(default_factory=dict)
 
     def save(self):
-        toJson("regions", self.to_dict())
+        to_json("regions", self.to_dict())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any], **kwargs) -> 'RegionConfigs':

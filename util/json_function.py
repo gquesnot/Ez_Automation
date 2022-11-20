@@ -4,14 +4,14 @@ import os
 import requests
 
 
-def getValue(obj, key):
+def get_value(obj, key):
     if isinstance(obj, dict):
         return obj[key]
     else:
         return getattr(obj, key)
 
 
-def listMatchList(ll1, ll2):
+def list_match_list(ll1, ll2):
     if not len(ll1):
         return True
     for l1 in ll1:
@@ -20,7 +20,7 @@ def listMatchList(ll1, ll2):
     return False
 
 
-def getJson(name, directory="json_data/"):
+def get_json(name, directory="json_data/"):
     files = os.listdir(directory)
     for file in files:
         if name + ".json" in file:
@@ -30,28 +30,28 @@ def getJson(name, directory="json_data/"):
     return []
 
 
-def saveJsonApiResponseInJsonFile(url, filePath):
-    with open(filePath, "w+") as f:
-        rJson = requests.get(url).json()
-        json.dump(rJson, f, indent=4)
-        return rJson
+def save_json_api_response_in_json_file(url, file_path):
+    with open(file_path, "w+") as f:
+        r_json = requests.get(url).json()
+        json.dump(r_json, f, indent=4)
+        return r_json
 
 
-def applyJsonConfig(obj, name, directory="json_data/"):
+def apply_json_config(obj, name, directory="json_data/"):
     res = []
-    for k, v in getJson(name, directory=directory).items():
+    for k, v in get_json(name, directory=directory).items():
         setattr(obj, k, v)
         res.append(k)
     return res
 
 
-def toJson(name, data, directory="json_data/"):
+def to_json(name, data, directory="json_data/"):
     with open(os.path.join(directory, name + ".json"), 'w') as f:
         json.dump(data, f, indent=2)
 
 
-def appendJson(name, data, directory=""):
-    datastore = getJson(directory, name)
+def append_json(name, data, directory=""):
+    datastore = get_json(directory, name)
     if name == "verifiedLol":
         del data['birthdate']
         del data['confirm_password']
@@ -64,5 +64,5 @@ def appendJson(name, data, directory=""):
         json.dump(datastore, f, indent=2)
 
 
-def jsonPrint(dataName, data):
-    print(dataName + ":", json.dumps(data, indent=2))
+def json_print(data_name, data):
+    print(data_name + ":", json.dumps(data, indent=2))

@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 from util.hswfilter import HsvFilter
-from util.json_function import applyJsonConfig
+from util.json_function import apply_json_config
 
 
 class Vision:
@@ -16,22 +16,22 @@ class Vision:
     needle_w = 0
     needle_h = 0
     method = None
-    HMin = {}
-    SMin = {}
-    VMin = {}
-    HMax = {}
-    SMax = {}
-    SAdd = {}
-    SSub = {}
-    VAdd = {}
-    CannyOn = {}
-    CannyKernel = {}
-    CannyRatio = {}
-    LowThreshold = {}
-    MaxThreshold = {}
-    BlurOn = {}
-    BlurKernel = {}
-    BlurRatio = {}
+    h_min = {}
+    s_min = {}
+    v_min = {}
+    h_max = {}
+    s_max = {}
+    s_add = {}
+    s_sub = {}
+    v_add = {}
+    canny_on = {}
+    canny_kernel = {}
+    canny_ratio = {}
+    low_threshold = {}
+    max_threshold = {}
+    blur_on = {}
+    blur_kernel = {}
+    blur_ratio = {}
     R = {}
     G = {}
     B = {}
@@ -39,7 +39,7 @@ class Vision:
     # constructor
     def __init__(self, hsv=True, method=cv2.TM_CCOEFF_NORMED):
         self.hsv_filter = HsvFilter()
-        self.trackListElem = applyJsonConfig(self, "vision")
+        self.track_list_elem = apply_json_config(self, "vision")
         # load the image we're trying to match
         # https://docs.opencv2.org/4.2.0/d4/da8/group__imgcodecs.html
 
@@ -154,25 +154,25 @@ class Vision:
 
         # create trackbars for bracketing.
         # OpenCV2 scale for HSV is H: 0-179, S: 0-255, V: 0-255
-        for elemName in self.trackListElem:
-            elem = getattr(self, elemName)
-            cv2.createTrackbar(elemName, elem['trackbarName'], elem['min'], elem['max'], nothing)
-            cv2.setTrackbarPos(elemName, elem['trackbarName'], elem['value'])
+        for elem_name in self.track_list_elem:
+            elem = getattr(self, elem_name)
+            cv2.createTrackbar(elem_name, elem['trackbarName'], elem['min'], elem['max'], nothing)
+            cv2.setTrackbarPos(elem_name, elem['trackbarName'], elem['value'])
 
     # returns an HSV filter object based on the control GUI values
-    def updateFilter(self):
+    def update_filter(self):
 
         # Get current positions of all trackbars
         # print(self.hsv_filter.__dict__)
-        for elemName in self.trackListElem:
-            elem = getattr(self, elemName)
-            elem['value'] = cv2.getTrackbarPos(elemName, elem['trackbarName'])
+        for elem_name in self.track_list_elem:
+            elem = getattr(self, elem_name)
+            elem['value'] = cv2.getTrackbarPos(elem_name, elem['trackbarName'])
 
-    def getHsvFilter(self):
+    def get_hsv_filter(self):
         result = {}
-        for elemName in self.trackListElem:
-            elem = getattr(self, elemName)
-            result[elemName] = elem['value']
+        for elem_name in self.track_list_elem:
+            elem = getattr(self, elem_name)
+            result[elem_name] = elem['value']
         self.hsv_filter = HsvFilter(datas=result)
         return self.hsv_filter
 
@@ -187,8 +187,8 @@ class Vision:
 
         # if we haven't been given a defined filter, use the filter values from the GUI
         if not hsv_filter:
-            self.updateFilter()
-            hsv_filter = self.getHsvFilter()
+            self.update_filter()
+            hsv_filter = self.get_hsv_filter()
 
         # add/subtract saturation and value
         h, s, v = cv2.split(hsv)

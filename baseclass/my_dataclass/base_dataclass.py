@@ -17,12 +17,12 @@ class GetSetDict(ABC):
             return self.dict[name]
         return None
 
-    def updateName(self, oldName, newName: str) -> None:
-        self.dict[newName] = self.dict.pop(oldName)
+    def update_name(self, old_name, new_name: str) -> None:
+        self.dict[new_name] = self.dict.pop(old_name)
 
-    def set(self, action: Any, oldName=None) -> None:
-        if oldName is not None:
-            del self.dict[oldName]
+    def set(self, action: Any, old_name=None) -> None:
+        if old_name is not None:
+            del self.dict[old_name]
         self.dict[action.name] = action
 
     def remove(self, name: str) -> None:
@@ -31,19 +31,19 @@ class GetSetDict(ABC):
     def clear(self) -> None:
         self.dict.clear()
 
-    def isEmpty(self) -> bool:
+    def is_empty(self) -> bool:
         return len(self.dict) == 0
 
     def update(self, other: Any) -> None:
         self.dict.update(other.dict)
 
-    def fromIdx(self, idx: int) -> Any:
-        return self.dict[self.keyAsList()[idx]]
+    def from_idx(self, idx: int) -> Any:
+        return self.dict[self.key_as_list()[idx]]
 
-    def getIdx(self, name: str) -> int:
-        return self.keyAsList().index(name)
+    def get_idx(self, name: str) -> int:
+        return self.key_as_list().index(name)
 
-    def keyAsList(self) -> list:
+    def key_as_list(self) -> list:
         return list(self.dict)
 
     @abstractmethod

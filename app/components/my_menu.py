@@ -19,12 +19,12 @@ class MyMenu:
         "Keyboard Actions",
         "Record actions"
     ]
-    configMenu: tkinter.Menu = None
-    gameStatesMenu: tkinter.Menu = None
-    optionMenu: tkinter.Menu = None
-    globalStatesMenu: tkinter.Menu = None
-    btnQuit: MyButton = None
-    gameStates: List[str] = []
+    config_menu: tkinter.Menu = None
+    game_states_menu: tkinter.Menu = None
+    option_menu: tkinter.Menu = None
+    global_states_menu: tkinter.Menu = None
+    btn_quit: MyButton = None
+    game_states: List[str] = []
     app: 'App' = None
 
     def __init__(self, app):
@@ -32,81 +32,83 @@ class MyMenu:
         self.app = app
         self.menu.config(bg="green", fg="white", activebackground='red', activeforeground='purple', activeborderwidth=0,
                          font=("Verdana", 12))
-        self.gameStates = [el for el in dir(GameState) if "__" not in el]
-        self.globalStates = [el for el in dir(GameTypeState) if "__" not in el]
-        self.menu.add_command(label="Home", command=self.app.view.loadHome)
-        self.addGlobalStateMenu()
-        self.addGameStatesMenu()
-        self.addOptionMenu()
-        self.addConfigMenu()
+        self.game_states = [el for el in dir(GameState) if "__" not in el]
+        self.global_states = [el for el in dir(GameTypeState) if "__" not in el]
+        self.menu.add_command(label="Home", command=self.app.view.load_home)
+        self.add_global_state_menu()
+        self.add_game_states_menu()
+        self.add_option_menu()
+        self.add_config_menu()
 
         self.menu.add_command(label="Exit", command=self.quit)
 
-
-    def addConfigMenu(self):
-        self.configMenu = tkinter.Menu(self.menu, tearoff=0, relief=FLAT, font=("Verdana", 12), activebackground='red')
+    def add_config_menu(self):
+        self.config_menu = tkinter.Menu(self.menu, tearoff=0, relief=FLAT, font=("Verdana", 12), activebackground='red')
         for elem in self.elemToConfig:
-            self.configMenu.add_command(label=elem, command=lambda el=elem: self.app.controller.loadConfig(el))
-        self.menu.add_cascade(label="Config", menu=self.configMenu)
+            self.config_menu.add_command(label=elem, command=lambda el=elem: self.app.controller.load_config(el))
+        self.menu.add_cascade(label="Config", menu=self.config_menu)
 
-    def addOptionMenu(self):
-        self.optionMenu = tkinter.Menu(self.menu, tearoff=0, relief=FLAT, font=("Verdana", 12), activebackground='red')
-        self.optionMenu.add_command(label="Unfreeze" if self.app.game.config.freeze else "Freeze",
-                                    command=lambda: self.app.controller.doAction("toggle", "freeze"))
-        self.optionMenu.add_command(label="[*] Auto Screenshot" if self.app.game.config.autoScreenshot else "Auto Screenshot",
-                                    command=lambda: self.app.controller.doAction("toggle", "autoScreenshot"))
-        self.optionMenu.add_command(label="Hide regions" if self.app.game.config.showRegions else "Show regions",
-                                    command=lambda: self.app.controller.doAction("toggle", "showRegions"))
-        self.optionMenu.add_command(label="Hide Fps" if self.app.game.config.showFps else "Show Fps", command=lambda: self.app.controller.doAction("toggle", "showFps"))
-        self.optionMenu.add_command(label="End Recording" if self.app.game.config.recording else "Start Recording", command=lambda: self.app.controller.doAction("toggle", "recording"))
-        self.menu.add_cascade(label="Options", menu=self.optionMenu)
+    def add_option_menu(self):
+        self.option_menu = tkinter.Menu(self.menu, tearoff=0, relief=FLAT, font=("Verdana", 12), activebackground='red')
+        self.option_menu.add_command(label="Unfreeze" if self.app.game.config.freeze else "Freeze",
+                                     command=lambda: self.app.controller.do_action("toggle", "freeze"))
+        self.option_menu.add_command(
+            label="[*] Auto Screenshot" if self.app.game.config.auto_screenshot else "Auto Screenshot",
+            command=lambda: self.app.controller.do_action("toggle", "autoScreenshot"))
+        self.option_menu.add_command(label="Hide regions" if self.app.game.config.show_regions else "Show regions",
+                                     command=lambda: self.app.controller.do_action("toggle", "showRegions"))
+        self.option_menu.add_command(label="Hide Fps" if self.app.game.config.showFps else "Show Fps",
+                                     command=lambda: self.app.controller.do_action("toggle", "showFps"))
+        self.option_menu.add_command(label="End Recording" if self.app.game.config.recording else "Start Recording",
+                                     command=lambda: self.app.controller.do_action("toggle", "recording"))
+        self.menu.add_cascade(label="Options", menu=self.option_menu)
 
     def quit(self, event=None):
         self.app.game.stopped = True
         self.app.destroy()
         self.app.quit()
 
-    def addGlobalStateMenu(self):
-        self.globalStatesMenu = tkinter.Menu(self.menu, tearoff=0, relief=FLAT, font=("Verdana", 12), activebackground='red')
+    def add_global_state_menu(self):
+        self.global_states_menu = tkinter.Menu(self.menu, tearoff=0, relief=FLAT, font=("Verdana", 12),
+                                               activebackground='red')
 
-        for idx, state in enumerate(self.globalStates):
-            self.globalStatesMenu.add_command(label="[*] " + state if self.app.game.typeState == GameTypeState[state] else state,
-                                            command=lambda el=state: self.app.controller.doAction("set_global_state", GameTypeState[el]),
-                                            state=tkinter.NORMAL if self.app.game.typeState !=
-                                                                GameTypeState[state] else tkinter.DISABLED)
+        for idx, state in enumerate(self.global_states):
+            self.global_states_menu.add_command(
+                label="[*] " + state if self.app.game.type_state == GameTypeState[state] else state,
+                command=lambda el=state: self.app.controller.do_action("set_global_state", GameTypeState[el]),
+                state=tkinter.NORMAL if self.app.game.type_state !=
+                                        GameTypeState[state] else tkinter.DISABLED)
 
-        self.menu.add_cascade(label="Global States", menu=self.globalStatesMenu)
+        self.menu.add_cascade(label="Global States", menu=self.global_states_menu)
 
-    def addGameStatesMenu(self):
-        self.gameStatesMenu = tkinter.Menu(self.menu, tearoff=0, relief=FLAT, font=("Verdana", 12), activebackground='red')
+    def add_game_states_menu(self):
+        self.game_states_menu = tkinter.Menu(self.menu, tearoff=0, relief=FLAT, font=("Verdana", 12),
+                                             activebackground='red')
 
-        for idx, state in enumerate(self.gameStates):
-            self.gameStatesMenu.add_command(label="[*] " + state if self.app.game.state == GameState[state] else state,
-                                            command=lambda el = state: self.app.controller.doAction("set_game_state", GameState[el]),
-                                            state=tkinter.NORMAL if self.app.game.state != GameState[state] else tkinter.DISABLED)
+        for idx, state in enumerate(self.game_states):
+            self.game_states_menu.add_command(
+                label="[*] " + state if self.app.game.state == GameState[state] else state,
+                command=lambda el=state: self.app.controller.do_action("set_game_state", GameState[el]),
+                state=tkinter.NORMAL if self.app.game.state != GameState[state] else tkinter.DISABLED)
 
-        self.menu.add_cascade(label="Game States", menu=self.gameStatesMenu)
+        self.menu.add_cascade(label="Game States", menu=self.game_states_menu)
 
-
-    def rebuildGameStateMenu(self):
-        for idx, state in enumerate(self.gameStates):
-            self.gameStatesMenu.entryconfig(idx, label="[*] " + state if self.app.game.state == GameState[
+    def rebuild_game_state_menu(self):
+        for idx, state in enumerate(self.game_states):
+            self.game_states_menu.entryconfig(idx, label="[*] " + state if self.app.game.state == GameState[
                 state] else state, state=tkinter.NORMAL if self.app.game.state != GameState[
                 state] else tkinter.DISABLED)
 
-    def rebuildOptionMenu(self):
-        self.optionMenu.entryconfig(0, label="Unfreeze" if self.app.game.config.freeze else "Freeze")
-        self.optionMenu.entryconfig(1,
-                                    label="[*] Auto Screenshot" if self.app.game.config.autoScreenshot else "Auto Screenshot")
-        self.optionMenu.entryconfig(2, label="Hide regions" if self.app.game.config.showRegions else "Show regions")
-        self.optionMenu.entryconfig(3, label="Hide Fps" if self.app.game.config.showFps else "Show Fps")
-        self.optionMenu.entryconfig(4, label="End Recording" if self.app.game.config.recording else "Start Recording")
+    def rebuild_option_menu(self):
+        self.option_menu.entryconfig(0, label="Unfreeze" if self.app.game.config.freeze else "Freeze")
+        self.option_menu.entryconfig(1,
+                                     label="[*] Auto Screenshot" if self.app.game.config.auto_screenshot else "Auto Screenshot")
+        self.option_menu.entryconfig(2, label="Hide regions" if self.app.game.config.show_regions else "Show regions")
+        self.option_menu.entryconfig(3, label="Hide Fps" if self.app.game.config.showFps else "Show Fps")
+        self.option_menu.entryconfig(4, label="End Recording" if self.app.game.config.recording else "Start Recording")
 
-
-    def rebuildGlobalStateMenu(self):
-        for idx , state in enumerate(self.globalStates):
-            self.globalStatesMenu.entryconfig(idx, label="[*] " + state if self.app.game.typeState == GameTypeState[
-                state] else state, state=tkinter.NORMAL if self.app.game.typeState != GameTypeState[
+    def rebuild_global_state_menu(self):
+        for idx, state in enumerate(self.global_states):
+            self.global_states_menu.entryconfig(idx, label="[*] " + state if self.app.game.type_state == GameTypeState[
+                state] else state, state=tkinter.NORMAL if self.app.game.type_state != GameTypeState[
                 state] else tkinter.DISABLED)
-
-

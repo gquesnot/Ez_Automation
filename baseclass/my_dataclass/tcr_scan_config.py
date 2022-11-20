@@ -6,7 +6,7 @@ from dacite import from_dict, Config
 from baseclass.my_dataclass.base_dataclass import BaseDataClass, GetSetDict
 from baseclass.my_dataclass.rectangle import Rectangle
 from baseclass.my_enum.var_type import VarType
-from util.json_function import toJson
+from util.json_function import to_json
 
 
 @dataclass
@@ -34,7 +34,7 @@ class TcrScanConfigs(BaseDataClass, GetSetDict):
     dict: Dict[str, TcrScanConfig] = field(default_factory=dict)
 
     def save(self):
-        toJson("tcrScan", self.to_dict())
+        to_json("tcrScan", self.to_dict())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'TcrScanConfigs':

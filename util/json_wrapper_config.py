@@ -3,7 +3,6 @@ from typing import Any, Union, List, Dict
 
 from dacite import from_dict
 
-
 from util.wrapper_config import WrapperConfig
 
 
@@ -14,7 +13,7 @@ class JsonWrapperConfig(WrapperConfig):
     url: Union[str, List[str]] = field(default=None)
     urlHint: str = field(default="")
 
-    def setJson(self, datas):
+    def set_json(self, datas):
         datas = withoutDataDict(datas)
         if self.url is not None and (isinstance(self.url, list) and len(self.url) > 1):
             if self.json is None:

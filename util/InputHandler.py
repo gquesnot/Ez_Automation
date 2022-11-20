@@ -1,7 +1,7 @@
 from os import system
 
 
-def getMenus(title, menus):
+def get_menus(title, menus):
     res = -1
     while res == -1:
         # if clear_:
@@ -23,23 +23,23 @@ def getMenus(title, menus):
             print("\nPlease enter a valid option")
 
 
-def applyTypeOfVar(string, value, typeOfVar=None):
-    if typeOfVar is None:
+def apply_type_of_var(string, value, type_of_var=None):
+    if type_of_var is None:
         return type(value)(string)
     else:
-        return typeOfVar(string)
+        return type_of_var(string)
 
 
-def askQuestion(question, actualVar, typeOfVar=None, clear_=False):
+def ask_question(question, actual_var, type_of_var=None, clear_=False):
     if clear_:
         clear()
     res = -1
     while res == -1:
-        value = input(f"\n{question}: {actualVar} => ")
+        value = input(f"\n{question}: {actual_var} => ")
         if value == "":
-            return actualVar
+            return actual_var
         try:
-            value = applyTypeOfVar(value, actualVar, typeOfVar)
+            value = apply_type_of_var(value, actual_var, type_of_var)
             return value
         except:
             print("\nPlease enter a valid value")
@@ -49,13 +49,13 @@ def clear():
     system('cls')
 
 
-def updateValueOfKey(obj: dict, key, typeOfVar=None):
+def update_value_of_key(obj: dict, key, type_of_var=None):
     if key in obj:
-        obj[key] = askQuestion(f"{key}", obj[key], typeOfVar)
+        obj[key] = ask_question(f"{key}", obj[key], type_of_var)
     return obj
 
 
-def getMenusElements(obj: dict = None, names=None):
+def get_menus_elements(obj: dict = None, names=None):
     if names is None:
         names = []
     res = []

@@ -6,13 +6,12 @@ from dacite import from_dict
 
 from baseclass.my_dataclass.base_dataclass import BaseDataClass
 from baseclass.my_dataclass.coor import Coor
-from baseclass.my_enum.action_execution_state import ActionExecutionState
 
 
 @dataclass
 class BaseActionRecord(BaseDataClass, ABC):
-    startAt: float = 0.0
-    endAt: float = 0.0
+    start_at: float = 0.0
+    end_at: float = 0.0
 
     def to_dict(self) -> Dict[str, Any]:
         res = asdict(self)
@@ -29,7 +28,7 @@ class ActionKeyBoardRecord(BaseActionRecord):
     """
     A class to store an action record.
     """
-    key: Union[str,int] = ""
+    key: Union[str, int] = ""
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any], **kwargs) -> 'ActionKeyBoardRecord':
@@ -42,7 +41,7 @@ class ActionMouseClickRecord(BaseActionRecord):
     A class to store an action record.
     """
 
-    coorStart: Coor = field(default_factory=lambda: Coor())
+    coor_start: Coor = field(default_factory=lambda: Coor())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any], **kwargs) -> 'ActionMouseClickRecord':
@@ -55,7 +54,7 @@ class ActionMouseDragRecord(ActionMouseClickRecord):
     A class to store an action record.
     """
 
-    coorEnd: Coor = field(default_factory=lambda: Coor())
+    coor_end: Coor = field(default_factory=lambda: Coor())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any], **kwargs) -> 'ActionMouseDragRecord':

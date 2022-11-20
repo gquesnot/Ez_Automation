@@ -2,7 +2,6 @@ import tkinter
 from tkinter import W
 from tkinter import ttk
 
-from app.components.my_input import MyButton
 from app.components.my_menu import MyMenu
 from app.view.actions_view import MouseActionsView, KeyboardActionsView, RecordPlayActionView
 from app.view.mask_detections_view import MaskDetectionsView
@@ -11,7 +10,6 @@ from app.view.pixels_view import PixelsView
 from app.view.regions_view import RegionsView
 from app.view.tcr_scans_view import TcrScansView
 from app.view.window_view import WindowView
-from baseclass.my_enum.game_state import GameState
 from baseclass.my_enum.game_type_state import GameTypeState
 
 
@@ -21,59 +19,61 @@ class MainFrame(tkinter.Frame):
     menu: MyMenu = None
     app: 'App' = None
     content = None
-    fpsCounter : tkinter.StringVar = None
-    baseRow = 0
-    home : bool = True
-    dirVar: tkinter.StringVar = None
+    fps_counter: tkinter.StringVar = None
+    base_row = 0
+    home: bool = True
+    dir_var: tkinter.StringVar = None
 
     def __init__(self, app: 'App'):
         super().__init__(app)
         self.app = app
-        self.fpsCounter = tkinter.StringVar()
-        self.fpsCounter.set('FPS: 0')
-        self.dirVar = tkinter.StringVar()
-        self.dirVar.set('DIR: ' + str(self.app.game.RC.getDirectoryAsStr()))
-
+        self.fps_counter = tkinter.StringVar()
+        self.fps_counter.set('FPS: 0')
+        self.dir_var = tkinter.StringVar()
+        self.dir_var.set('DIR: ' + str(self.app.game.RC.get_directory_as_str()))
 
         print('init view')
 
-
-
-
-    def loadHome(self):
+    def load_home(self):
         self.clear()
-        self.baseRow = 0
+        self.base_row = 0
         self.home = True
-        if self.app.game.config.showFps :
+        if self.app.game.config.showFps:
+            tkinter.Label(self, textvariable=self.fps_counter, font=('Helvetica', '10')).grid(row=self.base_row,
+                                                                                              column=1, sticky=W)
+            self.base_row += 1
+        if self.app.game.type_state == GameTypeState.REPLAY:
 
-            tkinter.Label(self, textvariable=self.fpsCounter, font=('Helvetica', '10')).grid(row=self.baseRow, column=1, sticky=W)
-            self.baseRow += 1
-        if self.app.game.typeState == GameTypeState.REPLAY:
+            tkinter.Label(self, textvariable=self.dir_var, font=('Helvetica', '10')).grid(row=self.base_row, column=1,
+                                                                                          sticky=W)
 
-            tkinter.Label(self, textvariable=self.dirVar, font=('Helvetica', '10')).grid(row=self.baseRow, column=1, sticky=W)
-
-            ttk.Button(self, command=lambda:self.app.game.RC.prev(), text='Previous Frame').grid(row=self.baseRow + 1, column= 1, sticky=W)
-            ttk.Button(self, command=lambda:self.app.game.RC.next(), text='Next Frame').grid(row=self.baseRow + 1, column=0, sticky=W)
-            ttk.Button(self, command=lambda:self.nextDir(), text='Next Dir').grid(row=self.baseRow + 1, column= 2, sticky=W)
-            self.baseRow += 2
+            ttk.Button(self, command=lambda: self.app.game.RC.prev(), text='Previous Frame').grid(row=self.base_row + 1,
+                                                                                                  column=1, sticky=W)
+            ttk.Button(self, command=lambda: self.app.game.RC.next(), text='Next Frame').grid(row=self.base_row + 1,
+                                                                                              column=0, sticky=W)
+            ttk.Button(self, command=lambda: self.next_dir(), text='Next Dir').grid(row=self.base_row + 1, column=2,
+                                                                                    sticky=W)
+            self.base_row += 2
         else:
-            ttk.Button(self, command=self.app.game.imSave.saveScreenShot, text='Take Screenshot').grid(row=self.baseRow, column=0, sticky=W)
-            self.baseRow += 1
-        ttk.Button(self, command=self.app.game.imSave.saveRectangle, text='Show Rectangle\nfrom 2 last click').grid(row=self.baseRow, column=0, sticky=W)
-        ttk.Button(self, command=lambda :self.app.game.config.load('window'), text='Fix Window').grid(row=self.baseRow +1, column=0, sticky=W)
-        self.baseRow +=2
+            ttk.Button(self, command=self.app.game.im_save.save_screen_shot, text='Take Screenshot').grid(
+                row=self.base_row, column=0, sticky=W)
+            self.base_row += 1
+        ttk.Button(self, command=self.app.game.im_save.save_rectangle, text='Show Rectangle\nfrom 2 last click').grid(
+            row=self.base_row, column=0, sticky=W)
+        ttk.Button(self, command=lambda: self.app.game.config.load('window'), text='Fix Window').grid(
+            row=self.base_row + 1, column=0, sticky=W)
+        self.base_row += 2
 
-    def nextDir(self, event = None):
+    def next_dir(self, event=None):
         self.app.game.RC.nextDir()
-        self.dirVar.set('DIR: ' + str(self.app.game.RC.getDirectoryAsStr()))
-
+        self.dir_var.set('DIR: ' + str(self.app.game.RC.getDirectoryAsStr()))
 
     def clear(self):
         for widget in self.winfo_children():
             if type(widget) != tkinter.Menu:
                 widget.destroy()
 
-    def addView(self, view):
+    def add_view(self, view):
         self.home = False
         self.content = view
 
@@ -87,44 +87,43 @@ class Controller:
         self.app = app
         print('init controller')
 
-    def loadConfig(self, config):
+    def load_config(self, config):
         print('loadConfig', config)
         self.app.view.clear()
         if config == "Window":
-            self.app.view.addView(WindowView(self.app))
+            self.app.view.add_view(WindowView(self.app))
         elif config == "Regions":
-            self.app.view.addView(RegionsView(self.app))
+            self.app.view.add_view(RegionsView(self.app))
         elif config == "Pixels":
-            self.app.view.addView(PixelsView(self.app))
+            self.app.view.add_view(PixelsView(self.app))
         elif config == "Match Images":
-            self.app.view.addView(MatchImagesView(self.app))
+            self.app.view.add_view(MatchImagesView(self.app))
         elif config == "Tcr Scans":
-            self.app.view.addView(TcrScansView(self.app))
+            self.app.view.add_view(TcrScansView(self.app))
         elif config == "Mask Detections":
-            self.app.view.addView(MaskDetectionsView(self.app))
+            self.app.view.add_view(MaskDetectionsView(self.app))
         elif config == "Mouse Actions":
-            self.app.view.addView(MouseActionsView(self.app))
+            self.app.view.add_view(MouseActionsView(self.app))
         elif config == "Keyboard Actions":
-            self.app.view.addView(KeyboardActionsView(self.app))
+            self.app.view.add_view(KeyboardActionsView(self.app))
         elif config == "Record actions":
-            self.app.view.addView(RecordPlayActionView(self.app))
+            self.app.view.add_view(RecordPlayActionView(self.app))
 
-    def doAction(self, toDo, state):
-        print('do action', toDo, state)
-        if toDo == 'toggle':
+    def do_action(self, to_do, state):
+        print('do action', to_do, state)
+        if to_do == 'toggle':
             self.app.game.config.toggle(state)
-            self.app.menu.rebuildOptionMenu()
-        if "state" in  toDo:
-            if 'global' in toDo:
+            self.app.menu.rebuild_option_menu()
+        if "state" in to_do:
+            if 'global' in to_do:
                 self.app.game.setGlobalState(state)
-                self.app.menu.rebuildGlobalStateMenu()
-            elif 'game' in toDo:
+                self.app.menu.rebuild_global_state_menu()
+            elif 'game' in to_do:
                 self.app.game.setState(state)
-                self.app.menu.rebuildGameStateMenu()
+                self.app.menu.rebuild_game_state_menu()
 
         if self.app.view.home:
-            self.app.view.loadHome()
-
+            self.app.view.load_home()
 
     def test(self, config, hint):
         print('test', config, hint)
@@ -164,4 +163,4 @@ class App(tkinter.Tk):
         self.style.theme_use("vista")
 
         self.view.grid(sticky=W)
-        self.view.loadHome()
+        self.view.load_home()

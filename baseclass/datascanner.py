@@ -6,7 +6,7 @@ import cv2
 
 from baseclass.my_dataclass.tcr_scan_config import TcrScanConfig
 from baseclass.my_enum.var_type import VarType
-from util.pixel import getImgRectangle
+from util.pixel import get_img_rectangle
 from util.threadclass import ThreadClass
 
 
@@ -25,14 +25,14 @@ class DataScanner(ThreadClass, TcrScanConfig):
     def run(self):
         while not self.stopped:
             t = time.time()
-            self.scanDatas()
+            self.scan_datas()
             # if self.result not in ("", 0):
             #     print(self.name, self.result)
             # if time.time() - t > 0:
             #     print("fps: {}".format(time.time() - t))
             sleep(0.01)
 
-    def conditionMeet(self):
+    def condition_meet(self):
         for condition in self.conditions:
             if condition[1] == "=":
 
@@ -41,7 +41,7 @@ class DataScanner(ThreadClass, TcrScanConfig):
 
         return True
 
-    def scanDatas(self, screenshot=None):
+    def scan_datas(self, screenshot=None):
         if screenshot is None:
             if self.game.screenShot is not None:
                 screenshot = self.game.screenShot
@@ -50,7 +50,7 @@ class DataScanner(ThreadClass, TcrScanConfig):
             screenshot = self.game.regions.applyRegion(self.region, screenshot)
 
         if screenshot is not None:
-            screenshot = getImgRectangle(screenshot, self.rectangle)
+            screenshot = get_img_rectangle(screenshot, self.rectangle)
             cv2.imwrite("tmp/scans/{}.png".format(self.name), screenshot)
             if self.type == VarType.STRING:
                 img, self.result = self.game.tcr.scanText(img=screenshot)

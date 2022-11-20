@@ -7,28 +7,28 @@ from PIL import Image, ImageTk
 
 
 class MyTextArea:
-    wText: ScrolledText = None
+    w_text: ScrolledText = None
 
     def __init__(self, parent, row=0, col=0):
         self.parent = parent
         self.row = row
         self.col = col
 
-        self.wText = ScrolledText(self.parent, width=50, height=25)
-        self.wText.grid(row=self.row, column=self.col, columnspan=6)
+        self.w_text = ScrolledText(self.parent, width=50, height=25)
+        self.w_text.grid(row=self.row, column=self.col, columnspan=6)
         self.set('')
 
     def set(self, value):
-        self.wText.delete(1.0, "end-1c")
-        self.wText.insert(1.0, value)
+        self.w_text.delete(1.0, "end-1c")
+        self.w_text.insert(1.0, value)
 
     def get(self):
-        return self.wText.get(1.0, "end-1c")
+        return self.w_text.get(1.0, "end-1c")
 
 
 class MySimpleInput:
-    wValue: tkinter.StringVar = None
-    wLabel: ttk.Label = None
+    w_value: tkinter.StringVar = None
+    w_label: ttk.Label = None
     parent = None
     type = None
 
@@ -36,21 +36,21 @@ class MySimpleInput:
         self.parent = parent
         self.row = row
         self.col = col
-        self.wValue = tkinter.StringVar()
-        self.wValue.set("")
-        self.wLabel = ttk.Label(self.parent, textvariable=self.wValue, anchor="w", width=40)
-        self.wLabel.grid(column=self.col, row=self.row, columnspan=colspan, padx=0, pady=10, sticky=W)
+        self.w_value = tkinter.StringVar()
+        self.w_value.set("")
+        self.w_label = ttk.Label(self.parent, textvariable=self.w_value, anchor="w", width=40)
+        self.w_label.grid(column=self.col, row=self.row, columnspan=colspan, padx=0, pady=10, sticky=W)
 
     def set(self, value):
-        self.wValue.set(value)
+        self.w_value.set(value)
 
 
 class MyInput:
     label: str = ''
     path: Union[str, None] = None
-    wValue: tkinter.StringVar = None
-    wEntry: ttk.Entry = None
-    wLabel: ttk.Label = None
+    w_value: tkinter.StringVar = None
+    w_entry: ttk.Entry = None
+    w_label: ttk.Label = None
     parent = None
     type = None
 
@@ -61,22 +61,22 @@ class MyInput:
         self.col = col
         self.path = path
         self.type = type(value)
-        self.wLabel = ttk.Label(self.parent, text=label, anchor="w", width=len(label) + 3)
-        self.wLabel.grid(column=self.col, row=self.row, padx=10, pady=3, sticky=W)
-        self.wValue = tkinter.StringVar()
-        self.wValue.set(value)
-        self.wEntry = ttk.Entry(self.parent, textvariable=self.wValue, width=20)
-        self.wEntry.grid(column=self.col + 1, row=self.row, padx=10, pady=3, sticky=W)
+        self.w_label = ttk.Label(self.parent, text=label, anchor="w", width=len(label) + 3)
+        self.w_label.grid(column=self.col, row=self.row, padx=10, pady=3, sticky=W)
+        self.w_value = tkinter.StringVar()
+        self.w_value.set(value)
+        self.w_entry = ttk.Entry(self.parent, textvariable=self.w_value, width=20)
+        self.w_entry.grid(column=self.col + 1, row=self.row, padx=10, pady=3, sticky=W)
 
     def get(self):
         if self.canSave():
-            return self.type(self.wValue.get())
+            return self.type(self.w_value.get())
 
     def updatePath(self, path):
         self.path = path
 
     def set(self, value):
-        self.wValue.set(value)
+        self.w_value.set(value)
 
     def canSave(self):
         return self.path is not None
@@ -84,7 +84,7 @@ class MyInput:
 
 class MyImg:
     img: Image = None
-    imgTk: ImageTk = None
+    img_tk: ImageTk = None
     root: tkinter.Label = None
     path: str = ""
 
@@ -94,40 +94,39 @@ class MyImg:
         self.root = tkinter.Label(self.parent)
         self.root.grid(row=row, column=col)
         if imgPath != "":
-
             self.img = Image.open(imgPath)
             self.img.thumbnail((30, 30), Image.ANTIALIAS)
 
-            self.imgTk = ImageTk.PhotoImage(self.img)
-            self.root.config(image=self.imgTk)
+            self.img_tk = ImageTk.PhotoImage(self.img)
+            self.root.config(image=self.img_tk)
 
     def update(self, imgPath):
         if imgPath != "":
             self.img = Image.open(imgPath)
             self.img.thumbnail((75, 75), Image.ANTIALIAS)
-            self.imgTk = ImageTk.PhotoImage(self.img)
-            self.root.config(image=self.imgTk)
+            self.img_tk = ImageTk.PhotoImage(self.img)
+            self.root.config(image=self.img_tk)
         else:
             self.root.config(image='')
 
     def resize(self, width, height):
         self.img = self.img.resize((width, height), Image.ANTIALIAS)
-        self.imgTk = ImageTk.PhotoImage(self.img)
-        self.root.config(image=self.imgTk)
+        self.img_tk = ImageTk.PhotoImage(self.img)
+        self.root.config(image=self.img_tk)
 
 
 class MyButton(ttk.Button):
-    wValue: tkinter.StringVar = None
+    w_value: tkinter.StringVar = None
 
     def __init__(self, parent, text='', command=None, width=15, col=0, row=0, colspan=1, padX=0,
                  padY=0):
-        self.wValue = tkinter.StringVar()
-        self.wValue.set(text)
-        super().__init__(parent, command=command, textvariable=self.wValue, width=width)
+        self.w_value = tkinter.StringVar()
+        self.w_value.set(text)
+        super().__init__(parent, command=command, textvariable=self.w_value, width=width)
         self.grid(column=col, row=row, columnspan=colspan, padx=padX, pady=padY)
 
     def set(self, value):
-        self.wValue.set(value)
+        self.w_value.set(value)
 
     def get(self):
-        return self.wValue.get()
+        return self.w_value.get()

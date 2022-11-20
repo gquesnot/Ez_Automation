@@ -12,12 +12,12 @@ class WrapperConfig:
     datas: Union[List, Dict[str, Any]] = field(default_factory=dict)
     json: Union[List, Dict] = field(default=None)
 
-    def addData(self, key, newClass):
-        if newClass is not None:
+    def add_data(self, key, new_class):
+        if new_class is not None:
 
-            if isinstance(newClass, self.class_):
+            if isinstance(new_class, self.class_):
                 key = key if isinstance(key, str) else str(key)
-                self.datas[key] = newClass
+                self.datas[key] = new_class
 
     @classmethod
     def from_dict(cls, idx: int, data: Dict[str, Any]) -> "WrapperConfig":

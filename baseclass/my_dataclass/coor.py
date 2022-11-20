@@ -14,7 +14,7 @@ class Coor(BaseDataClass):
     x: int = field(default=0)
     y: int = field(default=0)
 
-    def hasList(self) -> List[int]:
+    def has_list(self) -> List[int]:
         return [self.x, self.y]
 
     def __eq__(self, other):

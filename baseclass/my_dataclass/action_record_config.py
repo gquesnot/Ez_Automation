@@ -6,7 +6,7 @@ from dacite import from_dict
 from baseclass.my_dataclass.action_record import ActionKeyBoardRecord, ActionMouseClickRecord, \
     ActionMouseDragRecord
 from baseclass.my_dataclass.base_dataclass import BaseDataClass, GetSetDict
-from util.json_function import toJson
+from util.json_function import to_json
 
 
 @dataclass
@@ -19,16 +19,16 @@ class ActionRecordConfig(BaseDataClass):
     keys: List[ActionKeyBoardRecord] = field(default_factory=list)
     clicks: List[Union[ActionMouseClickRecord, ActionMouseDragRecord]] = field(default_factory=list)
 
-    def totalDuration(self):
-        maxKey = max(self.keys, key=lambda x: x.endAt).endAt if len(self.keys) > 0 else 0
-        maxClick = max(self.clicks, key=lambda x: x.endAt).endAt if len(self.clicks) > 0 else 0
-        print(maxClick, maxKey)
-        return max(maxKey, maxClick)
+    def total_duration(self):
+        max_key = max(self.keys, key=lambda x: x.end_at).end_at if len(self.keys) > 0 else 0
+        max_click = max(self.clicks, key=lambda x: x.endAt).end_at if len(self.clicks) > 0 else 0
+        print(max_click, max_key)
+        return max(max_key, max_click)
 
     def all(self):
-        newList = [*self.keys, *self.clicks]
-        newList.sort(key=lambda x: x.startAt)
-        return newList
+        new_list = [*self.keys, *self.clicks]
+        new_list.sort(key=lambda x: x.start_at)
+        return new_list
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'ActionRecordConfig':
@@ -42,7 +42,7 @@ class ActionRecordConfigs(BaseDataClass, GetSetDict):
     """
 
     def save(self):
-        toJson("replayActions.json", self.to_dict())
+        to_json("replayActions.json", self.to_dict())
 
     dict: Dict[str, ActionRecordConfig] = field(default_factory=dict)
 

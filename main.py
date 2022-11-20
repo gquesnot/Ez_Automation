@@ -15,42 +15,44 @@ def main():
     game = Game()
     game.start()
 
-    tScreenShot = 0
+    t_screen_shot = 0
     game.stopped = False
     while not game.stopped:
-        if game.screenShot is not None and not game.config.freeze:
-            game.imSave.update("img", game.screenShot)
-            if game.config.showRegions:
-                if game.cv2Controller.refreshRegion:
-                    game.cv2Controller.loadRegions()
-                game.cv2Controller.feedRegion(game.imSave.img)
+        if game.screen_shot is not None and not game.config.freeze:
+            game.im_save.update("img", game.screen_shot)
+            if game.config.show_regions:
+                if game.cv2_controller.refresh_region:
+                    game.cv2_controller.load_regions()
+                game.cv2_controller.feed_region(game.im_save.img)
             else:
-                game.cv2Controller.clearRegions()
+                game.cv2_controller.clear_regions()
 
-            game.cv2Controller.applyScreenShotToWindow(game.imSave.img, "root")
-            if game.imSave.mask_img is not None:
-
-                game.cv2Controller.applyScreenShotToWindow(game.imSave.mask_img, "mask")
-            if game.imSave.draw_img is not None:
-                game.cv2Controller.applyScreenShotToWindow(game.imSave.draw_img, "draw")
-            if game.config.autoScreenshot:
-                if tScreenShot == 0 or time() - tScreenShot > game.config.autoScreenshotInterval:
+            game.cv2_controller.apply_screen_shot_to_window(game.im_save.img, "root")
+            if game.im_save.mask_img is not None:
+                game.cv2_controller.apply_screen_shot_to_window(game.im_save.mask_img, "mask")
+            if game.im_save.draw_img is not None:
+                game.cv2_controller.apply_screen_shot_to_window(game.im_save.draw_img, "draw")
+            if game.config.auto_screenshot:
+                if t_screen_shot == 0 or time() - t_screen_shot > game.config.auto_screenshot_interval:
                     print("screenshot")
-                    cv2.imwrite("tmp/auto_screenshot/{}.png".format(int(time())), game.screenShot)
-                    tScreenShot = time()
+                    cv2.imwrite("tmp/auto_screenshot/{}.png".format(int(time())), game.screen_shot)
+                    t_screen_shot = time()
         sleep(0.01)
         cv2.waitKey(1)
         if game.stopped:
             game.stop()
             return
 
-t = Thread(target=main)
-t.start()
 
-while game is None:
-    print('waiting game to load')
-    sleep(0.2)
-app = App(game)
-game.addApp(app)
+if __name__ == '__main__':
 
-app.mainloop()
+    t = Thread(target=main)
+    t.start()
+
+    while game is None:
+        print('waiting game to load')
+        sleep(0.2)
+    app = App(game)
+    game.add_app(app)
+
+    app.mainloop()

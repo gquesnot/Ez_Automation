@@ -6,7 +6,7 @@ from dacite import from_dict, Config
 from baseclass.my_dataclass.base_dataclass import BaseDataClass, GetSetDict
 from baseclass.my_dataclass.pixel import Pixel
 from baseclass.my_enum.condition_type import ConditionType
-from util.json_function import toJson
+from util.json_function import to_json
 
 
 @dataclass
@@ -32,7 +32,7 @@ class PixelConfigs(BaseDataClass, GetSetDict):
     dict: Dict[str, PixelConfig] = field(default_factory=dict)
 
     def save(self):
-        toJson("pixel", self.to_dict())
+        to_json("pixel", self.to_dict())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'PixelConfigs':

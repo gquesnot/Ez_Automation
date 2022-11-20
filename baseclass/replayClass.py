@@ -1,4 +1,5 @@
 import os
+
 import cv2
 
 
@@ -7,42 +8,42 @@ class Replay:
     di = 0
     h = 0
     w = 0
-    directoryList = ["tmp/auto_screenshot/", "tmp/clipped/", "tmp/screenshot/"]  # ['tmp/cliped/',
-    currentDir = []
+    directory_list = ["tmp/auto_screenshot/", "tmp/clipped/", "tmp/screenshot/"]  # ['tmp/cliped/',
+    current_dir = []
 
     def __init__(self):
-        self.directory = self.directoryList[self.di]
-        self.fileNames = [dir_ for dir_ in os.listdir(self.directory) if dir_[0] != '.']
+        self.directory = self.directory_list[self.di]
+        self.file_names = [dir_ for dir_ in os.listdir(self.directory) if dir_[0] != '.']
 
-    def getDirectoryAsStr(self):
-        return self.directoryList[self.di].split('/')[-2]
+    def get_directory_as_str(self):
+        return self.directory_list[self.di].split('/')[-2]
 
     def prev(self):
         self.i -= 1
         if self.i < 0:
-            self.i = len(self.fileNames) - 1
-        return self.getScreenshot()
+            self.i = len(self.file_names) - 1
+        return self.get_screenshot()
 
-    def saveCoor(self, screenShot):
-        self.h, self.w, channels = screenShot.shape
+    def save_coor(self, screen_shot):
+        self.h, self.w, channels = screen_shot.shape
 
     def next(self):
         self.i += 1
-        if self.i >= len(self.fileNames):
+        if self.i >= len(self.file_names):
             self.i = 0
-        return self.getScreenshot()
+        return self.get_screenshot()
 
-    def nextDir(self):
+    def next_dir(self):
         self.di += 1
-        if self.di >= len(self.directoryList):
+        if self.di >= len(self.directory_list):
             self.di = 0
         self.i = 0
-        self.directory = self.directoryList[self.di]
-        self.fileNames = [dir_ for dir_ in os.listdir(self.directory) if dir_[0] != '.']
+        self.directory = self.directory_list[self.di]
+        self.file_names = [dir_ for dir_ in os.listdir(self.directory) if dir_[0] != '.']
 
-    def getScreenshot(self):
-        if len(self.fileNames) > 0:
-            screenShot = cv2.imread(self.directory + self.fileNames[self.i])
-            self.saveCoor(screenShot)
-            return screenShot
+    def get_screenshot(self):
+        if len(self.file_names) > 0:
+            screen_shot = cv2.imread(self.directory + self.file_names[self.i])
+            self.save_coor(screen_shot)
+            return screen_shot
         return None

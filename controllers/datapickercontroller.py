@@ -1,92 +1,90 @@
 from typing import Dict
 
-from baseclass.my_dataclass.pixel_config import PixelConfig
-from baseclass.my_enum.condition_type import ConditionType
 from baseclass.datapicker import DataPicker
 from baseclass.datascanner import DataScanner
 from baseclass.matchimages import MatchImages
-
-from util.pixel import comparePixel
+from baseclass.my_dataclass.pixel_config import PixelConfig
+from baseclass.my_enum.condition_type import ConditionType
+from util.pixel import compare_pixel
 
 
 class DataPickerController:
-    pickDict: Dict[str, DataPicker] = {}
-    scanDict: Dict[str, DataScanner] = {}
-    pixelDict: Dict[str, PixelConfig] = {}
-    imgsScanDict: Dict[str, MatchImages] = {}
+    pick_dict: Dict[str, DataPicker] = {}
+    scan_dict: Dict[str, DataScanner] = {}
+    pixel_dict: Dict[str, PixelConfig] = {}
+    imgs_scan_dict: Dict[str, MatchImages] = {}
 
     game = None
 
     def __init__(self, game):
         super().__init__()
         self.game = game
-        self.loadMaskDetections()
-        self.loadTcrScans()
-        self.loadMatchImages()
-        self.loadPixels()
+        self.load_mask_detections()
+        self.load_tcr_scans()
+        self.load_match_images()
+        self.load_pixels()
 
-    def loadMaskDetections(self):
-        self.pickDict = {}
-        for maskName, maskDetection in self.game.config.maskDetections.dict.items():
-            dp = DataPicker(self.game, maskDetection)
-            self.pickDict[maskName] = dp
+    def load_mask_detections(self):
+        self.pick_dict = {}
+        for mask_name, mask_detections in self.game.config.mask_detections.dict.items():
+            dp = DataPicker(self.game, mask_detections)
+            self.pick_dict[mask_name] = dp
 
-    def loadPixels(self):
+    def load_pixels(self):
 
-        self.pixelDict = self.game.config.pixels.dict
+        self.pixel_dict = self.game.config.pixels.dict
 
-    def loadTcrScans(self):
-        self.scanDict = {}
-        for screenInfoName, screenInfo in self.game.config.tcrScans.dict.items():
-            ds = DataScanner(self.game, screenInfo)
-            self.scanDict[screenInfoName] = ds
+    def load_tcr_scans(self):
+        self.scan_dict = {}
+        for screen_info_name, screen_info in self.game.config.tcr_scans.dict.items():
+            ds = DataScanner(self.game, screen_info)
+            self.scan_dict[screen_info_name] = ds
 
-    def loadMatchImages(self):
-        self.imgsScanDict = {}
-        for matchImagesName, matchImagesInfo in self.game.config.matchImages.dict.items():
-            mi = MatchImages(self.game, matchImagesInfo)
-            self.imgsScanDict[matchImagesName] = mi
+    def load_match_images(self):
+        self.imgs_scan_dict = {}
+        for match_images_name, match_images_info in self.game.config.match_images.dict.items():
+            mi = MatchImages(self.game, match_images_info)
+            self.imgs_scan_dict[match_images_name] = mi
 
-    def checkPixel(self, hint):
-        if self.game.screenShot is not None:
-            screenShot = self.game.screenShot
-            if hint in self.pixelDict:
+    def check_pixel(self, hint):
+        if self.game.screen_shot is not None:
+            screen_shot = self.game.screen_shot
+            if hint in self.pixel_dict:
 
                 match = False
-                for pixel in self.pixelDict[hint].pixels:
-                    newScreenshot = screenShot
+                for pixel in self.pixel_dict[hint].pixels:
+                    new_screenshot = screen_shot
                     if pixel.region != "root":
-                        newScreenshot = self.game.regions.applyRegion(pixel.region, screenShot)
-                    if comparePixel(newScreenshot, pixel):
+                        new_screenshot = self.game.regions.applyRegion(pixel.region, screen_shot)
+                    if compare_pixel(new_screenshot, pixel):
                         match = True
-                        if self.pixelDict[hint].type == ConditionType.OR:
+                        if self.pixel_dict[hint].type == ConditionType.OR:
                             return True
 
-                    elif self.pixelDict[hint].type == ConditionType.AND:
+                    elif self.pixel_dict[hint].type == ConditionType.AND:
                         return False
                 return match
         return False
 
-    def checkTcrScan(self, hint):
-        if hint in self.scanDict:
-            return self.scanDict[hint].scanDatas()
+    def check_tcr_scan(self, hint):
+        if hint in self.scan_dict:
+            return self.scan_dict[hint].scan_datas()
         return None
 
-    def checkMaskDetection(self, hint, get="results"):
-        if hint in self.pickDict:
-            return self.pickDict[hint].scanDatas(get=get)
+    def check_mask_detection(self, hint, get="results"):
+        if hint in self.pick_dict:
+            return self.pick_dict[hint].scan_datas(get=get)
         return None
 
-
-    def checkConfigHasMaskTest(self):
+    def check_config_has_mask_test(self):
         if self.game.config.maskTest is not None:
-            if self.game.config.maskTest in self.pickDict:
-                drawedSc = self.checkMaskDetection(self.game.config.maskTest, get="screenshot")
-                self.game.imSave.update("draw_img", drawedSc)
+            if self.game.config.maskTest in self.pick_dict:
+                drawed_sc = self.check_mask_detection(self.game.config.maskTest, get="screenshot")
+                self.game.im_save.update("draw_img", drawed_sc)
 
-    def checkImageMatch(self, hint):
-        if hint in self.imgsScanDict:
-            return self.imgsScanDict[hint].scanDatas()
+    def check_image_match(self, hint):
+        if hint in self.imgs_scan_dict:
+            return self.imgs_scan_dict[hint].scan_datas()
         return None
 
     # def createImage(self, screenshot, comboHint):

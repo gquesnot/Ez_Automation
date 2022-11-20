@@ -1,28 +1,28 @@
 import re
 
 
-def mapDataClassFields(dc, data, toMap):
-    for k, v in toMap.items():
-        myData = data[k]
+def map_data_class_fields(dc, data, to_map):
+    for k, v in to_map.items():
+        my_data = data[k]
         if v['list']:
-            if isinstance(myData, dict):
-                myData = [val | {"id": key} for key, val in myData.items()]
+            if isinstance(my_data, dict):
+                my_data = [val | {"id": key} for key, val in my_data.items()]
 
-            myData = [mapField(dc, v['type']) for val in myData]
+            my_data = [map_field(dc, v['type']) for val in my_data]
         else:
-            myData = mapField(dc, v['type'])
-        data[k] = myData
+            my_data = map_field(dc, v['type'])
+        data[k] = my_data
 
     return data
 
 
-def mapField(dc, Class):
-    return Class.from_dict(dc, ).to_dict()
+def map_field(dc, class_):
+    return class_.from_dict(dc, ).to_dict()
 
 
-def ownCapitalize(string):
+def own_capitalize(string):
     return re.sub('([a-zA-Z])', lambda x: x.groups()[0].upper(), string, 1)
 
 
-def strToFloatList(string, separator="/"):
+def str_to_float_list(string, separator="/"):
     return [float(v) for v in string.split(separator)]

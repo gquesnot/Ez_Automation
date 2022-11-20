@@ -10,9 +10,9 @@ from baseclass.my_dataclass.base_dataclass import GetSetDict
 class MyStringEnumSelect:
     label: str = ''
     path: Union[str, None] = None
-    wValue: tkinter.StringVar = None
-    wSelect: ttk.Combobox = None
-    wLabel: ttk.Label = None
+    w_value: tkinter.StringVar = None
+    w_select: ttk.Combobox = None
+    w_label: ttk.Label = None
     enum: Any = None
     parent = None
     datas = []
@@ -25,22 +25,23 @@ class MyStringEnumSelect:
         self.path = path
         self.enum = enum
         self.datas = [el for el in dir(self.enum) if "__" not in el]
-        self.wLabel = ttk.Label(self.parent, text=label, anchor="w", width=len(label) + 3)
-        self.wLabel.grid(column=self.col, row=self.row, padx=10, pady=10, sticky=W)
-        self.wValue = tkinter.StringVar()
-        self.wValue.set(enum[value])
-        self.wEntry = ttk.Combobox(self.parent, values=self.datas, textvariable=self.wValue, width=20, state="readonly")
-        self.wEntry.grid(column=self.col + 1, row=self.row, padx=10, pady=10, sticky=W)
+        self.w_label = ttk.Label(self.parent, text=label, anchor="w", width=len(label) + 3)
+        self.w_label.grid(column=self.col, row=self.row, padx=10, pady=10, sticky=W)
+        self.w_value = tkinter.StringVar()
+        self.w_value.set(enum[value])
+        self.w_entry = ttk.Combobox(self.parent, values=self.datas, textvariable=self.w_value, width=20,
+                                    state="readonly")
+        self.w_entry.grid(column=self.col + 1, row=self.row, padx=10, pady=10, sticky=W)
 
     def get(self):
         if self.canSave():
-            return self.enum[self.wValue.get()]
+            return self.enum[self.w_value.get()]
 
     def updatePath(self, path):
         self.path = path
 
     def set(self, value):
-        self.wValue.set(self.enum[value])
+        self.w_value.set(self.enum[value])
 
     def canSave(self):
         return self.path is not None
@@ -48,46 +49,46 @@ class MyStringEnumSelect:
 
 class MyChildSelect:
     datas: list = []
-    wSelect: ttk.Combobox = None
-    wValue: tkinter.StringVar = None
-    btnNew: MyButton = None
-    btnDel: MyButton = None
-    prevValue: int = False
+    w_select: ttk.Combobox = None
+    w_value: tkinter.StringVar = None
+    btn_new: MyButton = None
+    btn_del: MyButton = None
+    prev_value: int = False
 
     def __init__(self, parent, datas, row=0):
         self.row = row
         self.parent = parent
         self.datas = datas
-        self.wValue = tkinter.StringVar()
+        self.w_value = tkinter.StringVar()
         if len(self.datas) > 0:
             self.set(0)
-        self.wSelect = ttk.Combobox(self.parent, values=[str(i) for i in range(len(self.datas))],
-                                    textvariable=self.wValue, state='readonly')
-        self.wSelect.grid(column=0, row=row, padx=10, pady=10, sticky=W)
-        self.wSelect.bind("<<ComboboxSelected>>", lambda event: self.doSelect())
-        MyButton(self.parent, text="New", command=lambda: self.doNew(withViewUpdate=True), width=10, col=1,
+        self.w_select = ttk.Combobox(self.parent, values=[str(i) for i in range(len(self.datas))],
+                                     textvariable=self.w_value, state='readonly')
+        self.w_select.grid(column=0, row=row, padx=10, pady=10, sticky=W)
+        self.w_select.bind("<<ComboboxSelected>>", lambda event: self.do_select())
+        MyButton(self.parent, text="New", command=lambda: self.do_new(with_view_update=True), width=10, col=1,
                  row=row)
         MyButton(self.parent, text="Delete", command=self.remove, width=10, col=2, row=row)
         if len(self.datas) == 0:
-            self.doNew(withViewUpdate=False)
+            self.do_new(with_view_update=False)
 
     def set(self, value):
-        oldValue = self.get()
-        if oldValue is not None:
-            self.prevValue = self.get()
-        self.updateAllPath(new=value, old=oldValue)
-        self.wValue.set(str(value))
-        self.prevValue = value
+        old_value = self.get()
+        if old_value is not None:
+            self.prev_value = self.get()
+        self.update_all_path(new=value, old=old_value)
+        self.w_value.set(str(value))
+        self.prev_value = value
 
-    def doSelect(self):
-        self.updateAllPath(new=self.get(), old=self.prevValue)
+    def do_select(self):
+        self.update_all_path(new=self.get(), old=self.prev_value)
 
-        self.prevValue = self.get()
-        self.parent.updateView()
+        self.prev_value = self.get()
+        self.parent.update_view()
         self.update()
 
     def get(self):
-        tmp = self.wValue.get()
+        tmp = self.w_value.get()
 
         if tmp == '':
             return None
@@ -97,12 +98,12 @@ class MyChildSelect:
         self.datas.pop(self.get())
         self.update()
         if len(self.datas) == 0:
-            self.doNew(withViewUpdate=True)
+            self.do_new(with_view_update=True)
         else:
             self.set(0)
-        self.parent.save(saveOnly=True)
+        self.parent.save(save_only=True)
 
-    def updateAllPath(self, new, old=None):
+    def update_all_path(self, new, old=None):
 
         if new is not None:
             for input_ in self.parent.inputs:
@@ -112,80 +113,77 @@ class MyChildSelect:
                             input_.path = input_.path.replace(f"[{old}]", f"[{new}]")
 
     def update(self):
-        self.wSelect.configure(values=[str(i) for i in range(len(self.datas))])
+        self.w_select.configure(values=[str(i) for i in range(len(self.datas))])
 
         if self.parent.img is not None:
             self.parent.img.update(self.datas[self.get()].path)
 
-    def doNew(self, withViewUpdate=True):
-        if self.prevValue is not None:
-            self.updateAllPath(new=0, old=self.prevValue)
-        newData = self.parent.childClass.from_dict({})
+    def do_new(self, with_view_update=True):
+        if self.prev_value is not None:
+            self.update_all_path(new=0, old=self.prev_value)
+        new_data = self.parent.child_class.from_dict({})
 
-        self.datas.append(newData)
+        self.datas.append(new_data)
         self.update()
         self.set(len(self.datas) - 1)
-        if withViewUpdate:
-            self.parent.updateView()
+        if with_view_update:
+            self.parent.update_view()
 
 
 class ParentSelect:
-    wSelect: ttk.Combobox = None
-    wValue: tkinter.StringVar = None
-    wBtnNew: ttk.Button = None
+    w_select: ttk.Combobox = None
+    w_value: tkinter.StringVar = None
+    w_btn_new: ttk.Button = None
     datas: GetSetDict = None
     parent: Any = None
 
-    def isEmpty(self):
+    def is_empty(self):
         if self.datas is not None:
-            return self.datas.isEmpty()
+            return self.datas.is_empty()
 
     def __init__(self, parent, datas, row=0, colspan=1, col=0):
         self.parent = parent
         self.datas = datas
         self.row = row
         self.col = col
-        self.wValue = tkinter.StringVar()
-        if not self.datas.isEmpty():
-            self.wValue.set(self.datas.fromIdx(0).name)
+        self.w_value = tkinter.StringVar()
+        if not self.datas.is_empty():
+            self.w_value.set(self.datas.from_idx(0).name)
 
-        self.wSelect = ttk.Combobox(self.parent, values=self.datas.keyAsList(), state='readonly',
-                                    textvariable=self.wValue, width=15)
-        self.wSelect.grid(column=0, row=row, columnspan=colspan, padx=10, pady=10, sticky=W)
-        self.wSelect.bind("<<ComboboxSelected>>", self.parent.updateView)
-        self.wBtnNew = MyButton(self.parent, text="New", command=self.doNew, width=10, col=1, row=row)
-        if self.datas.isEmpty():
-            self.doNew(withViewUpdate=False)
+        self.w_select = ttk.Combobox(self.parent, values=self.datas.key_as_list(), state='readonly',
+                                     textvariable=self.w_value, width=15)
+        self.w_select.grid(column=0, row=row, columnspan=colspan, padx=10, pady=10, sticky=W)
+        self.w_select.bind("<<ComboboxSelected>>", self.parent.update_view)
+        self.w_btn_new = MyButton(self.parent, text="New", command=self.do_new, width=10, col=1, row=row)
+        if self.datas.is_empty():
+            self.do_new(with_view_update=False)
 
     def remove(self):
         self.datas.remove(self.get())
-        if self.datas.isEmpty():
-            self.doNew(withViewUpdate=True)
+        if self.datas.is_empty():
+            self.do_new(with_view_update=True)
         else:
-            self.set(self.datas.fromIdx(0).name)
-        self.parent.save(saveOnly=True)
+            self.set(self.datas.from_idx(0).name)
+        self.parent.save(save_only=True)
 
     def get(self):
-        return self.wValue.get()
+        return self.w_value.get()
 
-    def getObj(self):
+    def get_obj(self):
         return self.datas.get(self.get())
 
     def set(self, value):
-        self.wValue.set(value)
+        self.w_value.set(value)
 
     def update(self):
-        self.wSelect.configure(values=self.datas.keyAsList())
+        self.w_select.configure(values=self.datas.key_as_list())
 
-    def doNew(self, withViewUpdate=True):
-        newName = str(int(time()))
-        newData = self.parent.baseClass.from_dict({"name": newName})
-        self.datas.set(newData)
-        self.wSelect.config(values=self.datas.keyAsList())
-        self.set(newName)
+    def do_new(self, with_view_update=True):
+        new_name = str(int(time()))
+        new_data = self.parent.base_class.from_dict({"name": new_name})
+        self.datas.set(new_data)
+        self.w_select.config(values=self.datas.key_as_list())
+        self.set(new_name)
 
-
-        if withViewUpdate:
-            self.parent.updateView()
-
-
+        if with_view_update:
+            self.parent.update_view()

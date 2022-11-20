@@ -10,8 +10,6 @@ from baseclass.my_dataclass.action_record import ActionMouseClickRecord, ActionM
 from util.threadclass import ThreadClass
 
 
-
-
 class KeyboardController(ThreadClass):
     mouse: MC = None
     keybord: Controller = None
@@ -19,7 +17,7 @@ class KeyboardController(ThreadClass):
     def __init__(self, game):
         super().__init__()
         self.game = game
-        self.mouseRatio = 0.3
+        self.mouse_ratio = 0.3
         self.pressed = set()
         self.keyboard = Controller()
         self.mouse = MC()
@@ -33,22 +31,21 @@ class KeyboardController(ThreadClass):
             self.keyboard.press(c)
         self.pressed.add(set(combo))
 
-    def handleMouseActionRecord(self, action: Union[ActionMouseClickRecord,ActionMouseDragRecord] , release=False):
+    def handle_mouse_action_record(self, action: Union[ActionMouseClickRecord, ActionMouseDragRecord], release=False):
         if release:
             if type(action) == ActionMouseDragRecord:
-
-                self.mouse.move(*self.game.wc.toWindow(action.coorEnd, *self.mouse.position))
+                self.mouse.move(*self.game.wc.to_window(action.coor_end, *self.mouse.position))
             self.mouse.release(Button.left)
         else:
-            self.mouse.move(*self.game.wc.toWindow(action.coorStart, *self.mouse.position))
+            self.mouse.move(*self.game.wc.to_window(action.coor_start, *self.mouse.position))
 
             self.mouse.press(Button.left)
 
-    def clearInput(self):
+    def clear_input(self):
         for c in self.pressed:
             self.keyboard.release(c)
 
-    def handleKeyboardActionRecord(self, action: ActionKeyBoardRecord, release=False):
+    def handle_keyboard_action_record(self, action: ActionKeyBoardRecord, release=False):
         if release:
             self.keyboard.press(KeyCode.from_vk(action.key))
             self.pressed.remove(action.key)
@@ -56,24 +53,23 @@ class KeyboardController(ThreadClass):
             self.keyboard.release(KeyCode.from_vk(action.key))
             self.pressed.add(action.key)
 
-
-    def handleMouseAction(self, mouseAction):
-        if mouseAction.region != "root":
-            coor = self.game.regions.getCoorByRegion(mouseAction.region)
-            coor = (mouseAction.coor.x + coor.x, mouseAction.coor.y + coor.y)
+    def handle_mouse_action(self, mouse_action):
+        if mouse_action.region != "root":
+            coor = self.game.regions.getCoorByRegion(mouse_action.region)
+            coor = (mouse_action.coor.x + coor.x, mouse_action.coor.y + coor.y)
         else:
-            coor = (mouseAction.coor.x, mouseAction.coor.y)
-        self.mouseMove(coor)
-        self.click(mouseAction.delay)
-        sleep(mouseAction.sleepAfter)
+            coor = (mouse_action.coor.x, mouse_action.coor.y)
+        self.mouse_move(coor)
+        self.click(mouse_action.delay)
+        sleep(mouse_action.sleep_after)
 
-    def handleKeyAction(self, keyAction):
-        self.basePress(keyAction.key, keyAction.delay)
-        sleep(keyAction.sleepAfter)
+    def handle_key_action(self, keyAction):
+        self.base_press(keyAction.key, keyAction.delay)
+        sleep(keyAction.sleep_after)
 
-    def moveClick(self, coor, delay=.5, byScreen=True, timeBeetwen=.25):
-        self.mouseMove(coor, byScreen)
-        sleep(timeBeetwen)
+    def move_click(self, coor, delay=.5, by_screen=True, time_beetwen=.25):
+        self.mouse_move(coor, by_screen)
+        sleep(time_beetwen)
         self.click(delay)
 
     def click(self, delay=.5):
@@ -81,45 +77,45 @@ class KeyboardController(ThreadClass):
         sleep(delay)
         self.mouse.release(Button.left)
 
-    def mouseMove(self, coor, byScreen=True):
-        if byScreen:
+    def mouse_move(self, coor, by_screen=True):
+        if by_screen:
             self.mouse.position = (coor[0] + self.game.wc.offset_x, coor[1] + self.game.wc.offset_y)
         else:
             self.mouse.position = coor
 
     def focus(self, coor):
-        self.mouseMove(coor)
+        self.mouse_move(coor)
         sleep(0.1)
         self.mouse.press(Button.right)
         x, y = coor
-        centerX, centerY = self.game.wc.getCenter()
-        diffX = -int((x - centerX) * self.mouseRatio)
-        diffY = -int((y - centerY) * self.mouseRatio)
-        print("diff", x, y, centerX, centerY, diffX, diffY)
+        center_x, center_y = self.game.wc.get_center()
+        diff_x = -int((x - center_x) * self.mouse_ratio)
+        diff_y = -int((y - center_y) * self.mouse_ratio)
+        print("diff", x, y, center_x, center_y, diff_x, diff_y)
         sleep(0.1)
-        self.mouse.move(diffX, diffY)
+        self.mouse.move(diff_x, diff_y)
         sleep(0.1)
         self.mouse.release(Button.right)
 
-    def pressKey(self, c):
+    def press_key(self, c):
         if c not in self.pressed:
             self.keyboard.press(c)
 
-    def releaseKey(self, c):
+    def release_key(self, c):
         if c in self.pressed:
             self.keyboard.release(c)
 
-    def resetMovement(self):
+    def reset_movement(self):
         for c in self.pressed:
             if c in ("z", "s", "q", "d"):
                 self.keyboard.release(c)
 
-    def basePress(self, key, duration=.01):
+    def base_press(self, key, duration=.01):
         self.keyboard.press(key)
         sleep(duration)
         self.keyboard.release(key)
 
-    def basePress2(self, key, duration=.01):
+    def base_press2(self, key, duration=.01):
         pyautogui.keyDown(key)
         sleep(duration)
         pyautogui.keyUp(key)
