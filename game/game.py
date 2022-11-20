@@ -14,7 +14,6 @@ from baseclass.regions import Regions
 from baseclass.replayClass import Replay
 from controllers.configcontroller import ConfigController
 from controllers.datapickercontroller import DataPickerController
-from ia.ia import IA
 from util.keyboardcontroller import KeyboardController
 from util.tcr import Tcr
 from util.threadclass import ThreadClass
@@ -43,7 +42,7 @@ class Game(ThreadClass):
     regions: Regions = None
     action_listener: ActionListener = None
     action_replay: ActionReplay = None
-    ia: IA = None
+    #ia: IA = None
 
     def __init__(self):
         super().__init__()
@@ -69,7 +68,7 @@ class Game(ThreadClass):
         self.dpc = DataPickerController(self)
         # self.trackerController = TrackerController(self)
         self.kc = KeyboardController(self)
-        self.ia = IA(self)
+        #self.ia = IA(self)
 
         self.start_class()
 
@@ -106,8 +105,8 @@ class Game(ThreadClass):
             return None
 
     def start_class(self):
-        self.ia.start()
-
+        #self.ia.start()
+        pass
     # def createImage(self, comboHint):
     #     if self.screenShot is not None:
     #         return self.dpc.createImage(self.screenShot, comboHint)
