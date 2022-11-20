@@ -38,7 +38,7 @@ class MaskDetectionConfigs(BaseDataClass, GetSetDict):
     """
 
     def save(self):
-        to_json("maskDetection", self.to_dict())
+        to_json("mask_detection", self.to_dict())
 
     dict: Dict[str, MaskDetectionConfig] = field(default_factory=dict)
 

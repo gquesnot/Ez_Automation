@@ -38,7 +38,7 @@ class MainFrame(tkinter.Frame):
         self.clear()
         self.base_row = 0
         self.home = True
-        if self.app.game.config.showFps:
+        if self.app.game.config.show_fps:
             tkinter.Label(self, textvariable=self.fps_counter, font=('Helvetica', '10')).grid(row=self.base_row,
                                                                                               column=1, sticky=W)
             self.base_row += 1
@@ -128,17 +128,17 @@ class Controller:
     def test(self, config, hint):
         print('test', config, hint)
         if config == "pixels":
-            return self.app.game.dpc.checkPixel(hint)
-        elif config == "matchImages":
-            return self.app.game.dpc.checkImageMatch(hint)
-        elif config == "tcrScans":
-            return self.app.game.dpc.checkTcrScan(hint)
-        elif config == "maskDetections":
-            return self.app.game.dpc.checkMaskDetection(hint)
-        elif config == "mouseActions":
-            self.app.game.doClick(hint, activate=True, isTest=True)
-        elif config == "keyboardActions":
-            self.app.game.doKey(hint, activate=True, isTest=True)
+            return self.app.game.dpc.check_pixel(hint)
+        elif config == "match_images":
+            return self.app.game.dpc.check_image_match(hint)
+        elif config == "tcr_scans":
+            return self.app.game.dpc.check_tcr_scan(hint)
+        elif config == "mask_detections":
+            return self.app.game.dpc.check_mask_detection(hint)
+        elif config == "mouse_actions":
+            self.app.game.do_action('mouse',hint, activate=True, is_test=True)
+        elif config == "keyboard_actions":
+            self.app.game.do_action('keyboard',hint, activate=True, is_test=True)
         return None
 
 
@@ -157,7 +157,7 @@ class App(tkinter.Tk):
 
         self.config(menu=self.menu.menu)
         self.title("Bot Control")
-        self.geometry("800x650")
+        self.geometry("600x500")
         self.resizable(width=False, height=False)
         self.style = ttk.Style(self)
         self.style.theme_use("vista")

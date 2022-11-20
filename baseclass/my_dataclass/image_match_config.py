@@ -50,7 +50,7 @@ class ImageMatchConfigs(BaseDataClass, GetSetDict):
     dict: Dict[str, ImageMatchConfig] = field(default_factory=dict)
 
     def save(self):
-        to_json("imageMatch", self.to_dict())
+        to_json("image_match", self.to_dict())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'ImageMatchConfigs':

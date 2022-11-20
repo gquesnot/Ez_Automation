@@ -126,7 +126,7 @@ class DataPickerController:
     #                                                         (rW, rH))
     #     for k, v in self.dataPickList.items():
     #         if v.name in hintList:
-    #             coors = v.getCoors()
+    #             coors = v.get_coors()
     #             if len(coors) > 0:
     #                 drawScreenShot = v.drawScreenShot(newImg)
     #     return newImg

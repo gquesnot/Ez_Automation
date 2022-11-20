@@ -54,11 +54,11 @@ class MyMenu:
                                      command=lambda: self.app.controller.do_action("toggle", "freeze"))
         self.option_menu.add_command(
             label="[*] Auto Screenshot" if self.app.game.config.auto_screenshot else "Auto Screenshot",
-            command=lambda: self.app.controller.do_action("toggle", "autoScreenshot"))
+            command=lambda: self.app.controller.do_action("toggle", "auto_screenshot"))
         self.option_menu.add_command(label="Hide regions" if self.app.game.config.show_regions else "Show regions",
-                                     command=lambda: self.app.controller.do_action("toggle", "showRegions"))
-        self.option_menu.add_command(label="Hide Fps" if self.app.game.config.showFps else "Show Fps",
-                                     command=lambda: self.app.controller.do_action("toggle", "showFps"))
+                                     command=lambda: self.app.controller.do_action("toggle", "show_regions"))
+        self.option_menu.add_command(label="Hide Fps" if self.app.game.config.show_fps else "Show Fps",
+                                     command=lambda: self.app.controller.do_action("toggle", "show_fps"))
         self.option_menu.add_command(label="End Recording" if self.app.game.config.recording else "Start Recording",
                                      command=lambda: self.app.controller.do_action("toggle", "recording"))
         self.menu.add_cascade(label="Options", menu=self.option_menu)
@@ -104,7 +104,7 @@ class MyMenu:
         self.option_menu.entryconfig(1,
                                      label="[*] Auto Screenshot" if self.app.game.config.auto_screenshot else "Auto Screenshot")
         self.option_menu.entryconfig(2, label="Hide regions" if self.app.game.config.show_regions else "Show regions")
-        self.option_menu.entryconfig(3, label="Hide Fps" if self.app.game.config.showFps else "Show Fps")
+        self.option_menu.entryconfig(3, label="Hide Fps" if self.app.game.config.show_fps else "Show Fps")
         self.option_menu.entryconfig(4, label="End Recording" if self.app.game.config.recording else "Start Recording")
 
     def rebuild_global_state_menu(self):

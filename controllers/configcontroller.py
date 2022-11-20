@@ -30,7 +30,7 @@ class ConfigController:
     auto_screenshot: bool = False
     show_regions: bool = False
     auto_screenshot_interval: int = 3
-    showFps: bool = False
+    show_fps: bool = False
     recording: bool = False
 
     maskTest: Union[str, None] = None
@@ -38,21 +38,21 @@ class ConfigController:
     def __init__(self, game):
         self.window = WindowConfig.from_dict(get_json("window"), )
         self.regions = RegionConfigs.from_dict(get_json("regions"))
-        self.match_images = ImageMatchConfigs.from_dict(get_json("matchImages"))
+        self.match_images = ImageMatchConfigs.from_dict(get_json("match_images"))
         self.pixels = PixelConfigs.from_dict(get_json("pixels"))
-        self.tcr_scans = TcrScanConfigs.from_dict(get_json("tcrScans"))
-        self.mask_detections = MaskDetectionConfigs.from_dict(get_json("maskDetections"))
-        self.mouse_actions = MouseActionConfigs.from_dict(get_json("mouseActions"))
-        self.keyboard_actions = KeyboardActionConfigs.from_dict(get_json("keyboardActions"))
-        self.replay_actions = ActionRecordConfigs.from_dict(get_json("replayActions"))
+        self.tcr_scans = TcrScanConfigs.from_dict(get_json("tcr_scans"))
+        self.mask_detections = MaskDetectionConfigs.from_dict(get_json("mask_detections"))
+        self.mouse_actions = MouseActionConfigs.from_dict(get_json("mouse_actions"))
+        self.keyboard_actions = KeyboardActionConfigs.from_dict(get_json("keyboard_actions"))
+        self.replay_actions = ActionRecordConfigs.from_dict(get_json("replay_actions"))
         print(self.replay_actions)
         self.game = game
 
-    def apply(self, obj, hint: str, withOutDict: bool = False):
+    def apply(self, obj, hint: str, with_out_dict: bool = False):
         my_dc = getattr(self, hint)
 
         for field in fields(my_dc):
-            if withOutDict:
+            if with_out_dict:
                 value = getattr(my_dc.dict, field.name)
             else:
                 value = getattr(my_dc, field.name)
@@ -63,7 +63,7 @@ class ConfigController:
             self.game.action_listener.start()
         else:
             self.game.action_listener.stop()
-        # print('pass start recording', self.game.actionListener.actions)
+        # print('pass start recording', self.game.action_listener.actions)
         for k in self.game.action_listener.actions:
             print(k)
         self.recording = not self.recording
@@ -117,11 +117,11 @@ class ConfigController:
         elif model == "regions":
             # self.game.regions = getattr(self, model)
             self.game.cv2_controller.refresh_region = True
-        elif model == "matchImages":
+        elif model == "match_images":
             self.game.dpc.load_match_images()
         elif model == "pixels":
             self.game.dpc.load_pixels()
-        elif model == "tcrScans":
+        elif model == "tcr_scans":
             self.game.dpc.load_tcr_scans()
-        elif model == "maskDetections":
+        elif model == "mask_detections":
             self.game.dpc.load_mask_detections()

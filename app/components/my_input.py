@@ -88,21 +88,21 @@ class MyImg:
     root: tkinter.Label = None
     path: str = ""
 
-    def __init__(self, parent, imgPath: str, row=0, col=0, path=""):
+    def __init__(self, parent, img_path: str, row=0, col=0, path=""):
         self.parent = parent
         self.path = path
         self.root = tkinter.Label(self.parent)
         self.root.grid(row=row, column=col)
-        if imgPath != "":
-            self.img = Image.open(imgPath)
+        if img_path != "":
+            self.img = Image.open(img_path)
             self.img.thumbnail((30, 30), Image.ANTIALIAS)
 
             self.img_tk = ImageTk.PhotoImage(self.img)
             self.root.config(image=self.img_tk)
 
-    def update(self, imgPath):
-        if imgPath != "":
-            self.img = Image.open(imgPath)
+    def update(self, img_path):
+        if img_path != "":
+            self.img = Image.open(img_path)
             self.img.thumbnail((75, 75), Image.ANTIALIAS)
             self.img_tk = ImageTk.PhotoImage(self.img)
             self.root.config(image=self.img_tk)

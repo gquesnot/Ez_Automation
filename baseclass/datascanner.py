@@ -43,21 +43,18 @@ class DataScanner(ThreadClass, TcrScanConfig):
 
     def scan_datas(self, screenshot=None):
         if screenshot is None:
-            if self.game.screenShot is not None:
-                screenshot = self.game.screenShot
+            if self.game.screen_shot is not None:
+                screenshot = self.game.screen_shot
 
         if self.region != "" and screenshot is not None:
-            screenshot = self.game.regions.applyRegion(self.region, screenshot)
+            screenshot = self.game.regions.apply_region(self.region, screenshot)
 
         if screenshot is not None:
             screenshot = get_img_rectangle(screenshot, self.rectangle)
             cv2.imwrite("tmp/scans/{}.png".format(self.name), screenshot)
             if self.type == VarType.STRING:
-                img, self.result = self.game.tcr.scanText(img=screenshot)
+                img, self.result = self.game.tcr.scan_text(img=screenshot)
             elif self.type == VarType.INT:
-                if self.digits is not None:
-                    img, self.result = self.game.tcr.scanNumber(img=screenshot)
-                else:
-                    img, self.result = self.game.tcr.scanNumber(img=screenshot)
+                img, self.result = self.game.tcr.scan_number(img=screenshot)
 
         return self.result

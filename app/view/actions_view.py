@@ -10,7 +10,7 @@ class MouseActionsView(BaseViewWithSelect):
     with_test: bool = False
 
     def __init__(self, app: 'App'):
-        super().__init__(app, "mouseActions", app.game.config.mouseActions)
+        super().__init__(app, "mouse_actions", app.game.config.mouse_actions)
         data = self.parent_select.get_obj()
         self.inputs.append(MyInput(self, "Name", data.name, row=self.row_start, path="data.name"))
         self.inputs.append(MyInput(self, "Delay", data.delay, row=self.row_start + 1, path="data.delay"))
@@ -25,11 +25,11 @@ class MouseActionsView(BaseViewWithSelect):
 
 class KeyboardActionsView(BaseViewWithSelect):
     datas: MouseActionConfig = None
-    baseClass: KeyboardActionConfig = KeyboardActionConfig
-    withTest: bool = False
+    base_class: KeyboardActionConfig = KeyboardActionConfig
+    with_test: bool = False
 
     def __init__(self, app: 'App'):
-        super().__init__(app, "keyboardActions", app.game.config.keyboardActions)
+        super().__init__(app, "keyboard_actions", app.game.config.keyboard_actions)
         data = self.parent_select.get_obj()
         self.inputs.append(MyInput(self, "Name", data.name, row=self.row_start, path="data.name"))
         self.inputs.append(MyInput(self, "Delay", data.delay, row=self.row_start + 1, path="data.delay"))
@@ -47,4 +47,4 @@ class RecordPlayActionView(EzView):
     hints = ['save', 'new', 'delete', 'minify', 'record', 'replay']
 
     def __init__(self, app: 'App'):
-        super().__init__(app, app.game.config.replayActions, "replayActions")
+        super().__init__(app, app.game.config.replay_actions, "replay_actions")

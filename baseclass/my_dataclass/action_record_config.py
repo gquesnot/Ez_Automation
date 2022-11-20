@@ -42,7 +42,7 @@ class ActionRecordConfigs(BaseDataClass, GetSetDict):
     """
 
     def save(self):
-        to_json("replayActions.json", self.to_dict())
+        to_json("replay_actions.json", self.to_dict())
 
     dict: Dict[str, ActionRecordConfig] = field(default_factory=dict)
 

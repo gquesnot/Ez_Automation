@@ -24,7 +24,7 @@ class EzView(ttk.Frame, ABC):
     test_result: MySimpleInput = None
 
     name: str = ""
-    rowStart: int = 1
+    row_start: int = 1
     hints = ["save", "delete", "test"]
 
     def __init__(self, app: 'App', datas: Any, name: str):
@@ -35,10 +35,10 @@ class EzView(ttk.Frame, ABC):
         self.datas = datas
         ttk.Label(self, text=self.name).grid(row=0, column=0, sticky=W)
 
-        self.parent_select = ParentSelect(self, datas=self.datas, row=self.rowStart)
-        self.text = MyTextArea(self, row=self.rowStart + 2)
+        self.parent_select = ParentSelect(self, datas=self.datas, row=self.row_start)
+        self.text = MyTextArea(self, row=self.row_start + 2)
 
-        self.rowStart += 3
+        self.row_start += 3
         self.add_btn_by_hint()
         self.text.set(json.dumps(self.parent_select.get_obj().to_dict(), indent=4))
 
@@ -54,7 +54,7 @@ class EzView(ttk.Frame, ABC):
         self.datas.set(new_obj, old_obj.name)
         self.parent_select.update()
         self.parent_select.set(new_obj.name)
-        self.app.game.config.saveOnly(self.name, reload=save_only)
+        self.app.game.config.save_only(self.name, reload=save_only)
 
     def update_view(self, event=None):
         data = self.parent_select.get_obj()
@@ -63,42 +63,42 @@ class EzView(ttk.Frame, ABC):
     def add_btn_by_hint(self):
         for col, hint in enumerate(self.hints):
             if hint == 'save':
-                self.btn_save = MyButton(self, "Save", lambda: self.save(), row=self.rowStart, col=col)
+                self.btn_save = MyButton(self, "Save", lambda: self.save(), row=self.row_start, col=col)
 
             elif hint == 'delete':
-                self.btn_delete = MyButton(self, "Delete", lambda: self.parent_select.remove(), row=self.rowStart,
+                self.btn_delete = MyButton(self, "Delete", lambda: self.parent_select.remove(), row=self.row_start,
                                            col=col)
 
             elif hint == 'coor':
                 self.btn_coor_rectangle = MyButton(self, "Scan Coor", lambda: self.scan("coor"),
-                                                   row=self.rowStart, col=col)
+                                                   row=self.row_start, col=col)
             elif hint == 'rectangle':
                 self.btn_coor_rectangle = MyButton(self, "Scan Rectangle", lambda: self.scan("rectangle"),
-                                                   row=self.rowStart, col=col)
+                                                   row=self.row_start, col=col)
 
             elif hint == 'pixel':
                 self.btn_coor_rectangle = MyButton(self, "Scan Pixel", lambda: self.scan("pixel"),
-                                                   row=self.rowStart, col=col)
+                                                   row=self.row_start, col=col)
             elif hint == 'image':
                 self.btn_coor_rectangle = MyButton(self, "Scan Image", lambda: self.scan("image"),
-                                                   row=self.rowStart, col=col)
+                                                   row=self.row_start, col=col)
             elif hint == 'mask':
                 self.btn_coor_rectangle = MyButton(self, "Scan Mask", lambda: self.scan("mask"),
-                                                   row=self.rowStart, col=col)
+                                                   row=self.row_start, col=col)
 
             elif hint == "test":
-                self.btn_test = MyButton(self, "Test", self.test, row=self.rowStart, col=col)
+                self.btn_test = MyButton(self, "Test", self.test, row=self.row_start, col=col)
 
             elif hint == "record":
-                self.btn_record = MyButton(self, "Record", lambda: self.record(is_first=True), row=self.rowStart,
+                self.btn_record = MyButton(self, "Record", lambda: self.record(is_first=True), row=self.row_start,
                                            col=col)
             elif hint == "replay":
-                self.btn_replay = MyButton(self, "Replay", lambda: self.replay(is_first=True), row=self.rowStart,
+                self.btn_replay = MyButton(self, "Replay", lambda: self.replay(is_first=True), row=self.row_start,
                                            col=col)
             elif hint == 'minify':
-                MyButton(self, "Minify", lambda: self.minify(), row=self.rowStart, col=col)
+                MyButton(self, "Minify", lambda: self.minify(), row=self.row_start, col=col)
 
-            # self.testResult = MySimpleInput(self, col=1, row=self.rowStart + 1, colspan=3)
+            # self.testResult = MySimpleInput(self, col=1, row=self.row_start + 1, colspan=3)
 
     def minify(self, event=None):
         data = self.parent_select.get_obj()
@@ -114,27 +114,27 @@ class EzView(ttk.Frame, ABC):
     def record(self, is_first: bool):
         if is_first:
             self.btn_record.set('Stop Record')
-            self.app.game.actionListener.start()
+            self.app.game.action_listener.start()
         else:
             self.btn_record.set('Record')
-            if not self.app.game.actionListener.stopped:
-                self.app.game.actionReplay.stop()
+            if not self.app.game.action_listener.stopped:
+                self.app.game.action_replay.stop()
             obj = self.parent_select.get_obj()
-            obj.keys = self.app.game.actionListener.selected.keys
-            obj.clicks = self.app.game.actionListener.selected.clicks
+            obj.keys = self.app.game.action_listener.selected.keys
+            obj.clicks = self.app.game.action_listener.selected.clicks
             self.update_view()
         self.btn_record.config(command=lambda: self.record(is_first=not is_first))
 
     def replay(self, is_first):
         if is_first:
             self.btn_replay.set('Stop Replay')
-            self.app.game.actionReplay.select(self.parent_select.get())
+            self.app.game.action_replay.select(self.parent_select.get())
             wait_few_sec(3)
-            self.app.game.actionReplay.start()
+            self.app.game.action_replay.start()
         else:
             self.btn_replay.set('Replay')
-            if not self.app.game.actionReplay.stopped:
-                self.app.game.actionReplay.stop()
+            if not self.app.game.action_replay.stopped:
+                self.app.game.action_replay.stop()
         self.btn_replay.config(command=lambda: self.replay(is_first=not is_first))
         pass
 
@@ -191,7 +191,7 @@ class BaseView(ttk.Frame, ABC):
     def save(self, save_only=False):
         if not save_only:
             self.save_inputs_in_datas()
-        self.app.game.config.saveOnly(self.name, reload=True)
+        self.app.game.config.save_only(self.name, reload=True)
         self.update_view()
 
     def add_btn_by_hint(self, hints):
@@ -286,11 +286,11 @@ class BaseViewWithSelect(BaseView, ABC):
             self.btn_coor_rectangle.config(command=lambda: self.scan(hint=hint, first=True))
             scanned = None
             if hint == 'rectangle':
-                scanned = self.app.game.im_save.getRectangle()
+                scanned = self.app.game.im_save.get_rectangle()
             elif hint == 'coor':
-                scanned = self.app.game.im_save.getCoor()
+                scanned = self.app.game.im_save.get_coor()
             elif hint == 'mask':
-                scanned = self.app.game.im_save.getMask()
+                scanned = self.app.game.im_save.get_mask()
 
             if scanned is not None:
                 if hint != "mask":
@@ -321,9 +321,9 @@ class BaseViewWithSelect(BaseView, ABC):
                 path_split = input_.path.split('.')
                 if len(path_split) > 1:
                     if path_split[-2] == hint:
-                        exec(f"{input_.path} = myDict[path_split[-1]]")
+                        exec(f"{input_.path} = my_dict[path_split[-1]]")
                 if 'region' in input_.path:
-                    exec(f"{input_.path} = myDict['region']")
+                    exec(f"{input_.path} = my_dict['region']")
 
     def save(self, save_only=False):
         super().save(save_only=save_only)
@@ -332,7 +332,7 @@ class BaseViewWithSelect(BaseView, ABC):
     def try_match(self, data, my_dict: dict, match, dict_path: str):
         new_path = self.get_path_by_match(match)
         if new_path is not None:
-            exec(f"{new_path} = myDict{dict_path}")
+            exec(f"{new_path} = my_dict{dict_path}")
 
     def get_path_by_match(self, match):
         for input_ in self.inputs:
@@ -411,10 +411,10 @@ class BaseViewSelectWithChild(BaseViewWithSelect, ABC):
             self.btn_coor_rectangle.set(f'Scan {hint}')
             self.btn_coor_rectangle.config(command=lambda: self.scan(hint=hint, first=True))
             if hint in ('rectangle', 'image'):
-                scanned = self.app.game.im_save.getRectangle()
+                scanned = self.app.game.im_save.get_rectangle()
             else:
 
-                scanned = self.app.game.im_save.getCoor()
+                scanned = self.app.game.im_save.get_coor()
             if scanned is not None and hint not in 'image':
                 self.save_dict_in_datas(hint, scanned)
                 self.update_view()
@@ -422,7 +422,7 @@ class BaseViewSelectWithChild(BaseViewWithSelect, ABC):
                 directory = self.parent_select.get()
                 name = f"{self.child_select.get()}.png"
                 path = f"img/{directory}/{name}"
-                self.app.game.im_save.saveImage(scanned, path=f"img/{directory}", name=name)
+                self.app.game.im_save.save_image(scanned, path=f"img/{directory}", name=name)
                 self.save_dict_in_datas(hint, {
                     'path': path,
                     'region': scanned['region'],

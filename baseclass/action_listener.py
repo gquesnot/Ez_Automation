@@ -28,8 +28,7 @@ class ActionListener:
         self.selected = ActionRecordConfig()
         self.mouse_action = None
         self.incomplete_key_actions = {}
-        self.mouse_listener = mouse.Listener(on_click=self.on_click, on_scroll=self.on_scroll
-                                             )
+        self.mouse_listener = mouse.Listener(on_click=self.on_click, on_scroll=self.on_scroll)
         self.keyboard_listener = keyboard.Listener(on_press=self.on_press, on_release=self.on_keyboard_release)
         self.t = time()
         self.stopped = False
@@ -40,6 +39,7 @@ class ActionListener:
         self.stopped = True
         self.mouse_listener.stop()
         self.keyboard_listener.stop()
+
         self.selected.keys.sort(key=lambda x: x.start_at)
         self.selected.clicks.sort(key=lambda x: x.start_at)
 
@@ -64,13 +64,14 @@ class ActionListener:
                     self.selected.clicks.append(
                         ActionMouseDragRecord(coor_start=self.mouse_action.coor_start, coor_end=coor_end,
                                               start_at=self.mouse_action.start_at,
-                                              endAt=self.mouse_action.end_at))
+                                              end_at=self.mouse_action.end_at))
                 else:
                     self.selected.clicks.append(self.mouse_action)
                 self.mouse_action = None
 
     def on_scroll(self, x, y, dx, dy):
-        print("pass scroll", x, y, dx, dy)
+        pass
+        #print("pass scroll", x, y, dx, dy)
 
     def on_keyboard_release(self, key):
         try:
@@ -78,7 +79,7 @@ class ActionListener:
         except:
             char = key.value.vk
         if char is not None and char in self.incomplete_key_actions:
-            self.incomplete_key_actions[char].endAt = time() - self.t
+            self.incomplete_key_actions[char].end_at = time() - self.t
             self.selected.keys.append(self.incomplete_key_actions[char])
             del self.incomplete_key_actions[char]
 

@@ -9,7 +9,7 @@ class MaskDetectionsView(BaseViewWithSelect):
     with_test: bool = True
 
     def __init__(self, app: 'App'):
-        super().__init__(app, name="maskDetections", datas=app.game.config.maskDetections)
+        super().__init__(app, name="mask_detections", datas=app.game.config.mask_detections)
         data = self.parent_select.get_obj()
         self.inputs.append(MyInput(self, label="Name", value=data.name, row=self.row_start, path="data.name"))
         self.inputs.append(MyInput(self, label="Region", value=data.region, row=self.row_start + 1, path="data.region"))

@@ -59,7 +59,7 @@ class KeyboardActionConfigs(BaseDataClass, GetSetDict):
     dict: Dict[str, KeyboardActionConfig] = field(default_factory=dict)
 
     def save(self):
-        to_json("keyboardActions", self.to_dict())
+        to_json("keyboard_actions", self.to_dict())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'KeyboardActionConfigs':
@@ -75,7 +75,7 @@ class MouseActionConfigs(BaseDataClass, GetSetDict):
     dict: Dict[str, MouseActionConfig] = field(default_factory=dict)
 
     def save(self):
-        to_json("mouseActions", self.to_dict())
+        to_json("mouse_actions", self.to_dict())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'MouseActionConfigs':

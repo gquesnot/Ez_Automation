@@ -55,7 +55,7 @@ class KeyboardController(ThreadClass):
 
     def handle_mouse_action(self, mouse_action):
         if mouse_action.region != "root":
-            coor = self.game.regions.getCoorByRegion(mouse_action.region)
+            coor = self.game.regions.get_coorByRegion(mouse_action.region)
             coor = (mouse_action.coor.x + coor.x, mouse_action.coor.y + coor.y)
         else:
             coor = (mouse_action.coor.x, mouse_action.coor.y)

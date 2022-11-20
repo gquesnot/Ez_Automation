@@ -34,7 +34,7 @@ class TcrScanConfigs(BaseDataClass, GetSetDict):
     dict: Dict[str, TcrScanConfig] = field(default_factory=dict)
 
     def save(self):
-        to_json("tcrScan", self.to_dict())
+        to_json("tcr_scan", self.to_dict())
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'TcrScanConfigs':

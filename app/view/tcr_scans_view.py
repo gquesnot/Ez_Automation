@@ -11,7 +11,7 @@ class TcrScansView(BaseViewWithSelect):
     selected: TcrScanConfig = None
 
     def __init__(self, app: 'App'):
-        super().__init__(app, "tcrScans", app.game.config.tcrScans)
+        super().__init__(app, "tcr_scans", app.game.config.tcr_scans)
         data = self.parent_select.get_obj()
         self.inputs.append(MyInput(self, "Name", data.name, row=self.row_start, path="data.name"))
         self.inputs.append(

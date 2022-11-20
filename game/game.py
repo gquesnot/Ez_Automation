@@ -42,7 +42,8 @@ class Game(ThreadClass):
     regions: Regions = None
     action_listener: ActionListener = None
     action_replay: ActionReplay = None
-    #ia: IA = None
+
+    # ia: IA = None
 
     def __init__(self):
         super().__init__()
@@ -68,7 +69,7 @@ class Game(ThreadClass):
         self.dpc = DataPickerController(self)
         # self.trackerController = TrackerController(self)
         self.kc = KeyboardController(self)
-        #self.ia = IA(self)
+        # self.ia = IA(self)
 
         self.start_class()
 
@@ -78,6 +79,26 @@ class Game(ThreadClass):
             print(f"action in {i}s")
             sleep(1)
             i -= 1
+
+    def do_action(self, type_: str, hint:str, activate=False, is_test=False) -> bool:
+        if is_test:
+            self.init_waiting_time()
+        if type_ == "mouse":
+            action = self.config.mouse_actions.get(hint)
+        elif type_ == "keyboard":
+            action = self.config.keyboard_actions.get(hint)
+        else:
+            return False
+        if action is None:
+            return False
+        if activate:
+            self.wc.activate()
+            self.kc.move_click(self.wc.get_center(), delay=.1, time_beetwen=.1)
+        if type_ == "mouse":
+            self.kc.handle_mouse_action(action)
+        elif type_ == "keyboard":
+            self.kc.handle_key_action(action)
+        return True
 
     def do_click(self, hint, activate=False, is_test=False):
         if is_test:
@@ -95,7 +116,6 @@ class Game(ThreadClass):
         if hint in self.config.keyboard_actions.dict:
             if activate:
                 self.wc.activate()
-                self.kc.move_click(self.wc.get_center(), delay=.1, time_beetwen=.1)
             self.kc.handle_mouse_action(self.config.keyboard_actions.get(hint))
 
     def get_screenshot_copy(self):
@@ -105,11 +125,12 @@ class Game(ThreadClass):
             return None
 
     def start_class(self):
-        #self.ia.start()
+        # self.ia.start()
         pass
+
     # def createImage(self, comboHint):
-    #     if self.screenShot is not None:
-    #         return self.dpc.createImage(self.screenShot, comboHint)
+    #     if self.screen_shot is not None:
+    #         return self.dpc.createImage(self.screen_shot, comboHint)
     #     return None
 
     def stop(self):
@@ -149,14 +170,14 @@ class Game(ThreadClass):
     # def findBouchon(self):
     #     smallImg1 = cv2.imread("img/bouchon.png")
     #     smallImg2 = cv2.imread("img/bouchon2.png")
-    #     result = cv2.matchTemplate(smallImg1, self.screenShot, cv2.TM_SQDIFF_NORMED)
+    #     result = cv2.matchTemplate(smallImg1, self.screen_shot, cv2.TM_SQDIFF_NORMED)
     #
     #     # We want the minimum squared difference
     #     mn, _, mnLoc, _ = cv2.minMaxLoc(result)
     #     if mn < .1:
     #         return mnLoc
     #     else:
-    #         result2 = cv2.matchTemplate(smallImg2, self.screenShot, cv2.TM_SQDIFF_NORMED)
+    #         result2 = cv2.matchTemplate(smallImg2, self.screen_shot, cv2.TM_SQDIFF_NORMED)
     #         mn1, _, mnLoc2, _ = cv2.minMaxLoc(result2)
     #         if mn1 < .1:
     #             return mnLoc2
@@ -170,7 +191,7 @@ class Game(ThreadClass):
         time_after = None
         time_before = None
         while not self.stopped:
-            if self.config.showFps:
+            if self.config.show_fps:
                 time_before = time()
             if not self.config.freeze:
                 if not self.is_replay():
@@ -189,13 +210,13 @@ class Game(ThreadClass):
                     self.do_click('closeUpgrade')
                     self.do_key('up')
                     self.action_replay.play('upgradeAll')
-            if self.config.showFps:
+            if self.config.show_fps:
                 if self.screen_shot is not None:
                     if time_after is not None and time_before is not None and abs(
                             time_before - time_after) > 1 and time_after != time_before:
                         time_after = time()
 
-                        self.app.view.fpsCounter.set("FPS: {:.2f}".format(1 / (time_after - time_before)))
+                        self.app.view.fps_counter.set("FPS: {:.2f}".format(1 / (time_after - time_before)))
                     elif time_after is None:
                         time_after = time()
 

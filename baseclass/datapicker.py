@@ -94,20 +94,20 @@ class DataPicker(ThreadClass, MaskDetectionConfig):
                               self.draw_color.as_list(), self.draw_size)
                 # if hasattr(self, "line"):
                 #    center = centerCoor(coor)
-                #    cv2.line(screenShot, (self.line['x'], self.line['y']), (coor.centerX, coor.centerY), (0, 255, 0), 8)
+                #    cv2.line(screen_shot, (self.line['x'], self.line['y']), (coor.centerX, coor.centerY), (0, 255, 0), 8)
         return screen_shot
 
     def scan_datas(self, screenshot=None, get="results"):
 
         if screenshot is None:
-            if self.game.screenShot is not None:
-                screenshot = copy.deepcopy(self.game.screenShot)
+            if self.game.screen_shot is not None:
+                screenshot = copy.deepcopy(self.game.screen_shot)
             else:
                 return
 
         if screenshot is not None:
             if self.region is not None and self.region != "root":
-                screenshot = self.game.regions.applyRegion(self.region, screenshot=screenshot)
+                screenshot = self.game.regions.apply_region(self.region, screenshot=screenshot)
             # if self.visionFilter is not None:
             #     screenshot = self.game.vision.apply_hsv_filter(screenshot, self.hsv_filter)
             mask = cv2.inRange(screenshot, self.lower_mask, self.upper_mask)

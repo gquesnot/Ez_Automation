@@ -39,8 +39,8 @@ class MatchImages(ThreadClass, ImageMatchConfig):
 
     def scan_datas(self, screenshot=None):
         if screenshot is None:
-            if self.game.screenShot is not None:
-                screenshot = self.game.screenShot
+            if self.game.screen_shot is not None:
+                screenshot = self.game.screen_shot
 
         if screenshot is not None:
             for img in self.images:
